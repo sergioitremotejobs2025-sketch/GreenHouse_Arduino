@@ -1,0 +1,13 @@
+{
+  "name": "fake-arduino-iot-pictures",
+  "version": "1.0.0",
+  "description": "Fake Arduino that serves pictures of plant growth",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "cors": "^2.8.5"
+  }
+}
