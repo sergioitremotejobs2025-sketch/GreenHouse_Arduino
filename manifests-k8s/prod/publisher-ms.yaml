@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: publisher-ms
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - env:
+            - name: MICROCONTROLLERS_MS_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MICROCONTROLLERS_MS_HOSTNAME
+                  name: env-configmap
+            - name: MICROCONTROLLERS_MS_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: MICROCONTROLLERS_MS_SERVICE_PORT
+                  name: env-configmap
+            - name: QUEUE_HUMIDITY_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: QUEUE_HUMIDITY_NAME
+                  name: env-configmap
+            - name: QUEUE_LIGHT_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: QUEUE_LIGHT_NAME
+                  name: env-configmap
+            - name: QUEUE_TEMPERATURE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: QUEUE_TEMPERATURE_NAME
+                  name: env-configmap
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  key: RABBITMQ_DEFAULT_USER
+                  name: secrets
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: RABBITMQ_DEFAULT_PASS
+                  name: secrets
+            - name: RABBITMQ_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_HOSTNAME
+                  name: env-configmap
+            - name: RABBITMQ_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_SERVICE_PORT
+                  name: env-configmap
+            name: publisher-ms
+            image: 7rocky/publisher-ms
+            imagePullPolicy: Always
+          restartPolicy: OnFailure
+  schedule: '*/1 * * * *'

@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: measure-ms
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: measure-ms
+    tier: backend
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: measure-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: measure-ms
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: measure-ms
+        tier: backend
+    spec:
+      containers:
+      - env:
+        - name: MONGO_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: MONGO_DATABASE_NAME
+              name: env-configmap
+        - name: MONGO_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: MONGO_HOSTNAME
+              name: env-configmap
+        - name: MONGO_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: MONGO_SERVICE_PORT
+              name: env-configmap
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: MONGO_INITDB_ROOT_USERNAME
+              name: secrets
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MONGO_INITDB_ROOT_PASSWORD
+              name: secrets
+        - name: MICROCONTROLLERS_MS_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: MICROCONTROLLERS_MS_HOSTNAME
+              name: env-configmap
+        - name: MICROCONTROLLERS_MS_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: MICROCONTROLLERS_MS_SERVICE_PORT
+              name: env-configmap
+        - name: RABBITMQ_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: RABBITMQ_HOSTNAME
+              name: env-configmap
+        - name: RABBITMQ_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: RABBITMQ_SERVICE_PORT
+              name: env-configmap
+        - name: PORT
+          value: '80'
+        image: 7rocky/measure-ms
+        imagePullPolicy: Always
+        name: measure-ms
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi
+          requests:
+            memory: 16Mi
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - until nslookup $MICROCONTROLLERS_MS_HOSTNAME && nslookup $MONGO_HOSTNAME; do :; sleep 2; done;
+        env:
+        - name: MICROCONTROLLERS_MS_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: MICROCONTROLLERS_MS_HOSTNAME
+              name: env-configmap
+        - name: MONGO_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: MONGO_HOSTNAME
+              name: env-configmap
+        - name: RABBITMQ_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: RABBITMQ_HOSTNAME
+              name: env-configmap
+        image: busybox:1.28
+        name: init-measure-ms

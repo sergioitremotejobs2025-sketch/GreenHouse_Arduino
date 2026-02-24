@@ -1,0 +1,42 @@
+@import '../../../styles.less';
+
+mat-card {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  @media screen and (max-width: 500px) {
+    overflow-x: scroll;
+  }
+}
+button {
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+mat-icon.arrow {
+  top: 100px;
+  left: 230px;
+  font-size: 60px;
+  @media screen and (max-width: 500px) {
+    left: 260px;
+    transform: rotate(90deg);
+  }
+}
+mat-table {
+  height: 80%;
+  right: 5%;
+  top: 10%;
+  width: 50%;
+  @media screen and (max-width: 500px) {
+    display: inline-block;
+    position: unset !important;
+    width: 100%;
+  }
+}
+.mat-header-cell {
+  font-size: 16px;
+}
+.current-humidity {
+  .bg-blue;
+  .white;
+}
