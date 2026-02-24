@@ -1,2 +1,3 @@
-iot-app/*
-!iot-app/dist/
+node_modules
+dist
+.git

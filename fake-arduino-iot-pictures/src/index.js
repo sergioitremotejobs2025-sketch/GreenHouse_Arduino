@@ -43,6 +43,27 @@ app.get('/camera/latest', (req, res) => {
     });
 });
 
+app.get('/pictures', (req, res) => {
+    const elapsedMinutes = (Date.now() - START_TIME) / (1000 * 60);
+    let currentStage = STAGES[0];
+    let rollingTime = 0;
+    for (const stage of STAGES) {
+        rollingTime += stage.duration_min;
+        if (elapsedMinutes < rollingTime) {
+            currentStage = stage;
+            break;
+        }
+        currentStage = stage;
+    }
+    res.json({
+        pictures: currentStage.id, // ID for digital_value matching
+        stage: currentStage.name,
+        stage_id: currentStage.id,
+        elapsed_minutes: elapsedMinutes.toFixed(2),
+        image_url: `http://localhost:${PORT}/images/${currentStage.file}`
+    });
+});
+
 // Compatibility endpoint for standard polling
 app.get('/temperature', (req, res) => {
     const elapsedMinutes = (Date.now() - START_TIME) / (1000 * 60);

@@ -1,0 +1,3 @@
+Fake Arduino Camera Service at http://localhost:3005
+- Latest stats: http://localhost:3005/camera/latest
+- Latest image: http://localhost:3005/camera/image

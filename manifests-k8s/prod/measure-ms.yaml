@@ -78,7 +78,7 @@ spec:
         - name: PORT
           value: '80'
         image: 7rocky/measure-ms
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: measure-ms
         ports:
         - containerPort: 80

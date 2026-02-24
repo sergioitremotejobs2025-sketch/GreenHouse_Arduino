@@ -4,13 +4,14 @@ const expressJwt = require('express-jwt')
 const { TOKEN_SECRET } = require('../../config/jwt.config')
 const OrchestratorController = require('../controllers/orchestrator.controller')
 
-const jwtMiddleware = expressJwt({ algorithms: [ 'HS256' ], secret: TOKEN_SECRET })
+const jwtMiddleware = expressJwt({ algorithms: ['HS256'], secret: TOKEN_SECRET })
 const orchestratorController = new OrchestratorController()
 const router = Router()
 
 router.get('/humidity', jwtMiddleware, orchestratorController.getMeasureService)
 router.get('/light', jwtMiddleware, orchestratorController.getMeasureService)
 router.get('/temperature', jwtMiddleware, orchestratorController.getMeasureService)
+router.get('/pictures', jwtMiddleware, orchestratorController.getMeasureService)
 
 router.post('/light', jwtMiddleware, orchestratorController.postMeasureService)
 

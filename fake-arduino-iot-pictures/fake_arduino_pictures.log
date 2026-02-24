@@ -11,7 +11,7 @@ Error: listen EADDRINUSE: address already in use :::3005
     at listenInCluster (node:net:1965:12)
     at Server.listen (node:net:2067:7)
     at Function.listen (/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/fake-arduino-iot-pictures/node_modules/express/lib/application.js:635:24)
-    at Object.<anonymous> (/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/fake-arduino-iot-pictures/src/index.js:79:5)
+    at Object.<anonymous> (/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/fake-arduino-iot-pictures/src/index.js:100:5)
     at Module._compile (node:internal/modules/cjs/loader:1529:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
     at Module.load (node:internal/modules/cjs/loader:1275:32)

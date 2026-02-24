@@ -25,20 +25,24 @@ module.exports = class MeasureModel {
       timestamp: date.getTime(),
       username: micro.username
     }
-  
+
     switch (micro.measure) {
       case 'humidity':
       case 'temperature':
         message.real_value = this.microsModule.digitalToReal(data[micro.measure], micro.sensor)
+        break;
+      case 'pictures':
+        Object.assign(message, data)
+        break;
       case 'light':
     }
-  
+
     return message
   }
 
   findMeasures = async query => {
     let { end_date, end_timestamp, init_date, init_timestamp, ip, username } = query
-  
+
     if (!init_timestamp) init_timestamp = timeStringToTimestamp(init_date)
     if (!end_timestamp) end_timestamp = timeStringToTimestamp(end_date)
 

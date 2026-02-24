@@ -22,7 +22,7 @@ export class PicturesChartComponent extends MeasureChart {
     }
 
     async getCurrentMeasure(isFirstTime: boolean) {
-        const picInfo = await this.arduinoService.getCurrentMeasure(this.micro.ip, 'camera/latest') as Pictures
+        const picInfo = await this.arduinoService.getCurrentMeasure(this.micro.ip, 'pictures') as Pictures
 
         if (picInfo) {
             this.lastPicture = picInfo
