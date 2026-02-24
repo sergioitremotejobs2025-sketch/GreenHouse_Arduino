@@ -1,0 +1,20 @@
+<div class="pictures-container">
+  <div class="current-picture" *ngIf="lastPicture">
+    <h3>Etapa Actual: {{ lastPicture.stage | titlecase }}</h3>
+    <p>Minutos transcurridos: {{ lastPicture.elapsed_minutes }}</p>
+    <img [src]="lastPicture.image_url" alt="Plant growth stage" class="main-img">
+  </div>
+
+  <div class="history-log" *ngIf="history.length > 0">
+    <h4>Log de Imágenes</h4>
+    <div class="history-scroll">
+      <div class="history-item" *ngFor="let item of history">
+        <img [src]="item.image_url" class="thumb-img">
+        <div class="item-info">
+          <span>{{ item.timestamp | date:'HH:mm:ss' }}</span>
+          <span>{{ item.stage }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

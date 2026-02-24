@@ -2,13 +2,8 @@
 <nav>
   <div class="example-container" [class.example-is-mobile]="mobileQuery.matches" *ngIf="shouldRun">
     <mat-sidenav-container>
-      <mat-sidenav
-        [fixedInViewport]="mobileQuery.matches"
-        fixedTopGap="110"
-        [mode]="mobileQuery.matches ? 'over' : 'side'"
-        [opened]="opened"
-        style="background-color: rgb(60, 81, 130);"
-      >
+      <mat-sidenav [fixedInViewport]="mobileQuery.matches" fixedTopGap="110"
+        [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="opened" style="background-color: rgb(60, 81, 130);">
         <mat-nav-list>
           <a class="menu-icon white" mat-list-item routerLink="/">
             <mat-icon>home</mat-icon>
@@ -30,6 +25,10 @@
             <mat-icon>wb_incandescent</mat-icon>
             <span>Luces</span>
           </a>
+          <a class="menu-icon white" mat-list-item routerLink="/measure/pictures">
+            <mat-icon>camera_alt</mat-icon>
+            <span>Imágenes de planta</span>
+          </a>
           <a class="menu-icon white" mat-list-item routerLink="/my-microcontrollers">
             <mat-icon>memory</mat-icon>
             <span>Microcontroladores</span>
@@ -47,4 +46,3 @@
     </mat-sidenav-container>
   </div>
 </nav>
-

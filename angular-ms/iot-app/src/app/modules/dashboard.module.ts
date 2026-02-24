@@ -20,6 +20,7 @@ import { LightStatsComponent } from '@components/light-stats/light-stats.compone
 import { MeasureHistoryComponent } from '@components/measure-history/measure-history.component'
 import { TemperatureChartComponent } from '@components/temperature-chart/temperature-chart.component'
 import { TemperatureStatsComponent } from '@components/temperature-stats/temperature-stats.component'
+import { PicturesChartComponent } from '@components/pictures-chart/pictures-chart.component'
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { TemperatureStatsComponent } from '@components/temperature-stats/tempera
     MeasureHistoryComponent,
     TemperatureChartComponent,
     TemperatureStatsComponent,
+    PicturesChartComponent,
   ],
   imports: [
     CommonModule,

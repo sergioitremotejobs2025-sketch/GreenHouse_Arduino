@@ -1,0 +1,31 @@
+
+> fake-arduino-iot@1.0.0 start
+> node src/index.js
+
+Fake Arduino at http://localhost:3000
+2026-02-24T12:03:48.776Z - GET /humidity
+2026-02-24T12:03:48.941Z - GET /temperature
+2026-02-24T12:03:49.192Z - GET /humidity
+2026-02-24T12:03:49.287Z - GET /temperature
+2026-02-24T12:03:49.400Z - GET /humidity
+2026-02-24T12:03:49.590Z - GET /temperature
+2026-02-24T12:03:58.964Z - GET /humidity
+2026-02-24T12:03:59.043Z - GET /temperature
+2026-02-24T12:03:59.313Z - GET /humidity
+2026-02-24T12:03:59.412Z - GET /temperature
+2026-02-24T12:03:59.590Z - GET /humidity
+2026-02-24T12:03:59.615Z - GET /temperature
+2026-02-24T12:04:02.462Z - GET /temperature
+2026-02-24T12:04:02.463Z - GET /humidity
+2026-02-24T12:04:08.962Z - GET /humidity
+2026-02-24T12:04:09.051Z - GET /temperature
+2026-02-24T12:04:09.389Z - GET /humidity
+2026-02-24T12:04:09.409Z - GET /temperature
+2026-02-24T12:04:09.590Z - GET /humidity
+2026-02-24T12:04:09.691Z - GET /temperature
+2026-02-24T12:04:18.971Z - GET /humidity
+2026-02-24T12:04:19.050Z - GET /temperature
+2026-02-24T12:04:19.334Z - GET /humidity
+2026-02-24T12:04:19.509Z - GET /temperature
+2026-02-24T12:04:19.703Z - GET /humidity
+2026-02-24T12:04:19.807Z - GET /temperature

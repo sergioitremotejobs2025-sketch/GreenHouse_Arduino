@@ -21,12 +21,14 @@ export class MicrocontrollersEditComponent implements OnInit {
   measures: { name: string, view: string }[] = [
     { name: 'humidity', view: 'Humedad' },
     { name: 'light', view: 'Bombilla inteligente' },
-    { name: 'temperature', view: 'Temperatura' }
+    { name: 'temperature', view: 'Temperatura' },
+    { name: 'pictures', view: 'Cámara de planta' }
   ]
-  sensors: { humidity: string[], light: string[], temperature: string[] } = {
+  sensors: { humidity: string[], light: string[], temperature: string[], pictures: string[] } = {
     humidity: ['Grove - Moisture', 'Fake Grove - Moisture'],
     light: ['Smart LED', 'Fake Smart LED'],
-    temperature: ['Grove - Temperature', 'Fake Grove - Temperature']
+    temperature: ['Grove - Temperature', 'Fake Grove - Temperature'],
+    pictures: ['Tomato Plant Camera']
   }
 
   constructor(

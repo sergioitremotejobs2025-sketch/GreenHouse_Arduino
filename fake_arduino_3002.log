@@ -1,0 +1,18 @@
+
+> fake-arduino-iot@1.0.0 start
+> node src/index.js
+
+Fake Arduino at http://localhost:3002
+2026-02-24T12:03:48.992Z - GET /temperature
+2026-02-24T12:03:49.290Z - GET /temperature
+2026-02-24T12:03:49.588Z - GET /temperature
+2026-02-24T12:03:59.042Z - GET /temperature
+2026-02-24T12:03:59.413Z - GET /temperature
+2026-02-24T12:03:59.689Z - GET /temperature
+2026-02-24T12:04:02.469Z - GET /temperature
+2026-02-24T12:04:09.050Z - GET /temperature
+2026-02-24T12:04:09.410Z - GET /temperature
+2026-02-24T12:04:09.786Z - GET /temperature
+2026-02-24T12:04:19.051Z - GET /temperature
+2026-02-24T12:04:19.429Z - GET /temperature
+2026-02-24T12:04:19.806Z - GET /temperature
