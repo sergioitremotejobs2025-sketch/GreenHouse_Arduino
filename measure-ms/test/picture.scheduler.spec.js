@@ -6,6 +6,9 @@
 const PictureScheduler = require('../src/app/schedulers/picture.scheduler')
 const { TEN_HOURS_MS } = require('../src/app/constants/constants')
 
+// Flush ALL pending promises (multiple async hops in the capture chain)
+const flushPromises = () => new Promise(resolve => setImmediate(resolve))
+
 // Minimal stubs
 const makeMicro = () => ({
     ip: '192.168.1.50',
@@ -53,41 +56,41 @@ describe('PictureScheduler', () => {
 
     it('calls capture() immediately on start()', async () => {
         scheduler.start()
-        await Promise.resolve() // flush microtask queue
+        await flushPromises()
         expect(db.savePicture).toHaveBeenCalledTimes(1)
     })
 
     it('calls capture() a second time after TEN_HOURS_MS', async () => {
         scheduler.start()
-        await Promise.resolve()
+        await flushPromises()
         expect(db.savePicture).toHaveBeenCalledTimes(1)
 
         jest.advanceTimersByTime(TEN_HOURS_MS)
-        await Promise.resolve()
+        await flushPromises()
         expect(db.savePicture).toHaveBeenCalledTimes(2)
     })
 
     it('does NOT fire a second time before TEN_HOURS_MS elapses', async () => {
         scheduler.start()
-        await Promise.resolve()
+        await flushPromises()
         jest.advanceTimersByTime(TEN_HOURS_MS - 1)
-        await Promise.resolve()
+        await flushPromises()
         expect(db.savePicture).toHaveBeenCalledTimes(1)
     })
 
     it('stop() prevents further captures after interval', async () => {
         scheduler.start()
-        await Promise.resolve()
+        await flushPromises()
         scheduler.stop()
 
         jest.advanceTimersByTime(TEN_HOURS_MS * 3)
-        await Promise.resolve()
+        await flushPromises()
         expect(db.savePicture).toHaveBeenCalledTimes(1) // only the initial call
     })
 
     it('saves picture data with correct fields', async () => {
         scheduler.start()
-        await Promise.resolve()
+        await flushPromises()
 
         const saved = db.savePicture.mock.calls[0][0]
         expect(saved).toEqual(expect.objectContaining({
@@ -108,7 +111,7 @@ describe('PictureScheduler', () => {
         axios.get.mockRejectedValueOnce(new Error('ECONNREFUSED'))
 
         scheduler.start()
-        await Promise.resolve()
+        await flushPromises()
         expect(db.savePicture).not.toHaveBeenCalled()
     })
 

@@ -356,73 +356,74 @@ describe('Temperature endpoints', () => {
       expect.arrayContaining([])
     )
   }, 100000)
+})
 
-  describe('Pictures endpoints', () => {
-    it('should return current pictures', async () => {
-      await new Promise(r => setTimeout(r, REFRESH_TIME / 3))
-      const res = await request(app).get('/pictures?username=Rocky')
-      expect(res.statusCode).toBe(200)
-      expect(res.body).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            date: expect.any(String),
-            ip: expect.any(String),
-            measure: expect.any(String),
-            sensor: expect.any(String),
-            timestamp: expect.any(Number),
-            username: expect.any(String),
-            stage: expect.any(String),
-            stage_id: expect.any(Number),
-            image_url: expect.any(String)
-          })
-        ])
+describe('Pictures endpoints', () => {
+  it('should return current pictures', async () => {
+    await new Promise(r => setTimeout(r, REFRESH_TIME / 3))
+    const res = await request(app).get('/pictures?username=Rocky')
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          date: expect.any(String),
+          ip: expect.any(String),
+          measure: expect.any(String),
+          sensor: expect.any(String),
+          timestamp: expect.any(Number),
+          username: expect.any(String),
+          stage: expect.any(String),
+          stage_id: expect.any(Number),
+          image_url: expect.any(String)
+        })
+      ])
+    )
+    expect(res.body[0].measure).toEqual('pictures')
+    expect(res.body[0].username).toEqual('Rocky')
+  }, 100000)
+
+  it('should return an empty array when no username provided', async () => {
+    await new Promise(r => setTimeout(r, REFRESH_TIME / 3))
+    const res = await request(app).get('/pictures')
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual(expect.arrayContaining([]))
+  }, 100000)
+
+  it('should return previous pictures (history)', async () => {
+    const res = await request(app)
+      .get(
+        '/pictures/history?' +
+        'ip=192.168.1.50&' +
+        'username=Rocky&' +
+        'init_timestamp=1772000000000&' +
+        'end_timestamp=1772036000000'
       )
-      expect(res.body[0].measure).toEqual('pictures')
-      expect(res.body[0].username).toEqual('Rocky')
-    }, 100000)
 
-    it('should return an empty array when no username provided', async () => {
-      await new Promise(r => setTimeout(r, REFRESH_TIME / 3))
-      const res = await request(app).get('/pictures')
-      expect(res.statusCode).toBe(200)
-      expect(res.body).toEqual(expect.arrayContaining([]))
-    }, 100000)
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          ip: expect.any(String),
+          username: expect.any(String),
+          stage: expect.any(String),
+          stage_id: expect.any(Number),
+          image_url: expect.any(String),
+          timestamp: expect.any(Number)
+        })
+      ])
+    )
+  }, 100000)
 
-    it('should return previous pictures (history)', async () => {
-      const res = await request(app)
-        .get(
-          '/pictures/history?' +
-          'ip=192.168.1.50&' +
-          'username=Rocky&' +
-          'init_timestamp=1772000000000&' +
-          'end_timestamp=1772036000000'
-        )
-
-      expect(res.statusCode).toBe(200)
-      expect(res.body).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            ip: expect.any(String),
-            username: expect.any(String),
-            stage: expect.any(String),
-            stage_id: expect.any(Number),
-            image_url: expect.any(String),
-            timestamp: expect.any(Number)
-          })
-        ])
+  it('should not return history without username', async () => {
+    const res = await request(app)
+      .get(
+        '/pictures/history?' +
+        'ip=192.168.1.50&' +
+        'init_timestamp=1772000000000&' +
+        'end_timestamp=1772036000000'
       )
-    }, 100000)
 
-    it('should not return history without username', async () => {
-      const res = await request(app)
-        .get(
-          '/pictures/history?' +
-          'ip=192.168.1.50&' +
-          'init_timestamp=1772000000000&' +
-          'end_timestamp=1772036000000'
-        )
-
-      expect(res.statusCode).toBe(200)
-      expect(res.body).toEqual(expect.arrayContaining([]))
-    }, 100000)
-  })
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual(expect.arrayContaining([]))
+  }, 100000)
+})
