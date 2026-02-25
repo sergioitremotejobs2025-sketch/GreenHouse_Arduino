@@ -16,5 +16,11 @@
     "measure": "temperature",
     "sensor": "Grove - Temperature",
     "username": "Rocky"
+  },
+  {
+    "ip": "192.168.1.50",
+    "measure": "pictures",
+    "sensor": "Tomato Plant Camera",
+    "username": "Rocky"
   }
 ]

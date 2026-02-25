@@ -4,6 +4,7 @@ const { DB_NAME, MONGO, PASSWORD, USERNAME } = require('../config/mongodb.config
 const Humidity = require('./models/humidity.model')
 const Light = require('./models/light.model')
 const Temperature = require('./models/temperature.model')
+const PictureModel = require('./models/picture.model')
 
 module.exports = class MongoDB {
 
@@ -35,6 +36,15 @@ module.exports = class MongoDB {
 
   async findTemperature(temperature) {
     return await Temperature.find(temperature, { _id: 0, __v: 0 })
+  }
+
+  async findPictures(query) {
+    return await PictureModel.find(query, { _id: 0, __v: 0 })
+  }
+
+  async savePicture(doc) {
+    const record = new PictureModel(doc)
+    return await record.save()
   }
 
 }

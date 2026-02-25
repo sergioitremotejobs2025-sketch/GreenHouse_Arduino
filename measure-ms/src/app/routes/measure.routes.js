@@ -19,6 +19,6 @@ router.get('/temperature', temperatureController.getMeasure)
 router.get('/temperatures', temperatureController.getMeasures)
 
 router.get('/pictures', picturesController.getMeasure)
-router.get('/picturess', picturesController.getMeasures)
+router.get('/pictures/history', picturesController.getMeasures)
 
 module.exports = router
