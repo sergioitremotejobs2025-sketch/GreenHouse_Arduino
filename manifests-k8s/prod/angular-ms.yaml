@@ -42,6 +42,9 @@ spec:
             memory: 64Mi
           requests:
             memory: 8Mi
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/conf.d
       initContainers:
       - command:
         - 'sh'
@@ -55,3 +58,7 @@ spec:
               name: env-configmap
         image: busybox:1.28
         name: init-angular-ms
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
