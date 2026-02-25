@@ -1,4 +1,4 @@
 export const environment = {
-  x  ORCHESTRATOR_MS: '',
+  ORCHESTRATOR_MS: '',
   production: true
 }
