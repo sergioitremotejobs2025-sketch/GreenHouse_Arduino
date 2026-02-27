@@ -8,27 +8,22 @@ const router = Router()
 // Guard every data route with the internal API-key middleware
 router.use(requireInternalKey)
 
-// Build controllers dynamically to avoid repetition
-const MEASURES = ['humidity', 'light', 'temperature', 'pictures']
+const humidityController = new MeasureController('humidity')
+const lightController = new MeasureController('light')
+const temperatureController = new MeasureController('temperature')
+const picturesController = new MeasureController('pictures')
 
-const controllers = MEASURES.reduce((acc, m) => {
-    acc[m] = new MeasureController(m)
-    return acc
-}, {})
+router.get('/humidity', humidityController.getMeasure)
+router.get('/humidities', humidityController.getMeasures)
 
-const { humidity, light, temperature, pictures } = controllers
+router.get('/light', lightController.getMeasure)
+router.get('/lights', lightController.getMeasures)
+router.post('/light', lightController.postLight)
 
-router.get('/humidity', humidity.getMeasure)
-router.get('/humidities', humidity.getMeasures)
+router.get('/temperature', temperatureController.getMeasure)
+router.get('/temperatures', temperatureController.getMeasures)
 
-router.get('/light', light.getMeasure)
-router.get('/lights', light.getMeasures)
-router.post('/light', light.postLight)
-
-router.get('/temperature', temperature.getMeasure)
-router.get('/temperatures', temperature.getMeasures)
-
-router.get('/pictures', pictures.getMeasure)
-router.get('/pictures/history', pictures.getMeasures)
+router.get('/pictures', picturesController.getMeasure)
+router.get('/pictures/history', picturesController.getMeasures)
 
 module.exports = router

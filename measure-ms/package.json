@@ -23,11 +23,6 @@
     "type": "git",
     "url": "https://github.com/7Rocky/IoT_Microservices.git"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "testTimeout": 100000,
-    "forceExit": true
-  },
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
