@@ -1,0 +1,35 @@
+name: Test measure-ms
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'measure-ms/**'
+  pull_request:
+    paths:
+      - 'measure-ms/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: measure-ms/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: measure-ms
+
+      - name: Run tests
+        run: npm test
+        working-directory: measure-ms
+        env:
+          NODE_ENV: test

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core'
+import { Router } from '@angular/router'
 
 import { ArduinoService } from '@services/arduino.service'
 
@@ -16,7 +17,8 @@ export class PicturesChartComponent extends MeasureChart {
     history: Pictures[] = []
 
     constructor(
-        private arduinoService: ArduinoService
+        private arduinoService: ArduinoService,
+        private router: Router
     ) {
         super('Imágenes', 'Gauge')
     }
@@ -38,6 +40,10 @@ export class PicturesChartComponent extends MeasureChart {
 
     drawData(pictures: Pictures) {
         this.isChartReady = true
+    }
+
+    goToHistory() {
+        this.router.navigate(['/dashboard/history-pictures', this.micro.ip])
     }
 
 }

@@ -9,6 +9,14 @@ import (
 	"log"
 )
 
+// MysqlRepository is the production implementation of Repository backed by MySQL.
+type MysqlRepository struct{}
+
+// NewMysqlRepository creates a production MySQL-backed repository.
+func NewMysqlRepository() Repository {
+	return &MysqlRepository{}
+}
+
 // connect Connect to MySQL Server
 func connect() *sql.DB {
 	user := helper.GetEnv("MYSQL_ROOT_USERNAME", "root")
@@ -26,8 +34,8 @@ func connect() *sql.DB {
 	return db
 }
 
-// Exists Exists user credentials in the DB
-func Exists(user model.User) (bool, model.User) {
+// Exists checks whether user credentials exist in the DB.
+func (r *MysqlRepository) Exists(user model.User) (bool, model.User) {
 	db := connect()
 	defer db.Close()
 
@@ -48,8 +56,8 @@ func Exists(user model.User) (bool, model.User) {
 	return existUser, dbUser
 }
 
-// Insert Insert new user credentials in the DB
-func Insert(user model.User) bool {
+// Insert adds new user credentials in the DB.
+func (r *MysqlRepository) Insert(user model.User) bool {
 	db := connect()
 	defer db.Close()
 
@@ -66,8 +74,8 @@ func Insert(user model.User) bool {
 	return true
 }
 
-// Update Update user credentials in the DB
-func Update(credentials model.Credential) int64 {
+// Update updates user credentials in the DB.
+func (r *MysqlRepository) Update(credentials model.Credential) int64 {
 	db := connect()
 	defer db.Close()
 

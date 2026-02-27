@@ -39,5 +39,6 @@ module.exports = {
   },
   Schema: class {
     constructor(schema) { this.schema = schema }
+    index() { /* no-op in tests */ }
   }
 }

@@ -75,6 +75,11 @@ spec:
             configMapKeyRef:
               key: RABBITMQ_SERVICE_PORT
               name: env-configmap
+        - name: INTERNAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: INTERNAL_API_KEY
+              name: secrets
         - name: PORT
           value: '80'
         image: 7rocky/measure-ms

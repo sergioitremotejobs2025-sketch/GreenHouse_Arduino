@@ -21,6 +21,7 @@ import { MeasureHistoryComponent } from '@components/measure-history/measure-his
 import { TemperatureChartComponent } from '@components/temperature-chart/temperature-chart.component'
 import { TemperatureStatsComponent } from '@components/temperature-stats/temperature-stats.component'
 import { PicturesChartComponent } from '@components/pictures-chart/pictures-chart.component'
+import { PicturesHistoryComponent } from '@components/pictures-history/pictures-history.component'
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { PicturesChartComponent } from '@components/pictures-chart/pictures-char
     TemperatureChartComponent,
     TemperatureStatsComponent,
     PicturesChartComponent,
+    PicturesHistoryComponent,
   ],
   imports: [
     CommonModule,

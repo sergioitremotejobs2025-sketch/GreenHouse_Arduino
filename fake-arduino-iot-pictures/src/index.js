@@ -3,7 +3,6 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3005;
 
 app.use(cors());
 app.use('/images', express.static(path.join(__dirname, '../public/images')));
@@ -17,24 +16,28 @@ const STAGES = [
     { id: 5, name: 'ripe_fruit', file: 'stage_5.png', duration_min: 5 }
 ];
 
-const START_TIME = Date.now();
+// Allow injection of start time for testing determinism
+let START_TIME = Date.now();
+const setStartTime = (t) => { START_TIME = t; };
 
-app.get('/camera/latest', (req, res) => {
+const getCurrentStage = () => {
     const elapsedMinutes = (Date.now() - START_TIME) / (1000 * 60);
-
     let currentStage = STAGES[0];
     let rollingTime = 0;
-
     for (const stage of STAGES) {
         rollingTime += stage.duration_min;
         if (elapsedMinutes < rollingTime) {
             currentStage = stage;
             break;
         }
-        currentStage = stage; // Last stage stays
+        currentStage = stage;
     }
+    return { currentStage, elapsedMinutes };
+};
 
-    // Return info and the image URL
+app.get('/camera/latest', (req, res) => {
+    const { currentStage, elapsedMinutes } = getCurrentStage();
+    const PORT = process.env.PORT || 3005;
     res.json({
         stage: currentStage.name,
         stage_id: currentStage.id,
@@ -44,19 +47,10 @@ app.get('/camera/latest', (req, res) => {
 });
 
 app.get('/pictures', (req, res) => {
-    const elapsedMinutes = (Date.now() - START_TIME) / (1000 * 60);
-    let currentStage = STAGES[0];
-    let rollingTime = 0;
-    for (const stage of STAGES) {
-        rollingTime += stage.duration_min;
-        if (elapsedMinutes < rollingTime) {
-            currentStage = stage;
-            break;
-        }
-        currentStage = stage;
-    }
+    const { currentStage, elapsedMinutes } = getCurrentStage();
+    const PORT = process.env.PORT || 3005;
     res.json({
-        pictures: currentStage.id, // ID for digital_value matching
+        pictures: currentStage.id,
         stage: currentStage.name,
         stage_id: currentStage.id,
         elapsed_minutes: elapsedMinutes.toFixed(2),
@@ -64,41 +58,19 @@ app.get('/pictures', (req, res) => {
     });
 });
 
-// Compatibility endpoint for standard polling
 app.get('/temperature', (req, res) => {
-    const elapsedMinutes = (Date.now() - START_TIME) / (1000 * 60);
-    let stageId = 1;
-    let rollingTime = 0;
-    for (const stage of STAGES) {
-        rollingTime += stage.duration_min;
-        if (elapsedMinutes < rollingTime) {
-            stageId = stage.id;
-            break;
-        }
-        stageId = stage.id;
-    }
-    // Return the stage ID as the 'temperature' value
-    res.json({ temperature: stageId * 10 });
+    const { currentStage } = getCurrentStage();
+    res.json({ temperature: currentStage.id * 10 });
 });
 
-// To simplify, just redirect to the actual image
 app.get('/camera/image', (req, res) => {
-    const elapsedMinutes = (Date.now() - START_TIME) / (1000 * 60);
-    let currentStage = STAGES[0];
-    let rollingTime = 0;
-    for (const stage of STAGES) {
-        rollingTime += stage.duration_min;
-        if (elapsedMinutes < rollingTime) {
-            currentStage = stage;
-            break;
-        }
-        currentStage = stage;
-    }
+    const { currentStage } = getCurrentStage();
     res.sendFile(path.join(__dirname, `../public/images/${currentStage.file}`));
 });
 
-app.listen(PORT, () => {
-    console.log(`Fake Arduino Camera Service at http://localhost:${PORT}`);
-    console.log(`- Latest stats: http://localhost:${PORT}/camera/latest`);
-    console.log(`- Latest image: http://localhost:${PORT}/camera/image`);
+// Health check
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', service: 'fake-arduino-iot-pictures' });
 });
+
+module.exports = { app, setStartTime, STAGES };

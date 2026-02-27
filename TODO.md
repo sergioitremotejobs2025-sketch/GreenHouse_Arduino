@@ -1,0 +1,36 @@
+# IoT Microservices — Improvement Tasks
+
+## 🔴 High Priority — ALL DONE ✅
+
+- [x] **Fix Dockerfile.build warning** — Changed `as` → `AS` in `angular-ms/Dockerfile.build`
+- [x] **Replace `window.location.host` with a proper base URL** — `environment.prod.ts` now uses `location.origin`; all service calls changed from `http://${env}` → `${env}`; dev env updated to `http://localhost:3000`
+- [x] **Add tests to `fake-arduino-iot-pictures`** — Refactored to export `app` + `server.js` entry point; 12 tests covering all endpoints and stage logic
+- [x] **Add tests for `/pictures` in `orchestrator-ms`** — Added `test/pictures.spec.js` with auth gate + field shape tests
+- [x] **Add tests to `auth-ms`** — Refactored Go controller to use `Repository` interface + `Handlers` struct; wrote `controller_test.go` with 8 tests, no DB required
+- [x] **Persist `PictureScheduler` snapshots to MongoDB** — Done via `dao.savePicture()` in previous session
+- [x] **Fix `measure-ms` engine warning** — Updated `package.json` engines to `"node": ">=16"`
+
+## 🟡 Medium Priority
+
+- [x] **Add `/pictures/history` to Angular frontend** — New `PicturesHistoryComponent` with date-range picker, responsive image grid, loading/empty states; routed at `history-pictures/:ip`; "Ver historial completo" button added to PicturesChartComponent
+- [x] **Make scheduler interval configurable** — `PICTURE_INTERVAL_HOURS` env var in `measure-ms`; defaults to 10
+- [ ] **Add HTTPS / TLS termination** — Add TLS at the Nginx level via cert-manager or self-signed cert
+- [ ] **Add authentication to `measure-ms` internal routes** — Add JWT validation or network policy to prevent direct access
+- [ ] **Consolidate duplicate `MeasureController` instances** — Extract shared logic from `measure.routes.js`
+- [ ] **Fix `register_fake_iot.sh` idempotency** — Ensure script is fully documented and idempotent
+- [x] **Add health-check endpoints** — `GET /health` on `orchestrator-ms`, `measure-ms`, `fake-arduino-iot-pictures`, and `auth-ms` (routes.go)
+- [x] **Add resource limits to Kubernetes pods** — Already present in all prod manifests (`auth-ms`, `angular-ms`, `orchestrator-ms`, `measure-ms`)
+
+## 🟢 Low Priority
+
+- [x] **Build Angular image in CI/CD** — Added `.github/workflows/build-angular.yml` (Docker Hub push on `angular-ms/**` changes)
+- [x] **Test workflows in CI/CD** — `test-measure-ms.yml` and `test-pictures-service.yml` run Jest on PRs
+- [ ] **Delete hotpatch scripts** — Remove `fix_js.sh`, `fix_pipe.sh` once CI is validated and trusted
+- [x] **Add error boundary to `PicturesChartComponent`** — Offline state (📷 + message) shown when camera unreachable; spinner shown while connecting
+- [x] **Add plant growth stage history chart to Angular frontend** — Done as image gallery (`PicturesHistoryComponent`)
+- [ ] **Upgrade Angular to v15+** — Brings standalone components, signals, better performance (requires significant migration)
+- [x] **Run `npm audit fix` in `measure-ms`** — Ran; some vulnerabilities require `npm audit fix --force` and may break deps (see output)
+- [x] **Add Kubernetes HorizontalPodAutoscaler** — `manifests-k8s/prod/hpa.yaml` for orchestrator-ms (1→5 replicas) and measure-ms (1→4 replicas) at 70% CPU / 80% memory
+- [x] **Add MongoDB indexes** — Compound index `{ ip, username, init_timestamp, end_timestamp }` added to Humidity, Light, Temperature, and Picture models
+- [x] **Document the architecture** — Added `ARCHITECTURE.md` with ASCII diagram and service table
+- [x] **Add `.env.example` files** — Added to `orchestrator-ms`, `measure-ms`, `fake-arduino-iot-pictures`

@@ -1,4 +1,17 @@
 <div class="pictures-container">
+  <!-- Camera offline state -->
+  <div class="camera-offline" *ngIf="!lastPicture && micro?.isInactive">
+    <div class="offline-icon">📷</div>
+    <p class="offline-msg">Cámara no disponible</p>
+    <p class="offline-sub">El dispositivo no responde</p>
+  </div>
+
+  <!-- Loading state: not yet received first picture and not inactive -->
+  <div class="camera-loading" *ngIf="!lastPicture && !micro?.isInactive">
+    <div class="loading-spinner"></div>
+    <p class="loading-msg">Conectando con la cámara…</p>
+  </div>
+
   <div class="current-picture" *ngIf="lastPicture">
     <h3>Etapa Actual: {{ lastPicture.stage | titlecase }}</h3>
     <p>Minutos transcurridos: {{ lastPicture.elapsed_minutes }}</p>
@@ -16,5 +29,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="history-nav" *ngIf="lastPicture">
+    <button mat-stroked-button color="accent" (click)="goToHistory()">
+      <mat-icon>history</mat-icon>
+      Ver historial completo
+    </button>
   </div>
 </div>

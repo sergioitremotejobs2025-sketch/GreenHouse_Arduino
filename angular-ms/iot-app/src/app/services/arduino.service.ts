@@ -27,7 +27,7 @@ export class ArduinoService {
     if (this.microcontrollers.length) {
       return of(this.microcontrollers)
     } else {
-      return this.http.get<Microcontroller[]>(`http://${environment.ORCHESTRATOR_MS}/microcontrollers`)
+      return this.http.get<Microcontroller[]>(`${environment.ORCHESTRATOR_MS}/microcontrollers`)
         .pipe(
           tap(response => {
             this.microcontrollers = response
@@ -50,13 +50,13 @@ export class ArduinoService {
   }
 
   postMicrocontroller(microcontroller: Microcontroller): Observable<any> {
-    return this.http.post<any>(`http://${environment.ORCHESTRATOR_MS}/microcontrollers`, microcontroller)
+    return this.http.post<any>(`${environment.ORCHESTRATOR_MS}/microcontrollers`, microcontroller)
       .pipe(tap(() => this.clearMicrocontrollers()))
   }
 
   deleteMicrocontroller(microcontroller: Microcontroller): Observable<any> {
     return this.http.delete<any>(
-      `http://${environment.ORCHESTRATOR_MS}/microcontrollers`, {
+      `${environment.ORCHESTRATOR_MS}/microcontrollers`, {
       params: {
         ip: microcontroller.ip,
         measure: microcontroller.measure
@@ -67,12 +67,12 @@ export class ArduinoService {
   }
 
   putMicrocontroller(updatedMicrocontroller: any): Observable<any> {
-    return this.http.put<any>(`http://${environment.ORCHESTRATOR_MS}/microcontrollers`, updatedMicrocontroller)
+    return this.http.put<any>(`${environment.ORCHESTRATOR_MS}/microcontrollers`, updatedMicrocontroller)
       .pipe(tap(() => this.clearMicrocontrollers()))
   }
 
   private getCurrentMeasures(measure: string): Observable<Measure[]> {
-    return this.http.get<any[]>(`http://${environment.ORCHESTRATOR_MS}/${measure}`)
+    return this.http.get<any[]>(`${environment.ORCHESTRATOR_MS}/${measure}`)
   }
 
   clearMicrocontrollers() {
@@ -91,7 +91,7 @@ export class ArduinoService {
 
   async postLightStatus(ip: string, status: string): Promise<Light> {
     return this.http.post<Light>(
-      `http://${environment.ORCHESTRATOR_MS}/light`,
+      `${environment.ORCHESTRATOR_MS}/light`,
       { ip, status }
     )
       .toPromise()
@@ -105,10 +105,28 @@ export class ArduinoService {
     end_date: string
   ): Observable<MeasureStats[]> {
     return this.http.get<MeasureStats[]>(
-      `http://${environment.ORCHESTRATOR_MS}/${measure}`,
+      `${environment.ORCHESTRATOR_MS}/${measure}`,
       {
         params: {
           path: group,
+          ip,
+          init_date,
+          end_date
+        }
+      }
+    )
+  }
+
+  getPicturesHistory(
+    ip: string,
+    init_date: string,
+    end_date: string
+  ): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.ORCHESTRATOR_MS}/pictures`,
+      {
+        params: {
+          path: 'pictures/history',
           ip,
           init_date,
           end_date

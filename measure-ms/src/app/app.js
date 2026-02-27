@@ -7,7 +7,10 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'measure-ms' }))
+
 app.use(require('./routes/measure.routes'))
+
 
 app.disable('x-powered-by')
 

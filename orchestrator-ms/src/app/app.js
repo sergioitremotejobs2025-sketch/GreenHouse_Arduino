@@ -13,7 +13,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(require('./routes/orchestrator.routes'));
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'orchestrator-ms' }))
+
+app.use(require('./routes/orchestrator.routes'))
+
 
 app.disable('x-powered-by');
 

@@ -33,25 +33,25 @@ export class AuthService {
 
   private doAuth(username: string, password: string, method: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
-      `http://${environment.ORCHESTRATOR_MS}/${method}`,
-      { 
+      `${environment.ORCHESTRATOR_MS}/${method}`,
+      {
         password,
         username
       }
     )
-    .pipe(
-      tap(
-        (response: AuthResponse) => {
-          this.isLogged = true
-          this.setTokens(response)
-        },
-        () => {
-          this.isLogged = false
-          this.removeTokens()
-          return empty()
-        }
+      .pipe(
+        tap(
+          (response: AuthResponse) => {
+            this.isLogged = true
+            this.setTokens(response)
+          },
+          () => {
+            this.isLogged = false
+            this.removeTokens()
+            return empty()
+          }
+        )
       )
-    )
   }
 
   login(username: string, password: string): Observable<AuthResponse> {
@@ -64,7 +64,7 @@ export class AuthService {
 
   refresh(): Observable<AuthResponse> {
     const refreshToken = this.getRefreshToken()
-    return this.http.post<AuthResponse>(`http://${environment.ORCHESTRATOR_MS}/refresh`, { refreshToken })
+    return this.http.post<AuthResponse>(`${environment.ORCHESTRATOR_MS}/refresh`, { refreshToken })
       .pipe(
         tap((response: AuthResponse) => {
           this.setTokens(response)

@@ -1,4 +1,4 @@
 export const environment = {
-  ORCHESTRATOR_MS: window.location.host,
+  ORCHESTRATOR_MS: location.origin,
   production: true
 }

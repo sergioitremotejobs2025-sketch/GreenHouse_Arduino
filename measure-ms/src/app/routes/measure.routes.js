@@ -1,24 +1,34 @@
 const { Router } = require('express')
 
 const MeasureController = require('../controllers/measure.controller')
+const { requireInternalKey } = require('../middleware/internal-auth.middleware')
 
 const router = Router()
-const humidityController = new MeasureController('humidity')
-const lightController = new MeasureController('light')
-const temperatureController = new MeasureController('temperature')
-const picturesController = new MeasureController('pictures')
 
-router.get('/humidity', humidityController.getMeasure)
-router.get('/humidities', humidityController.getMeasures)
+// Guard every data route with the internal API-key middleware
+router.use(requireInternalKey)
 
-router.get('/light', lightController.getMeasure)
-router.get('/lights', lightController.getMeasures)
-router.post('/light', lightController.postLight)
+// Build controllers dynamically to avoid repetition
+const MEASURES = ['humidity', 'light', 'temperature', 'pictures']
 
-router.get('/temperature', temperatureController.getMeasure)
-router.get('/temperatures', temperatureController.getMeasures)
+const controllers = MEASURES.reduce((acc, m) => {
+    acc[m] = new MeasureController(m)
+    return acc
+}, {})
 
-router.get('/pictures', picturesController.getMeasure)
-router.get('/pictures/history', picturesController.getMeasures)
+const { humidity, light, temperature, pictures } = controllers
+
+router.get('/humidity', humidity.getMeasure)
+router.get('/humidities', humidity.getMeasures)
+
+router.get('/light', light.getMeasure)
+router.get('/lights', light.getMeasures)
+router.post('/light', light.postLight)
+
+router.get('/temperature', temperature.getMeasure)
+router.get('/temperatures', temperature.getMeasures)
+
+router.get('/pictures', pictures.getMeasure)
+router.get('/pictures/history', pictures.getMeasures)
 
 module.exports = router
