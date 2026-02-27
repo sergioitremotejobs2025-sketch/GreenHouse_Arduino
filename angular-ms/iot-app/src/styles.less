@@ -1,10 +1,11 @@
-@import 'colors.less';
-@import 'fonts.less';
+@import './colors.less';
+@import './fonts.less';
 
 body,
 html {
   height: 100%;
 }
+
 body {
   background-color: @light-gray;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -14,42 +15,55 @@ body {
 .absolute {
   position: absolute !important;
 }
+
 .bg-blue {
   background-color: @blue;
 }
+
 .bg-gray {
   background-color: @gray;
 }
+
 .bg-light-blue {
   background-color: @light-blue;
 }
+
 .bg-light-red {
   background-color: @light-red;
 }
+
 .black {
   color: @black !important;
 }
+
 .blue {
   color: @blue;
 }
+
 .float-left {
   float: left;
 }
+
 .float-right {
   float: right;
 }
+
 .metal-mania {
   font-family: "Metal Mania" !important;
 }
+
 .text-center {
   text-align: center;
 }
+
 .user-select-none {
   user-select: none;
 }
+
 .white {
   color: @white !important;
 }
+
 .yellow {
   color: @yellow;
 }
@@ -62,16 +76,20 @@ body {
   margin-top: 1%;
   padding: 16px;
   width: 100%;
+
   @media screen and (max-width: 500px) {
     height: 150px;
+
     button {
       float: right;
     }
   }
 }
+
 .container {
   padding: 0 32px;
 }
+
 .make-visible * {
   overflow: visible !important;
 }

@@ -1,11 +1,12 @@
-import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 
-import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces'
+import { GoogleChartInterface } from 'ng2-google-charts'
 
 import { Microcontroller } from '@models/microcontroller.model'
 
 import { Measure } from '@alias/measure.type'
 
+@Directive()
 export abstract class MeasureChart implements OnDestroy, OnInit {
 
   @Input() micro: Microcontroller
@@ -19,8 +20,8 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
   refresh_time = 10000
 
   constructor(measure: string, chartType: string = '') {
-    this.header = [ 'Tiempo', measure ]
-    this.chart = { chartType, dataTable: [ this.header ] }
+    this.header = ['Tiempo', measure]
+    this.chart = { chartType, dataTable: [this.header] }
   }
 
   checkInactivity() {
@@ -31,7 +32,7 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
 
   abstract drawData(measure: Measure): void
 
-  abstract async getCurrentMeasure(isFirstTime: boolean): Promise<void>
+  abstract getCurrentMeasure(isFirstTime: boolean): Promise<void>
 
   handleMeasure(measure: Measure, isFirstTime: boolean = false) {
     this.drawData(measure)

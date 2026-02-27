@@ -6,6 +6,7 @@
   },
   "compileOnSave": false,
   "compilerOptions": {
+    "skipLibCheck": true,
     "baseUrl": "./",
     "declaration": false,
     "downlevelIteration": true,

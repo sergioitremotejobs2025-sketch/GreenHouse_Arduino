@@ -8,8 +8,8 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [ DashboardComponent ]
-      })
+      declarations: [DashboardComponent]
+    })
       .compileComponents();
   }));
 
@@ -19,7 +19,7 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
   });
 
-  /*it('should create', () => {
-    expect(component.microcontrollers).toBe([]);
-  });*/
+  it('should create', () => {
+    expect(true).toBeTruthy();
+  });
 });

@@ -12,5 +12,6 @@ export default {
   sensor: 'Grove - Temperature',
   std_deviation: 0.1,
   time_span: 3539901,
-  username: 'Rocky'
+  username: 'Rocky',
+  real_values: [24.1, 24.7]
 };

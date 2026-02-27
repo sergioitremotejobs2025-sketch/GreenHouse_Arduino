@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 
-import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces'
+import { GoogleChartInterface } from 'ng2-google-charts'
 
 import { ArduinoService } from '@services/arduino.service'
 
@@ -24,23 +24,23 @@ interface Stat {
 
 @Component({
   selector: 'app-measure-history',
-  styleUrls: [ './measure-history.component.less' ],
+  styleUrls: ['./measure-history.component.less'],
   templateUrl: './measure-history.component.html'
 })
 export class MeasureHistoryComponent implements OnInit {
 
   header: string[]
   options: any = {
-    colors: [ 'green' ],
+    colors: ['green'],
     hAxis: {
-      gridlines: { units: { days: { format: [ 'dd MMM' ] }, hours: { format: [ "HH 'h'" ] } } },
-      minorGridlines: { units: { hours: { format: [ "HH 'h'" ] } } }
+      gridlines: { units: { days: { format: ['dd MMM'] }, hours: { format: ["HH 'h'"] } } },
+      minorGridlines: { units: { hours: { format: ["HH 'h'"] } } }
     },
     legend: { alignment: 'end', position: 'top' }
   }
   chart: GoogleChartInterface = {
     chartType: 'LineChart',
-    dataTable: [ ],
+    dataTable: [],
     options: this.options
   }
   data: HumidityStats[] | LightStats[] | TemperatureStats[] = []
@@ -52,7 +52,7 @@ export class MeasureHistoryComponent implements OnInit {
     { color: 'green', isSelected: true, name: 'Media', value: 'mean_value' },
     { color: 'red', isSelected: false, name: 'Máximo', value: 'max_value' }
   ]
-  currentStats: string[] = [ 'mean_value' ]
+  currentStats: string[] = ['mean_value']
 
   constructor(
     private route: ActivatedRoute,
@@ -61,9 +61,9 @@ export class MeasureHistoryComponent implements OnInit {
   ) {
     this.historyForm = this.formBuilder.group(
       {
-        init_date: [ new Date(Date.now() - 24 * 60 * 60 * 1000), Validators.required ],
-        end_date: [ new Date(), Validators.required ],
-        stats: [ 'Mean' ]
+        init_date: [new Date(Date.now() - 24 * 60 * 60 * 1000), Validators.required],
+        end_date: [new Date(), Validators.required],
+        stats: ['Mean']
       },
       {
         validator: MustBeOrderedDates('init_date', 'end_date')
@@ -77,8 +77,8 @@ export class MeasureHistoryComponent implements OnInit {
 
     try {
       this.micro = await this.arduinoService.getMicrocontroller(ip, measure)
-      this.header = [ 'Tiempo', new MeasureViewPipe().transform(this.micro.measure) ]
-      this.chart.dataTable = [ this.header, [ new Date(), 24 ] ]
+      this.header = ['Tiempo', new MeasureViewPipe().transform(this.micro.measure)]
+      this.chart.dataTable = [this.header, [new Date(), 24]]
     } catch (error) { }
   }
 
@@ -97,12 +97,12 @@ export class MeasureHistoryComponent implements OnInit {
 
   getPreviousMeasures({ init_date, end_date }: { init_date: Date, end_date: Date }) {
     this.arduinoService.getPreviousMeasures(
-        this.micro.ip,
-        this.micro.measure,
-        this.makePlural(this.micro.measure),
-        init_date.toJSON(),
-        end_date.toJSON()
-      )
+      this.micro.ip,
+      this.micro.measure,
+      this.makePlural(this.micro.measure),
+      init_date.toJSON(),
+      end_date.toJSON()
+    )
       .subscribe((measures: HumidityStats[] | LightStats[] | TemperatureStats[]) => {
         this.data = measures
         this.drawChart(measures)
@@ -118,7 +118,7 @@ export class MeasureHistoryComponent implements OnInit {
     if (measures.length) {
       const stats = this.stats.filter(stat => stat.isSelected)
       const names = stats.map(stat => stat.name)
-      this.chart.dataTable = [ [ this.header[0], ...names ] ]
+      this.chart.dataTable = [[this.header[0], ...names]]
       this.options.colors = stats.filter(stat => stat.color)
       this.chart.options = this.options
 

@@ -1,10 +1,11 @@
-import { OnInit } from '@angular/core'
+import { Directive, OnInit } from '@angular/core'
 
 import { Humidity } from '@models/humidity.model'
 import { Temperature } from '@models/temperature.model'
 
 export type SomeMeasures = Humidity | Temperature
 
+@Directive()
 export abstract class MeasureStats implements OnInit {
 
   avgMeasure = 0
