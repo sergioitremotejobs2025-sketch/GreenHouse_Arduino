@@ -1,4 +1,11 @@
 <main class="container">
+  <div class="empty-state" *ngIf="microcontrollers.length === 0">
+    <div class="empty-icon">🔌</div>
+    <h2>No tienes microcontroladores registrados</h2>
+    <p>Empieza por añadir tu primer dispositivo en la sección de ajustes.</p>
+    <button mat-raised-button color="primary" routerLink="/settings">Ir a Ajustes</button>
+  </div>
+
   <div class="measure-block" *ngFor="let micro of microcontrollers">
     <h1 class="topic-title white">
       <app-dashboard-microcontroller [isHistory]="false" [micro]="micro"></app-dashboard-microcontroller>

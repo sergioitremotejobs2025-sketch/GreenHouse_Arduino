@@ -5,6 +5,11 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   name: angular-ingress
 spec:
+  tls:
+  - hosts:
+    - iot-microservices.com
+    secretName: angular-tls
+
   rules:
   - host: iot-microservices.com
     http:
@@ -16,3 +21,4 @@ spec:
               number: 80
         path: /
         pathType: Prefix
+
