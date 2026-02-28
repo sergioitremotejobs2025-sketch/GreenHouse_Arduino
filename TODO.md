@@ -29,7 +29,7 @@ This document outlines the next steps for maturing the IoT Microservices project
 - [x] **Advanced Auth**: 
   - [x] Implement Refresh Token rotation for better security.
   - [x] Add a "Change Password" feature in the Angular UI.
-- [ ] **Dependency Audit**: Standardize Node.js versions across all microservices and resolve remaining `npm audit` high-risk vulnerabilities.
+- [x] **Dependency Audit**: Standardize Node.js versions across all microservices and resolve remaining `npm audit` high-risk vulnerabilities.
 
 ## 📊 Phase 4: Service Modernization
 - [x] **Stats-MS (Python)**:
