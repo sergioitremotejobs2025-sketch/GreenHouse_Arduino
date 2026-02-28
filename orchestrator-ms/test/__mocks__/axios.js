@@ -5,21 +5,24 @@ const {
 } = require('../../src/config/services.config')
 
 module.exports = {
-  delete: (url='', body={ }) => {
+  delete: (url = '', body = {}) => {
     if (url.includes(`${MICROCONTROLLERS_MS}`)) {
       return Promise.resolve({ data: 'OK' })
     }
   },
-  get: (url='') => {
+  get: (url = '') => {
     if (url.includes(`${MICROCONTROLLERS_MS}`)) {
       return Promise.resolve({ data: require('../microcontrollers.json') })
     } else if (url.includes(`${MEASURE_MS}`)) {
-      return Promise.resolve({ 
+      if (url.includes('pictures')) {
+        return Promise.resolve({ data: require('../pictures.json') || [] })
+      }
+      return Promise.resolve({
         data: url.includes('temperatures') ? require('../temperature-stats.json') : require('../temperature.json')
       })
     }
   },
-  post: (url='', body={ }) => {
+  post: (url = '', body = {}) => {
     if (url.includes(`${AUTH_MS}/login`)) {
       return Promise.resolve({ data: body.username === 'Rocky' && body.password && body.refreshToken })
     } else if (url.includes(`${AUTH_MS}/register`)) {
@@ -30,7 +33,7 @@ module.exports = {
       return Promise.resolve({ data: body })
     }
   },
-  put: (url='', body={ }) => {
+  put: (url = '', body = {}) => {
     if (url.includes(`${MICROCONTROLLERS_MS}`)) {
       return Promise.resolve({ data: body })
     }
