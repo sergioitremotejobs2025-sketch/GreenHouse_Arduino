@@ -1,7 +1,7 @@
 {
   "author": "Rocky",
   "dependencies": {
-    "amqplib": "^0.7.0",
+    "amqplib": "^0.10.9",
     "axios": "^0.21.1",
     "express": "^5.2.1",
     "prom-client": "^15.1.3"

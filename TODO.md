@@ -32,14 +32,13 @@ This document outlines the next steps for maturing the IoT Microservices project
 - [ ] **Dependency Audit**: Standardize Node.js versions across all microservices and resolve remaining `npm audit` high-risk vulnerabilities.
 
 ## 📊 Phase 4: Service Modernization
-
-- [ ] **Stats-MS (Python)**:
-  - [ ] Migrate `unittest` to `pytest` for better developer experience.
-  - [ ] Add Pydantic for strict input/output data validation.
-- [ ] **Publisher-MS (Node)**:
-  - [ ] Implement unit tests for the publishing logic.
-  - [ ] Add retry mechanisms for RabbitMQ connections.
-- [ ] **Documentation Update**: Sync `ARCHITECTURE.md` with the current state, including the RabbitMQ flow and `stats-ms` integration.
+- [x] **Stats-MS (Python)**:
+  - [x] Migrate `unittest` to `pytest` for better developer experience.
+  - [x] Add Pydantic for strict input/output data validation.
+- [x] **Publisher-MS (Node)**:
+  - [x] Implement unit tests for the publishing logic.
+  - [x] Add retry mechanisms for RabbitMQ connections.
+- [x] **Documentation Update**: Sync `ARCHITECTURE.md` with the current state, including the RabbitMQ flow and `stats-ms` integration.
 
 ---
 

@@ -1,95 +1,83 @@
-const amqp = require('amqplib/callback_api')
-
+const amqp = require('amqplib')
 const { PASSWORD, RABBITMQ, USERNAME } = require('../config/config')
 
 const url = `amqp://${USERNAME}:${PASSWORD}@${RABBITMQ}/`
-let amqpConn = null
 
-const start = () => {
-  amqp.connect(`${url}?heartbeat=60`, (error, conn) => {
-    if (error) {
-      console.error('[AMQP]', error.message)
-      return setTimeout(start, 1000)
-    }
-
-    conn.on('error', error => {
-      if (error.message !== 'Connection closing') {
-        console.error('[AMQP] conn error', error.message)
-      }
-    })
-
-    conn.on('close', () => {
-      console.error('[AMQP] reconnecting')
-      return setTimeout(start, 1000)
-    })
-
-    console.log('[AMQP] connected')
-    amqpConn = conn
-    startPublisher()
-  })
-}
-
-const closeOnErr = error => {
-  if (!error) return false
-  console.error('[AMQP] error', error)
-  amqpConn.close()
-  return true
-}
-
-let pubChannel = null
-const offlinePubQueue = []
-
-const startPublisher = () => {
-  amqpConn.createConfirmChannel((error, ch) => {
-    if (closeOnErr(error)) return
-      ch.on('error', (error) => {
-      console.error('[AMQP] channel error', error.message)
-    })
-  
-    ch.on('close', () => {
-      console.log('[AMQP] channel closed')
-    })
-
-    pubChannel = ch
-    while (true) {
-      const m = offlinePubQueue.shift()
-      if (!m) break
-      _publish(m[0], m[1], m[2])
-    }
-  })
-}
-
-const _publish = (exchange, routingKey, content) => {
-  try {
-    pubChannel.publish(
-      exchange,
-      routingKey,
-      content,
-      { persistent: true },
-      (error, ok) => {
-        if (error) {
-          console.error('[AMQP] publish', error)
-          offlinePubQueue.push([exchange, routingKey, content])
-          pubChannel.connection.close()
-        }
-      }
-    )
-  } catch (error) {
-    console.error('[AMQP] publish', error.message)
-    offlinePubQueue.push([exchange, routingKey, content])
-  }
-}
-
-module.exports = class Queue {
-
+class Queue {
   constructor(queue) {
-    this.queue = queue
-    start()
+    this.queueName = queue
+    this.connection = null
+    this.channel = null
+    this.offlinePubQueue = []
+    this.connect()
   }
 
-  publish(message) {
-    console.log(message)
-    _publish('', this.queue, Buffer.from(JSON.stringify(message)))
+  async connect(retryCount = 0) {
+    try {
+      this.connection = await amqp.connect(`${url}?heartbeat=60`)
+      this.connection.on('error', (err) => {
+        if (err.message !== 'Connection closing') {
+          console.error('[AMQP] connection error', err.message)
+        }
+      })
+      this.connection.on('close', () => {
+        console.error('[AMQP] connection closed, reconnecting...')
+        this.reconnect()
+      })
+
+      console.log('[AMQP] connected')
+      this.channel = await this.connection.createConfirmChannel()
+      await this.channel.assertQueue(this.queueName, { durable: true })
+
+      this.channel.on('error', (err) => {
+        console.error('[AMQP] channel error', err.message)
+      })
+      this.channel.on('close', () => {
+        console.log('[AMQP] channel closed')
+      })
+
+      // Send pending messages
+      while (this.offlinePubQueue.length > 0) {
+        const msg = this.offlinePubQueue.shift()
+        await this.publish(msg)
+      }
+    } catch (error) {
+      console.error('[AMQP] connection failed:', error.message)
+      this.reconnect(retryCount)
+    }
   }
 
+  reconnect(retryCount = 0) {
+    const delay = Math.min(1000 * Math.pow(2, retryCount), 30000)
+    console.log(`[AMQP] retrying connection in ${delay}ms...`)
+    setTimeout(() => this.connect(retryCount + 1), delay)
+  }
+
+  async publish(message) {
+    const content = Buffer.from(JSON.stringify(message))
+    try {
+      if (!this.channel) {
+        console.log('[AMQP] channel not ready, queuing message')
+        this.offlinePubQueue.push(message)
+        return
+      }
+
+      await new Promise((resolve, reject) => {
+        this.channel.sendToQueue(this.queueName, content, { persistent: true }, (err, ok) => {
+          if (err) {
+            console.error('[AMQP] nack/error publishing', err)
+            this.offlinePubQueue.push(message)
+            reject(err)
+          } else {
+            resolve(ok)
+          }
+        })
+      })
+    } catch (error) {
+      console.error('[AMQP] publish error:', error.message)
+      this.offlinePubQueue.push(message)
+    }
+  }
 }
+
+module.exports = Queue

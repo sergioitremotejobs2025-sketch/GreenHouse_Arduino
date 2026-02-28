@@ -16,7 +16,7 @@ const publishMeasure = async measure => {
       const response = await requestMeasure(micro)
       if (response) {
         console.log(`[${measure}] Got response from ${micro.ip}, publishing...`)
-        queue.publish(response)
+        await queue.publish(response)
       } else {
         console.log(`[${measure}] Failed to get response from ${micro.ip}`)
       }

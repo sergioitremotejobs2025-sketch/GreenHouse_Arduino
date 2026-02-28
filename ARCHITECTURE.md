@@ -3,93 +3,85 @@
 ## Overview
 
 ```
-Browser
-  │
-  ▼
-┌─────────────────────────────────────┐
-│          angular-ms (Nginx)          │  port 80 (in-cluster)
-│  Angular SPA + reverse proxy         │  exposes via minikube NodePort
-├─────────────────────────────────────┤
-│  /            → serve static files   │
-│  /login       → orchestrator-ms     │
-│  /register    → orchestrator-ms     │
-│  /refresh     → orchestrator-ms     │
-│  /temperature → orchestrator-ms     │
-│  /humidity    → orchestrator-ms     │
-│  /pictures    → orchestrator-ms     │
-│  /light       → orchestrator-ms     │
-│  /microcontr… → orchestrator-ms     │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────┐
-│       orchestrator-ms        │  port 3000
-│  Express + JWT middleware    │
-│  Routes requests to back-end │
-│  services after auth check   │
-└──────┬───────────────────────┘
-       │            │              │
-       ▼            ▼              ▼
-┌──────────┐  ┌───────────┐  ┌─────────────────┐
-│ auth-ms  │  │ measure-ms│  │microcontrollers-│
-│  (Go)    │  │ (Node.js) │  │     ms (Node.js)│
-│ port 5000│  │ port 4000 │  │   port 6000     │
-│          │  │           │  │                 │
-│  login   │  │ /humidity │  │ /humidity       │
-│  register│  │ /temp     │  │ /light          │
-│  refresh │  │ /pictures │  │ /temperature    │
-│          │  │ /light    │  │ /pictures       │
-│ MongoDB  │  │ MongoDB   │  │ MongoDB         │
-└──────────┘  └─────┬─────┘  └─────────────────┘
-                    │ PictureScheduler
-                    │ (every 10h)
-                    ▼
-         ┌──────────────────────────┐
-         │ fake-arduino-iot-pictures │
-         │  (Node.js) port 3005      │
-         │                          │
-         │  GET /pictures  →  JSON  │
-         │  GET /camera/latest      │
-         │  GET /camera/image       │
-         │  Cycles through 5 plant  │
-         │  growth stages over time │
-         └──────────────────────────┘
+                                  ┌───────────────┐
+                                  │   Browser     │
+                                  └───────┬───────┘
+                                          │
+                                          ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                              angular-ms (Nginx)                                 │
+│  Angular 15 SPA + reverse proxy                                                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  /               → serve static files                                           │
+│  /api/v1/*       → orchestrator-ms (Rate Limited)                               │
+│  /grafana        → Grafana Dashboards                                           │
+└─────────────────────────────────────────┬───────────────────────────────────────┘
+                                          │
+                                          ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                               orchestrator-ms                                   │
+│  Node.js Gateway + JWT Auth + Rate Limiting                                      │
+└──────┬───────────────┬──────────────────┬───────────────┬───────────────┬───────┘
+       │               │                  │               │               │
+       ▼               ▼                  ▼               ▼               ▼
+┌──────────┐    ┌───────────┐    ┌─────────────────┐    ┌──────────┐    ┌──────────┐
+│ auth-ms  │    │ measure-ms│    │microcontrollers-│    │ stats-ms │    │ prometheus│
+│  (Go)    │    │ (Node.js) │    │     ms (Node.js)│    │ (Python) │    │ (Metrics) │
+└────┬─────┘    └─────┬─────┘    └────────┬────────┘    └────┬─────┘    └──────────┘
+     │                │                   │                  │
+     ▼                ▼                   ▼                  ▼
+┌──────────┐    ┌──────────┐    ┌──────────────────┐    ┌──────────┐
+│  MySQL   │    │ MongoDB  │    │  Arduinos (Fake) │    │ RabbitMQ │
+└──────────┘    └──────────┘    └──────────────────┘    └────┬─────┘
+                                                             │
+                                                             ▼
+                                                    ┌─────────────────┐
+                                                    │  publisher-ms   │
+                                                    │    (Node.js)    │
+                                                    └─────────────────┘
 ```
 
-## Services
+## Services & Infrastructure
 
-| Service | Language | Port | Description |
+| Service | Language/Stack | Port | Description |
 |---|---|---|---|
-| `angular-ms` | Angular + Nginx | 80 | SPA frontend + API reverse proxy |
-| `orchestrator-ms` | Node.js / Express | 3000 | API gateway with JWT auth |
-| `auth-ms` | Go | 5000 | Login, register, token refresh |
-| `measure-ms` | Node.js / Express | 4000 | Sensor data CRUD + picture scheduler |
-| `microcontrollers-ms` | Node.js / Express | 6000 | Microcontroller registry |
-| `fake-arduino-iot-pictures` | Node.js / Express | 3005 | Camera simulator (plant growth stages) |
+| `angular-ms` | Angular 15 | 80 | Modern UI with Dark Mode & Real-time Charts |
+| `orchestrator-ms` | Node.js | 3000 | API Gateway with `express-rate-limit` & JWT |
+| `auth-ms` | Go | 5000 | User Auth with Refresh Token rotation |
+| `measure-ms` | Node.js | 4000 | Sensor data & Picture scheduling |
+| `microcontrollers-ms` | Node.js | 6000 | Device registry |
+| `stats-ms` | Python | 80/5000 | Statistical processing (Numpy/Pandas/Pydantic) |
+| `publisher-ms` | Node.js | - | Background data extraction to RabbitMQ |
+| `RabbitMQ` | Message Broker | 5672 | Asynchronous task queue |
+| `Prometheus` | Monitoring | 9090 | Metrics collection (Scraping) |
+| `Grafana` | Visualization | 3000 | Unified dashboards for Logs & Metrics |
+| `Loki` | Logging | 3100 | Centralized log aggregation |
 
-## Data Flow — Dashboard Load
+## Key Features
 
-1. Browser loads Angular app from Nginx
-2. Angular calls `GET /microcontrollers` → orchestrator validates JWT → returns registered devices
-3. For each device Angular calls `GET /<measure>` → orchestrator → measure-ms → physical/fake Arduino
-4. measure-ms caches current readings; PictureScheduler persists camera snapshots to MongoDB every 10h
+### 🔐 Security (Phase 3)
+- **Rate Limiting**: Implemented at the Gateway level to prevent DDoS and brute-force.
+- **NetworkPolicies**: Zero-Trust network isolation restricting pod-to-pod communication.
+- **Advanced Auth**: Refresh token rotation and secure "Change Password" functionality.
+
+### 📊 Observability (Phase 2)
+- **Metrics**: Detailed service metrics using Prometheus exporters.
+- **Logging**: Automated log shipping via `promtail` to `Loki`.
+- **Health Checks**: Standardized Liveness and Readiness probes for all pods.
+
+### 🚀 Resilience (Phase 4)
+- **Robust Publishing**: `publisher-ms` with persistent queues and exponential backoff retry.
+- **Validation**: Strict schema validation in `stats-ms` using `Pydantic`.
+- **Modern Tests**: Comprehensive test suites using `pytest` (Python) and `jest` (Node.js).
 
 ## Kubernetes Deployment
 
-All services run in **Minikube** (local) or a cloud k8s cluster. Key resources:
-
-- `Deployment` + `Service` for each microservice
-- `ConfigMap` for Nginx configuration (`angular-ms`)
-- `PersistentVolumeClaim` for MongoDB data
-- `Secret` for MongoDB credentials and JWT secret
-
 Run locally:
 ```bash
-bash run_k8s_local.sh   # start minikube + apply all manifests
-minikube service angular-ms --url   # get the frontend URL
+bash run_k8s_local.sh   # start minikube + apply all manifests (prod + security)
 ```
 
-Rebuild Angular after source changes:
+Apply security policies:
 ```bash
-bash rebuild_angular.sh   # clean docker build + minikube load + rollout
+kubectl apply -f manifests-k8s/security/
 ```
