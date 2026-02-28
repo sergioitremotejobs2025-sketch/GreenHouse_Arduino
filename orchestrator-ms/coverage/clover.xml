@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1772278377426" clover="3.2.0">
-  <project timestamp="1772278377426" name="All files">
-    <metrics statements="162" coveredstatements="161" conditionals="73" coveredconditionals="63" methods="28" coveredmethods="28" elements="263" coveredelements="252" complexity="0" loc="162" ncloc="162" packages="6" files="8" classes="8"/>
+<coverage generated="1772296114934" clover="3.2.0">
+  <project timestamp="1772296114934" name="All files">
+    <metrics statements="162" coveredstatements="162" conditionals="73" coveredconditionals="67" methods="28" coveredmethods="28" elements="263" coveredelements="257" complexity="0" loc="162" ncloc="162" packages="6" files="8" classes="8"/>
     <package name="app">
       <metrics statements="30" coveredstatements="30" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
       <file name="app.js" path="/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/orchestrator-ms/src/app/app.js">
@@ -39,7 +39,7 @@
       </file>
     </package>
     <package name="app.controllers">
-      <metrics statements="81" coveredstatements="81" conditionals="55" coveredconditionals="46" methods="17" coveredmethods="17"/>
+      <metrics statements="81" coveredstatements="81" conditionals="55" coveredconditionals="49" methods="17" coveredmethods="17"/>
       <file name="orchestrator.controller.js" path="/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/orchestrator-ms/src/app/controllers/orchestrator.controller.js">
         <metrics statements="58" coveredstatements="58" conditionals="30" coveredconditionals="26" methods="11" coveredmethods="11"/>
         <line num="1" count="5" type="stmt"/>
@@ -102,36 +102,36 @@
         <line num="127" count="1" type="stmt"/>
       </file>
       <file name="services.controller.js" path="/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/orchestrator-ms/src/app/controllers/services.controller.js">
-        <metrics statements="23" coveredstatements="23" conditionals="25" coveredconditionals="20" methods="6" coveredmethods="6"/>
-        <line num="1" count="5" type="stmt"/>
-        <line num="2" count="5" type="stmt"/>
-        <line num="4" count="5" type="stmt"/>
-        <line num="10" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="13" count="5" type="stmt"/>
-        <line num="14" count="31" type="cond" truecount="4" falsecount="0"/>
-        <line num="18" count="5" type="cond" truecount="2" falsecount="2"/>
-        <line num="19" count="31" type="stmt"/>
-        <line num="20" count="31" type="stmt"/>
-        <line num="21" count="31" type="cond" truecount="2" falsecount="0"/>
-        <line num="27" count="30" type="cond" truecount="2" falsecount="0"/>
-        <line num="28" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="29" count="5" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-        <line num="35" count="5" type="stmt"/>
-        <line num="38" count="5" type="stmt"/>
-        <line num="39" count="5" type="stmt"/>
-        <line num="43" count="23" type="stmt"/>
-        <line num="44" count="23" type="stmt"/>
+        <metrics statements="23" coveredstatements="23" conditionals="25" coveredconditionals="23" methods="6" coveredmethods="6"/>
+        <line num="1" count="7" type="stmt"/>
+        <line num="2" count="7" type="stmt"/>
+        <line num="4" count="7" type="stmt"/>
+        <line num="10" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="7" type="stmt"/>
+        <line num="14" count="35" type="cond" truecount="4" falsecount="0"/>
+        <line num="18" count="7" type="cond" truecount="2" falsecount="2"/>
+        <line num="19" count="35" type="stmt"/>
+        <line num="20" count="35" type="stmt"/>
+        <line num="21" count="35" type="cond" truecount="2" falsecount="0"/>
+        <line num="27" count="33" type="cond" truecount="2" falsecount="0"/>
+        <line num="28" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="29" count="6" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="35" count="7" type="stmt"/>
+        <line num="38" count="7" type="stmt"/>
+        <line num="39" count="7" type="stmt"/>
+        <line num="43" count="24" type="stmt"/>
+        <line num="44" count="24" type="stmt"/>
         <line num="48" count="2" type="stmt"/>
         <line num="49" count="2" type="stmt"/>
-        <line num="53" count="1" type="stmt"/>
-        <line num="54" count="1" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
       </file>
     </package>
     <package name="app.routes">
-      <metrics statements="25" coveredstatements="24" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      <metrics statements="25" coveredstatements="25" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
       <file name="orchestrator.routes.js" path="/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/orchestrator-ms/src/app/routes/orchestrator.routes.js">
-        <metrics statements="25" coveredstatements="24" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <metrics statements="25" coveredstatements="25" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>
         <line num="4" count="5" type="stmt"/>
@@ -153,9 +153,9 @@
         <line num="214" count="5" type="stmt"/>
         <line num="237" count="5" type="stmt"/>
         <line num="239" count="5" type="stmt"/>
-        <line num="240" count="8" type="cond" truecount="1" falsecount="1"/>
+        <line num="240" count="9" type="cond" truecount="2" falsecount="0"/>
         <line num="241" count="8" type="stmt"/>
-        <line num="243" count="0" type="stmt"/>
+        <line num="243" count="1" type="stmt"/>
         <line num="247" count="5" type="stmt"/>
       </file>
     </package>
@@ -167,13 +167,13 @@
       </file>
       <file name="services.config.js" path="/Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/orchestrator-ms/src/config/services.config.js">
         <metrics statements="7" coveredstatements="7" conditionals="12" coveredconditionals="12" methods="0" coveredmethods="0"/>
-        <line num="1" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="2" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="3" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="4" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="5" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="6" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="8" count="5" type="stmt"/>
+        <line num="1" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="2" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="3" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="4" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="5" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="6" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="7" type="stmt"/>
       </file>
     </package>
     <package name="helpers">
