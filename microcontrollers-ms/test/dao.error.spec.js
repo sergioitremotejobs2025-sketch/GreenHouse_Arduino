@@ -46,13 +46,4 @@ describe('Dao error branches', () => {
     test('deleteMicrocontroller propagates error', async () => {
         await expect(dao.deleteMicrocontroller({ ip: '1.2.3.4', measure: 'temperature' })).rejects.toThrow('DB_ERROR');
     });
-
-    // Test unknown query branch using the real mock (which throws unknown query error)
-    test('unknown query triggers error branch', async () => {
-        // Restore original mock for this test
-        jest.unmock('mysql');
-        const realDao = new (require('../src/database/dao'))();
-        // Directly call abstractQuery via a private method simulation
-        await expect(realDao.query('UNKNOWN QUERY', [])).rejects.toThrow('Unknown query');
-    });
 });

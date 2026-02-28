@@ -24,6 +24,7 @@ describe('Dao connection error branches', () => {
     });
 
     test('connect error logs and calls handleDisconnect', () => {
+        jest.useFakeTimers();
         // simulate connect error
         mockConnection.connect.mockImplementation(cb => cb(new Error('boom')));
         // provide a global handleDisconnect mock
@@ -32,8 +33,12 @@ describe('Dao connection error branches', () => {
 
         const dao = new Dao(); // constructor calls connect()
         expect(consoleSpy).toHaveBeenCalledWith('Error when connecting to db:', expect.any(Error));
+
+        jest.advanceTimersByTime(2000); // Wait for setTimeout
+
         expect(global.handleDisconnect).toHaveBeenCalled();
         consoleSpy.mockRestore();
+        jest.useRealTimers();
     });
 
     test('PROTOCOL_CONNECTION_LOST triggers reconnect', () => {

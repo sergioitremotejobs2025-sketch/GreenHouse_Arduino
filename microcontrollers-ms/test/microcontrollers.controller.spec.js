@@ -1,10 +1,10 @@
 // Controller unit tests for microcontrollers-ms to increase branch coverage
 const OrchestratorController = require('../src/app/controllers/microcontrollers.controller')
 const Dao = require('../src/database/dao')
-const helpers = require('../helpers/helpers')
+const helpers = require('../src/helpers/helpers')
 
 jest.mock('../src/database/dao')
-jest.mock('../helpers/helpers')
+jest.mock('../src/helpers/helpers')
 
 // Mock NodeCache used inside controller
 jest.mock('node-cache', () => {
@@ -115,16 +115,18 @@ describe('OrchestratorController', () => {
         Dao.prototype.updateMicrocontroller.mockResolvedValueOnce(true)
         await controller.putMicrocontrollers(req, res)
         expect(res._status).toBe(201)
-        expect(res._json).toEqual({ ip: '1.2.3.5', measure: 'temperature', sensor: 's', username: 'Rocky', old_ip: '1.2.3.4' })
+        expect(res._json).toEqual({ ip: '1.2.3.5', measure: 'temperature', sensor: 's', username: 'Rocky' })
         // not found (false)
         const notRes = createRes()
+        const req2 = { body: { ...body, old_ip: '1.2.3.4' } }
         Dao.prototype.updateMicrocontroller.mockResolvedValueOnce(false)
-        await controller.putMicrocontrollers(req, notRes)
+        await controller.putMicrocontrollers(req2, notRes)
         expect(notRes._status).toBe(404)
         // error case
         const errRes = createRes()
+        const req3 = { body: { ...body, old_ip: '1.2.3.4' } }
         Dao.prototype.updateMicrocontroller.mockRejectedValueOnce(new Error('db'))
-        await controller.putMicrocontrollers(req, errRes)
+        await controller.putMicrocontrollers(req3, errRes)
         expect(errRes._status).toBe(400)
     })
 

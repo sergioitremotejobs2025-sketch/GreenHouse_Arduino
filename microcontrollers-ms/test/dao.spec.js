@@ -8,6 +8,25 @@ jest.mock('mysql', () => {
                 connect: jest.fn(cb => cb && cb(null)),
                 on: jest.fn((event, handler) => {
                     // simulate no error by default
+                }),
+                query: jest.fn((q, v, cb) => {
+                    if (typeof v === 'function') {
+                        cb = v;
+                        v = [];
+                    }
+                    if (q.includes('SELECT')) {
+                        cb(null, [{ measure: 'temperature', username: 'Rocky' }])
+                    } else if (q.includes('INSERT')) {
+                        if (v && v[0] === '192.168.1.350') return cb(new Error('dup'))
+                        cb(null, { affectedRows: 1 })
+                    } else if (q.includes('UPDATE')) {
+                        if (v && v[0] === '192.168.1.350') return cb(new Error('err'))
+                        cb(null, { affectedRows: 1 })
+                    } else if (q.includes('DELETE')) {
+                        cb(null, { affectedRows: 1 })
+                    } else {
+                        cb(null, [])
+                    }
                 })
             }
         })
@@ -18,6 +37,11 @@ describe('Mysql DAO', () => {
     let dao
     beforeEach(() => {
         dao = new Mysql()
+    })
+
+    test('query without values trigger branch', async () => {
+        const res = await dao.query('SELECT 1');
+        expect(res).toBeDefined();
     })
 
     test('findByMeasure returns filtered microcontrollers', async () => {
