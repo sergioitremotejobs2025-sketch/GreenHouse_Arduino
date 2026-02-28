@@ -4,6 +4,8 @@ import (
 	"auth-ms/model"
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -60,10 +62,9 @@ func TestLogin_Success(t *testing.T) {
 		t.Fatalf("expected 200 got %d", resp.StatusCode)
 	}
 
-	var got string
-	json.NewDecoder(resp.Body).Decode(&got)
-	if got != "true" {
-		t.Errorf("expected body 'true', got %q", got)
+	got, _ := ioutil.ReadAll(resp.Body)
+	if string(got) != "true" {
+		t.Errorf("expected body 'true', got %q", string(got))
 	}
 }
 
@@ -176,13 +177,13 @@ func TestRefresh_EmptyBody(t *testing.T) {
 	mock := &mockRepository{updateRows: 0}
 	h := newTestHandlers(mock)
 
-	req := httptest.NewRequest(http.MethodPost, "/refresh", bytes.NewBuffer([]byte{}))
+	req := httptest.NewRequest(http.MethodPost, "/refresh", nil)
 	w := httptest.NewRecorder()
 
 	h.Refresh(w, req)
 
-	if w.Code != http.StatusOK {
-		t.Errorf("expected 200, got %d", w.Code)
+	if w.Body.String() != "false" {
+		t.Errorf("expected 'false' for empty body, got %q", w.Body.String())
 	}
 }
 
@@ -200,5 +201,71 @@ func TestChangePassword_Success(t *testing.T) {
 
 	if w.Body.String() != "true" {
 		t.Errorf("expected 'true', got %q", w.Body.String())
+	}
+}
+
+func TestChangePassword_RepoFail(t *testing.T) {
+	mock := &mockRepository{updatePass: false}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "new"})
+	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.ChangePassword(w, req)
+
+	if w.Body.String() != "false" {
+		t.Errorf("expected false on repo fail")
+	}
+}
+
+func TestChangePassword_InvalidInput(t *testing.T) {
+	mock := &mockRepository{updatePass: true}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "", Password: "new"})
+	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.ChangePassword(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", w.Code)
+	}
+}
+
+func TestNewHandlers(t *testing.T) {
+	mock := &mockRepository{}
+	h := NewHandlers(mock)
+	if h.Repo != mock {
+		t.Errorf("expected repo to be set")
+	}
+}
+
+type errorReader struct{}
+
+func (e *errorReader) Read(p []byte) (n int, err error) {
+	return 0, fmt.Errorf("read error")
+}
+
+func TestLogin_ReadError(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+	req := httptest.NewRequest(http.MethodPost, "/login", &errorReader{})
+	w := httptest.NewRecorder()
+	h.Login(w, req)
+	if w.Body.String() != "false" {
+		t.Errorf("expected false on read error")
+	}
+}
+
+func TestRefresh_ReadError(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+	req := httptest.NewRequest(http.MethodPost, "/refresh", &errorReader{})
+	w := httptest.NewRecorder()
+	h.Refresh(w, req)
+	if w.Body.String() != "false" {
+		t.Errorf("expected false on read error")
 	}
 }

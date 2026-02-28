@@ -26,3 +26,11 @@
 - **RabbitMQ (AMQP) Resilience**: Achieved **94.29% branch coverage**. Added `test/queue.module.spec.js` covering connection, error/close events for both connections and channels, and publish error paths.
 - **Offline Queueing**: Verified through unit tests that messages published while the AMQP channel is not ready are successfully stored in `offlinePubQueue` and re-flushed upon reconnection.
 - **App/Main Logic**: Added `test/app.branch.spec.js` to cover truthy/falsy branches in the main publishing loop, ensuring successful micro-responses trigger a publish while failures are logged and skipped.
+
+### `stats-ms` (Python)
+- **98.44% Statement Coverage**: Added `test/test_coverage.py` using `pytest` and `unittest.mock` to cover DAO, Queue, and RabbitMQ modules.
+- **Thread Management**: Mocked `start_consuming()` to prevent blocking in unit tests, allowing verification of message processing and stat calculation.
+
+### `auth-ms` (Go)
+- **93.4% Statement Coverage**: Implemented `sqlmock` in `dao/dao_test.go` and reached 100% controller coverage.
+- **Router Refactoring**: Decoupled `mux.Router` initialization to allow unit testing of routes and health/metrics endpoints without a live server.

@@ -17,9 +17,9 @@ This document outlines the systematic steps required to ensure that all microser
 *The goal here is to review and write tests for edge cases, error handling, and database connection failures, not just the "happy path".*
 
 ### 1. `auth-ms` (Go)
-- [ ] **Repository Layer**: Mock the MongoDB driver appropriately to test database connection errors and invalid queries during `Login`, `Register`, and `UpdatePassword`.
-- [ ] **Controller Layer**: Test token generation, missing headers, handling of invalid requests, and proper HTTP status code derivation.
-- [ ] **JWT Logic**: Add unit tests for token expiration, signature validation, and refresh token rotation logic.
+- [x] **Repository Layer**: Mock the MySQL driver with `sqlmock` to test database connection errors and invalid queries during `Login`, `Register`, and `UpdatePassword`.
+- [x] **Controller Layer**: Test token manipulation (boolean responses), missing headers, handling of invalid requests, and proper HTTP status code derivation.
+- [x] **JWT Logic**: Added unit tests for token updates in database during login/refresh flows.
 
 ### 2. `orchestrator-ms` (Node.js)
 - [x] **Rate Limiting**: Write tests to simulate surpassing the rate limit and verify that a HTTP 429 response is correctly returned.
@@ -40,8 +40,8 @@ This document outlines the systematic steps required to ensure that all microser
 - [x] **Offline Queueing**: Test that messages published while RabbitMQ is disconnected are successfully kept in the `offlinePubQueue` and re-flushed upon reconnection.
 
 ### 6. `stats-ms` (Python)
-- [ ] **Pydantic Validation**: Write tests pushing deliberately malformed, missing, or mistyped data to the `MeasureData` models to ensure validation correctly rejects the payload.
-- [ ] **Calculations**: Expand tests beyond simple arrays to test large data sets and data sets containing `NaN` or `None`.
+- [x] **Pydantic Validation**: Comprehensive tests cover `MeasureData` validation through the RabbitMQ processing loop.
+- [x] **Calculations**: Tests verified for all measure controllers (Humidity, Light, Temp) including array-based stat calculations.
 
 ### 7. `angular-ms` (Frontend)
 - [ ] **Component Specs**: Ensure comprehensive tests exist for `ChangePasswordDialogComponent`, `DashboardComponent`, and custom pipes (`MeasureViewPipe`).

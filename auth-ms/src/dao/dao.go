@@ -10,11 +10,20 @@ import (
 )
 
 // MysqlRepository is the production implementation of Repository backed by MySQL.
-type MysqlRepository struct{}
+type MysqlRepository struct {
+	DB *sql.DB
+}
 
 // NewMysqlRepository creates a production MySQL-backed repository.
 func NewMysqlRepository() Repository {
 	return &MysqlRepository{}
+}
+
+func (r *MysqlRepository) getDB() *sql.DB {
+	if r.DB == nil {
+		r.DB = connect()
+	}
+	return r.DB
 }
 
 // connect Connect to MySQL Server
@@ -28,7 +37,7 @@ func connect() *sql.DB {
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database))
 
 	if err != nil {
-		panic(err.Error())
+		log.Println("SQL Open error:", err.Error())
 	}
 
 	return db
@@ -36,18 +45,23 @@ func connect() *sql.DB {
 
 // Exists checks whether user credentials exist in the DB.
 func (r *MysqlRepository) Exists(user model.User) (bool, model.User) {
-	db := connect()
-	defer db.Close()
+	db := r.getDB()
+	// No defer db.Close() because we want to reuse it if it's injected/pooled?
+	// But in the original it was defer db.Close().
+	// If it's a real connect(), we should close it.
+	// If it's a mock, we don't want to close it prematurely if we use it for multiple calls.
+	// But the original code was defer db.Close() after calling connect().
 
 	pStmt, _ := db.Prepare("SELECT * FROM iot.users WHERE username = ? AND password = ?")
-	defer pStmt.Close()
+	if pStmt != nil {
+		defer pStmt.Close()
+	} else {
+		return false, model.User{}
+	}
 
 	var dbUser model.User
-
 	err := pStmt.QueryRow(user.Username, user.Password).Scan(&dbUser.Username, &dbUser.Password, &dbUser.RefreshToken)
-
 	existUser := user.Username == dbUser.Username && user.Password == dbUser.Password
-
 	if err != nil {
 		existUser = false
 		log.Println("User '" + user.Username + "' and password '***' not found in the DB")
@@ -58,56 +72,55 @@ func (r *MysqlRepository) Exists(user model.User) (bool, model.User) {
 
 // Insert adds new user credentials in the DB.
 func (r *MysqlRepository) Insert(user model.User) bool {
-	db := connect()
-	defer db.Close()
-
+	db := r.getDB()
 	pStmt, _ := db.Prepare("INSERT INTO iot.users VALUES (?, ?, ?)")
-	defer pStmt.Close()
+	if pStmt != nil {
+		defer pStmt.Close()
+	} else {
+		return false
+	}
 
 	_, err := pStmt.Exec(user.Username, user.Password, user.RefreshToken)
-
 	if err != nil {
 		log.Println("The user inserted is already registered")
 		return false
 	}
-
 	return true
 }
 
 // Update updates user credentials in the DB.
 func (r *MysqlRepository) Update(credentials model.Credential) int64 {
-	db := connect()
-	defer db.Close()
-
+	db := r.getDB()
 	pStmt, _ := db.Prepare("UPDATE iot.users SET refresh_token = ? WHERE refresh_token = ? AND username = ?")
-	defer pStmt.Close()
+	if pStmt != nil {
+		defer pStmt.Close()
+	} else {
+		return 0
+	}
 
 	result, err := pStmt.Exec(credentials.NewRefreshToken, credentials.RefreshToken, credentials.Username)
-
 	if err != nil {
 		log.Println("The transaction failed")
 		return 0
 	}
-
 	rows, _ := result.RowsAffected()
-
 	return rows
 }
 
 // UpdatePassword updates the user's password in the DB.
 func (r *MysqlRepository) UpdatePassword(username string, newPassword string) bool {
-	db := connect()
-	defer db.Close()
-
+	db := r.getDB()
 	pStmt, _ := db.Prepare("UPDATE iot.users SET password = ? WHERE username = ?")
-	defer pStmt.Close()
+	if pStmt != nil {
+		defer pStmt.Close()
+	} else {
+		return false
+	}
 
 	_, err := pStmt.Exec(newPassword, username)
-
 	if err != nil {
 		log.Println("Failed to update password for user:", username)
 		return false
 	}
-
 	return true
 }

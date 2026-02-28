@@ -3,6 +3,7 @@ package routes
 import (
 	"auth-ms/controller"
 	"auth-ms/dao"
+	"log"
 
 	"net/http"
 
@@ -10,8 +11,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// App initializes routes for auth-ms using the MySQL-backed repository.
-func App(port string) {
+// GetRouter initializes and returns a router for auth-ms using the MySQL-backed repository.
+func GetRouter() *mux.Router {
 	repo := dao.NewMysqlRepository()
 	handlers := controller.NewHandlers(repo)
 
@@ -36,5 +37,12 @@ func App(port string) {
 
 	router.Handle("/metrics", promhttp.Handler()).Methods("GET")
 
-	http.ListenAndServe(port, router)
+	return router
+}
+
+// App starts the server on the specified port.
+func App(port string) {
+	router := GetRouter()
+	log.Println("auth-ms listening on " + port)
+	log.Fatal(http.ListenAndServe(port, router))
 }
