@@ -25,6 +25,14 @@ func App(port string) {
 		w.Write([]byte(`{"status":"ok","service":"auth-ms"}`))
 	}).Methods("GET")
 
+	router.HandleFunc("/docs", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./docs/index.html")
+	}).Methods("GET")
+
+	router.HandleFunc("/docs/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./docs/swagger.json")
+	}).Methods("GET")
+
 	router.Handle("/metrics", promhttp.Handler()).Methods("GET")
 
 	http.ListenAndServe(port, router)

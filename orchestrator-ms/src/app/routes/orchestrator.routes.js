@@ -8,20 +8,209 @@ const jwtMiddleware = expressJwt({ algorithms: ['HS256'], secret: TOKEN_SECRET }
 const orchestratorController = new OrchestratorController()
 const router = Router()
 
+/**
+ * @swagger
+ * /humidity:
+ *   get:
+ *     summary: Get humidity measures
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.get('/humidity', jwtMiddleware, orchestratorController.getMeasureService)
+
+/**
+ * @swagger
+ * /light:
+ *   get:
+ *     summary: Get light measures
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.get('/light', jwtMiddleware, orchestratorController.getMeasureService)
+
+/**
+ * @swagger
+ * /temperature:
+ *   get:
+ *     summary: Get temperature measures
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.get('/temperature', jwtMiddleware, orchestratorController.getMeasureService)
+
+/**
+ * @swagger
+ * /pictures:
+ *   get:
+ *     summary: Get pictures
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.get('/pictures', jwtMiddleware, orchestratorController.getMeasureService)
 
+/**
+ * @swagger
+ * /light:
+ *   post:
+ *     summary: Turn light on/off
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               value:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/light', jwtMiddleware, orchestratorController.postMeasureService)
 
+/**
+ * @swagger
+ * /microcontrollers:
+ *   get:
+ *     summary: Get all microcontrollers
+ *     tags: [Microcontrollers]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.get('/microcontrollers', jwtMiddleware, orchestratorController.getMicrocontrollers)
+
+/**
+ * @swagger
+ * /microcontrollers:
+ *   post:
+ *     summary: Add a new microcontroller
+ *     tags: [Microcontrollers]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.post('/microcontrollers', jwtMiddleware, orchestratorController.postMicrocontrollers)
+
+/**
+ * @swagger
+ * /microcontrollers:
+ *   put:
+ *     summary: Update a microcontroller
+ *     tags: [Microcontrollers]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.put('/microcontrollers', jwtMiddleware, orchestratorController.putMicrocontrollers)
+
+/**
+ * @swagger
+ * /microcontrollers:
+ *   delete:
+ *     summary: Delete a microcontroller
+ *     tags: [Microcontrollers]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.delete('/microcontrollers', jwtMiddleware, orchestratorController.deleteMicrocontrollers)
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/login', orchestratorController.login)
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.post('/register', orchestratorController.register)
+
+/**
+ * @swagger
+ * /refresh:
+ *   post:
+ *     summary: Refresh token
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.post('/refresh', orchestratorController.refresh)
 
 router.use((error, req, res, next) => {

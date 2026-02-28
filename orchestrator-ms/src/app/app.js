@@ -2,8 +2,40 @@ const cors = require('cors');
 const express = require('express');
 
 const client = require('prom-client');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 const app = express();
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Orchestrator MS API',
+            version: '1.0.0',
+            description: 'API documentation for the Orchestrator microservice',
+        },
+        servers: [
+            {
+                url: 'http://localhost:3000',
+                description: 'Local server',
+            },
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
+    },
+    apis: ['./src/app/routes/*.js'], // Path to the API docs
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Create a Registry which registers the metrics
 const register = new client.Registry();
