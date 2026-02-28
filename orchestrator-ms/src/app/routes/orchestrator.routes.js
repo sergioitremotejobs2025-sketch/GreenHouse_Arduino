@@ -1,10 +1,10 @@
 const { Router } = require('express')
-const expressJwt = require('express-jwt')
+const { expressjwt: expressJwt } = require('express-jwt')
 
 const { TOKEN_SECRET } = require('../../config/jwt.config')
 const OrchestratorController = require('../controllers/orchestrator.controller')
 
-const jwtMiddleware = expressJwt({ algorithms: ['HS256'], secret: TOKEN_SECRET })
+const jwtMiddleware = expressJwt({ algorithms: ['HS256'], secret: TOKEN_SECRET, requestProperty: 'user' })
 const orchestratorController = new OrchestratorController()
 const router = Router()
 
@@ -237,7 +237,7 @@ router.post('/refresh', orchestratorController.refresh)
 router.put('/change-password', jwtMiddleware, orchestratorController.changePassword)
 
 router.use((error, req, res, next) => {
-  if (error.name === expressJwt.UnauthorizedError.name) {
+  if (error.name === 'UnauthorizedError') {
     res.sendStatus(401)
   }
 })
