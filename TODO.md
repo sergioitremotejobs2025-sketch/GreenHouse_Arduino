@@ -32,12 +32,12 @@ This document outlines the systematic steps required to ensure that all microser
 - [x] **Validation**: Guarantee tests cover scenarios where Arduinos submit physically impossible sensor values (e.g., negative light, humidity over 100%).
 
 ### 4. `microcontrollers-ms` (Node.js)
-- [ ] **MySQL DAO**: Ensure the `mysql` mock accurately represents connection dropping. Write tests for MySQL connection retries and auto-reconnect logic.
-- [ ] **CRUD Operations**: Write tests covering duplicate insertions, updating non-existent microcontrollers, and standard SQL injection bypass attempts.
+- [x] **MySQL DAO**: Ensure the `mysql` mock accurately represents connection dropping. Write tests for MySQL connection retries and auto-reconnect logic.
+- [x] **CRUD Operations**: Write tests covering duplicate insertions, updating non-existent microcontrollers, and standard SQL injection bypass attempts.
 
 ### 5. `publisher-ms` (Node.js)
-- [ ] **RabbitMQ Resilience**: Ensure all exponential backoff paths in `QueueModule` are covered.
-- [ ] **Offline Queueing**: Test that messages published while RabbitMQ is disconnected are successfully kept in the `offlinePubQueue` and re-flushed upon reconnection.
+- [x] **RabbitMQ Resilience**: Ensure all exponential backoff paths in `QueueModule` are covered.
+- [x] **Offline Queueing**: Test that messages published while RabbitMQ is disconnected are successfully kept in the `offlinePubQueue` and re-flushed upon reconnection.
 
 ### 6. `stats-ms` (Python)
 - [ ] **Pydantic Validation**: Write tests pushing deliberately malformed, missing, or mistyped data to the `MeasureData` models to ensure validation correctly rejects the payload.

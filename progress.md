@@ -16,3 +16,13 @@
 - **Picture Scheduler**: Refactored `picture.scheduler.spec.js` removing skipped Jest suite cases previously hanging on Jest legacy timer setups. Upgraded `jest.useFakeTimers({ legacyFakeTimers: true })` ensuring interval simulation natively handles capturing snapshots without causing unhandled node timeout.
 - **Database & Catch Block Validation**: Augmented assertions extending full test coverage for the `measure.controller.js`. Handled `axios` network drops resulting in backend 500 propagation errors dynamically by injecting mocked instances routing tests securely through `Dao.prototype`.
 - **Internal Auth Middleware**: Successfully unit-tested `requireInternalKey` logic by modifying environmental scopes to validate internal microservice caller blocks resolving with HTTP 401 on restricted REST paths, and seamlessly approving internally signed ones without interrupting independent endpoint test setups.
+
+### `microcontrollers-ms`
+- **MySQL DAO Resilience**: Rewrote the MySQL mock (`test/__mocks__/mysql.js`) to accurately represent connection dropping and query handling. Added `test/dao.connect.spec.js` to hit the `connect` error handling, `PROTOCOL_CONNECTION_LOST` reconnect, and other error-event branches.
+- **Branch Coverage**: Added comprehensive controller branch-coverage tests (`test/microcontrollers.controller.branch.spec.js`) that mock the DAO and cache to hit every conditional, including cache hits/misses, validation failures, and various `sendStatus` branches for CRUD failures. Achieved **>85% branch coverage**.
+- **DAO Unit Testing**: Created `test/dao.error.spec.js` covering error-propagation for all CRUD methods and an unknown-query branch.
+
+### `publisher-ms`
+- **RabbitMQ (AMQP) Resilience**: Achieved **94.29% branch coverage**. Added `test/queue.module.spec.js` covering connection, error/close events for both connections and channels, and publish error paths.
+- **Offline Queueing**: Verified through unit tests that messages published while the AMQP channel is not ready are successfully stored in `offlinePubQueue` and re-flushed upon reconnection.
+- **App/Main Logic**: Added `test/app.branch.spec.js` to cover truthy/falsy branches in the main publishing loop, ensuring successful micro-responses trigger a publish while failures are logged and skipped.
