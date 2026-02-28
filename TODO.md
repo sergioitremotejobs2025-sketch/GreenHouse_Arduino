@@ -1,67 +1,60 @@
-# IoT Microservices — Future Tasks
+# TDD Implementation & Code Quality Roadmap
 
-This document outlines the next steps for maturing the IoT Microservices project. All tasks from the previous implementation phase have been successfully completed.
+This document outlines the systematic steps required to ensure that all microservices in the IoT project adhere strictly to a Test-Driven Development (TDD) approach, guaranteeing high test coverage, reliability, and robust code.
 
-## 🚀 Phase 1: Real-time & Modern UI (Frontend)
+## 🎯 Phase 1: Test Infrastructure & Coverage Enforcement
 
-- [x] **Modern Aesthetics Refactor**: Implement a "Premium" look using glassmorphism, subtle gradients, and custom typography.
-- [x] **Dark Mode Support**: Add a theme switcher to the dashboard with persistent storage of user preference.
-- [x] **Real-time Updates (WebSockets)**: Integrate `socket.io` to push sensor data from `measure-ms` (via Orchestrator) to the frontend without polling.
-- [x] **Interactive Data Exploration**: Enhance `PicturesHistoryComponent` and charts with advanced filtering, zooming, and "compare dates" functionality.
-- [x] **Threshold Alerting System**: 
-  - [x] Add `thresholdMin` and `thresholdMax` to Microcontroller model.
-  - [x] Implement visual notifications (SnackBars) when sensor values reach critical levels.
-  - [x] Update "Edit Microcontroller" UI to configure these thresholds.
+- [ ] **Global Coverage Tooling**: 
+  - Install and configure coverage tools for all Node.js services (`jest --coverage`).
+  - Configure `pytest-cov` for `stats-ms` (Python).
+  - Configure Go's built-in coverage tool (`go test -coverprofile`) for `auth-ms`.
+  - Configure Angular CLI coverage (`ng test --code-coverage`) for `angular-ms`.
+- [ ] **Enforce Coverage Thresholds**: Update the test scripts in all `package.json`, `go.mod`, and `pytest.ini` files to fail the build if code coverage falls below 85% (lines, statements, functions, and branches).
+- [ ] **CI/CD Integration**: Create a GitHub Actions workflow that automatically runs tests and checks coverage metrics on every Pull Request to the `main` branch.
 
-## 🏗️ Phase 2: Observability & Reliability (DevOps)
+## 🧪 Phase 2: Microservice Unit Test Audit & Refactoring
 
-- [x] **Centralized Logging**: Configure a logging stack (Loki/Promtail) in the Kubernetes manifests to aggregate logs from all pods.
-- [x] **Metrics & Monitoring**: 
-  - [x] Add `/metrics` endpoints (Prometheus format) to all microservices.
-  - [x] Create basic Grafana & Prometheus configurations to track service health.
-- [x] **API Documentation (Swagger)**: Implement OpenAPI/Swagger for `orchestrator-ms`, `auth-ms` (Go), and `stats-ms` (Python).
-- [x] **Health-check Standardization**: Ensure `publisher-ms` and `stats-ms` have consistent `/health` endpoints and are monitored by K8s liveness/readiness probes.
+*The goal here is to review and write tests for edge cases, error handling, and database connection failures, not just the "happy path".*
 
-## 🔐 Phase 3: Security & Performance
+### 1. `auth-ms` (Go)
+- [ ] **Repository Layer**: Mock the MongoDB driver appropriately to test database connection errors and invalid queries during `Login`, `Register`, and `UpdatePassword`.
+- [ ] **Controller Layer**: Test token generation, missing headers, handling of invalid requests, and proper HTTP status code derivation.
+- [ ] **JWT Logic**: Add unit tests for token expiration, signature validation, and refresh token rotation logic.
 
-- [x] **API Gateway Rate Limiting**: Implement rate limiting in `orchestrator-ms` using `express-rate-limit`.
-- [x] **Network Isolation**: Implement Kubernetes `NetworkPolicy` to ensure only the `orchestrator-ms` can communicate with internal services.
-- [x] **Advanced Auth**: 
-  - [x] Implement Refresh Token rotation for better security.
-  - [x] Add a "Change Password" feature in the Angular UI.
-- [x] **Dependency Audit**: Standardize Node.js versions across all microservices and resolve remaining `npm audit` high-risk vulnerabilities.
+### 2. `orchestrator-ms` (Node.js)
+- [ ] **Rate Limiting**: Write tests to simulate surpassing the rate limit and verify that a HTTP 429 response is correctly returned.
+- [ ] **Proxy/Bridge Routes**: Fully mock `axios` interactions to test how the orchestrator handles network timeouts (`ECONNREFUSED`) or 500 errors from backend microservices.
+- [ ] **JWT Middleware**: Test requests with missing, malformed, and expired tokens to ensure they are consistently blocked with a 401 Unauthorized.
 
-## 📊 Phase 4: Service Modernization
-- [x] **Stats-MS (Python)**:
-  - [x] Migrate `unittest` to `pytest` for better developer experience.
-  - [x] Add Pydantic for strict input/output data validation.
-- [x] **Publisher-MS (Node)**:
-  - [x] Implement unit tests for the publishing logic.
-  - [x] Add retry mechanisms for RabbitMQ connections.
-- [x] **Documentation Update**: Sync `ARCHITECTURE.md` with the current state, including the RabbitMQ flow and `stats-ms` integration.
+### 3. `measure-ms` (Node.js)
+- [ ] **Database Setup**: Improve MongoDB mocking or use an in-memory database like `mongodb-memory-server` to execute pure isolating tests for the Data Access Object (DAO).
+- [ ] **Picture Scheduler**: Refactor the timer implementation in `picture.scheduler.spec.js` (currently failing with Jest `fakeTimers` on v30) to robustly test the 10-hour interval logic without test timeouts.
+- [ ] **Validation**: Guarantee tests cover scenarios where Arduinos submit physically impossible sensor values (e.g., negative light, humidity over 100%).
 
----
+### 4. `microcontrollers-ms` (Node.js)
+- [ ] **MySQL DAO**: Ensure the `mysql` mock accurately represents connection dropping. Write tests for MySQL connection retries and auto-reconnect logic.
+- [ ] **CRUD Operations**: Write tests covering duplicate insertions, updating non-existent microcontrollers, and standard SQL injection bypass attempts.
 
-## ✅ Completed Tasks (Reference)
+### 5. `publisher-ms` (Node.js)
+- [ ] **RabbitMQ Resilience**: Ensure all exponential backoff paths in `QueueModule` are covered.
+- [ ] **Offline Queueing**: Test that messages published while RabbitMQ is disconnected are successfully kept in the `offlinePubQueue` and re-flushed upon reconnection.
 
-*See [TODO27022026_1.md](file:///Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/TODO27022026_1.md) for the full list of recently finished items.*
+### 6. `stats-ms` (Python)
+- [ ] **Pydantic Validation**: Write tests pushing deliberately malformed, missing, or mistyped data to the `MeasureData` models to ensure validation correctly rejects the payload.
+- [ ] **Calculations**: Expand tests beyond simple arrays to test large data sets and data sets containing `NaN` or `None`.
 
-- [x] UI Modernization (Glassmorphism & Gradients)
-- [x] Theme Management (Dark/Light Mode)
-- [x] WebSocket Integration for Real-time Monitoring
-- [x] Threshold Alerting System
-- [x] Interactive Data Exploration (Zoom, Comparison, Timelapse)
-- [x] Centralized Logging (Loki/Promtail)
-- [x] Metrics & Monitoring (Prometheus/Grafana)
-- [x] API Documentation (Swagger/OpenAPI)
-- [x] Kubernetes Health Checks (Liveness/Readiness)
-- [x] API Gateway Rate Limiting
-- [x] K8s Network Isolation (Policies)
-- [x] Advanced Auth (Change Password/Rotation)
-- [x] Angular v15 Upgrade
-- [x] MongoDB Indexing & Persistence
-- [x] Auth-ms Refactor & Testing (Go)
-- [x] Picture Snapshot History in Frontend
-- [x] Internal API Security (Shared Keys)
-- [x] CI/CD Workflow setup for GitHub Actions
-- [x] Kubernetes HPA & Resource Limits
+### 7. `angular-ms` (Frontend)
+- [ ] **Component Specs**: Ensure comprehensive tests exist for `ChangePasswordDialogComponent`, `DashboardComponent`, and custom pipes (`MeasureViewPipe`).
+- [ ] **Service Testing**: Utilize Angular's `HttpTestingController` to mock backend API responses, ensuring services handle 401 Unauthorized (triggering logout) and 429 Too Many Requests seamlessly.
+- [ ] **Routing Guards**: Test `AuthGuard` to verify routing access is strictly denied for unauthenticated users.
+
+## 🔗 Phase 3: Integration & End-to-End (E2E) Testing
+
+- [ ] **Docker Compose Testing Environment**: Create a `docker-compose.test.yml` that stands up the entire microservice architecture alongside ephemeral databases.
+- [ ] **API Integration Tests**: Write Postman/Newman or `supertest`-based suites that execute cross-service flows (e.g., Login -> Get Token -> Send Orchestrator Request -> Microcontroller MS -> Response).
+- [ ] **Cypress E2E Tests**: Set up Cypress in the Angular MS to run automated browser clicks simulating user registration, login, viewing dashboards, and modifying microcontroller configurations.
+
+## 🛠 Phase 4: Developer Experience & Maintenance
+
+- [ ] **Pre-commit Hooks**: Add `husky` and `lint-staged` to seamlessly run the test suite for any globally modified files before a `git commit` is permitted.
+- [ ] **TDD Documentation**: Add explicit instructions detailing how developers should create failing tests, write business logic, and refactor code inside the `README.md` or a `CONTRIBUTING.md` file.
