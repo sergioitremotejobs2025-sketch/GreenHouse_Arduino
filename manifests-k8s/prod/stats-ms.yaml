@@ -94,6 +94,8 @@ spec:
             configMapKeyRef:
               key: RABBITMQ_SERVICE_PORT
               name: env-configmap
+        - name: METRICS_PORT
+          value: '80'
         image: 7rocky/stats-ms
         imagePullPolicy: Always
         name: stats-ms
@@ -105,6 +107,18 @@ spec:
             memory: 64Mi
           requests:
             memory: 16Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
       initContainers:
       - command:
         - 'sh'

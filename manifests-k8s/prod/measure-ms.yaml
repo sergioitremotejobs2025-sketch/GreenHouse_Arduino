@@ -97,6 +97,18 @@ spec:
             memory: 64Mi
           requests:
             memory: 16Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
       initContainers:
       - command:
         - sh

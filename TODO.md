@@ -20,7 +20,7 @@ This document outlines the next steps for maturing the IoT Microservices project
   - [x] Add `/metrics` endpoints (Prometheus format) to all microservices.
   - [x] Create basic Grafana & Prometheus configurations to track service health.
 - [x] **API Documentation (Swagger)**: Implement OpenAPI/Swagger for `orchestrator-ms`, `auth-ms` (Go), and `stats-ms` (Python).
-- [ ] **Health-check Standardization**: Ensure `publisher-ms` and `stats-ms` have consistent `/health` endpoints and are monitored by K8s liveness/readiness probes.
+- [x] **Health-check Standardization**: Ensure `publisher-ms` and `stats-ms` have consistent `/health` endpoints and are monitored by K8s liveness/readiness probes.
 
 ## 🔐 Phase 3: Security & Performance
 
@@ -55,6 +55,7 @@ This document outlines the next steps for maturing the IoT Microservices project
 - [x] Centralized Logging (Loki/Promtail)
 - [x] Metrics & Monitoring (Prometheus/Grafana)
 - [x] API Documentation (Swagger/OpenAPI)
+- [x] Kubernetes Health Checks (Liveness/Readiness)
 - [x] Angular v15 Upgrade
 - [x] MongoDB Indexing & Persistence
 - [x] Auth-ms Refactor & Testing (Go)
