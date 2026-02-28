@@ -27,7 +27,17 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "NODE_ENV=test jest --forceExit"
+    "test": "NODE_ENV=test jest --coverage --forceExit"
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 85,
+        "functions": 85,
+        "lines": 85,
+        "statements": 85
+      }
+    }
   },
   "version": "1.0.0"
 }

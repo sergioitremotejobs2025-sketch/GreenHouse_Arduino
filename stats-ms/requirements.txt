@@ -5,3 +5,4 @@ prometheus-client
 flasgger
 pytest
 pydantic
+pytest-cov

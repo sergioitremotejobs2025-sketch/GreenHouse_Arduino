@@ -4,13 +4,13 @@ This document outlines the systematic steps required to ensure that all microser
 
 ## 🎯 Phase 1: Test Infrastructure & Coverage Enforcement
 
-- [ ] **Global Coverage Tooling**: 
+- [x] **Global Coverage Tooling**: 
   - Install and configure coverage tools for all Node.js services (`jest --coverage`).
   - Configure `pytest-cov` for `stats-ms` (Python).
   - Configure Go's built-in coverage tool (`go test -coverprofile`) for `auth-ms`.
   - Configure Angular CLI coverage (`ng test --code-coverage`) for `angular-ms`.
-- [ ] **Enforce Coverage Thresholds**: Update the test scripts in all `package.json`, `go.mod`, and `pytest.ini` files to fail the build if code coverage falls below 85% (lines, statements, functions, and branches).
-- [ ] **CI/CD Integration**: Create a GitHub Actions workflow that automatically runs tests and checks coverage metrics on every Pull Request to the `main` branch.
+- [x] **Enforce Coverage Thresholds**: Update the test scripts in all `package.json`, `go.mod`, and `pytest.ini` files to fail the build if code coverage falls below 85% (lines, statements, functions, and branches).
+- [x] **CI/CD Integration**: Create a GitHub Actions workflow that automatically runs tests and checks coverage metrics on every Pull Request to the `main` branch.
 
 ## 🧪 Phase 2: Microservice Unit Test Audit & Refactoring
 
