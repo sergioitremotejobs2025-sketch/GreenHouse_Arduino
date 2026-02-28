@@ -57,7 +57,9 @@ export class LoginComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe()
+    if (this.subs) {
+      this.subs.unsubscribe()
+    }
   }
 
   openChangePasswordDialog() {

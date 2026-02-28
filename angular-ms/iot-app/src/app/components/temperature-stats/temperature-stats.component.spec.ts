@@ -12,15 +12,15 @@ describe('TemperatureStatsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [ TemperatureStatsComponent ],
-        imports: [ TestModule ],
-        providers: [
-          { 
-            provide: ArduinoService,
-            useClass: ArduinoServiceStub
-          }
-        ]
-      })
+      declarations: [TemperatureStatsComponent],
+      imports: [TestModule],
+      providers: [
+        {
+          provide: ArduinoService,
+          useClass: ArduinoServiceStub
+        }
+      ]
+    })
       .compileComponents()
   }))
 
@@ -30,12 +30,32 @@ describe('TemperatureStatsComponent', () => {
     fixture.detectChanges()
   })
 
-  it('should use ArduinoService', () => {
-    arduinoService = TestBed.inject(ArduinoServiceStub)
-    expect(arduinoService.getValue()).toBe('real value')
-  })
-
   it('should create', () => {
-    expect(component).toBeTruthy()
-  })
-})
+    expect(component).toBeTruthy();
+    expect(component.measureUnit).toBe('ºC');
+  });
+
+  it('should update stats when newMeasure is called', () => {
+    const measure1 = { real_value: 20 } as any;
+    const measure2 = { real_value: 30 } as any;
+    const measure3 = { real_value: 10 } as any;
+
+    component.newMeasure(measure1);
+    expect(component.nSamples).toBe(1);
+    expect(component.avgMeasure).toBe(20);
+    expect(component.lastMeasure.real_value).toBe(20);
+    expect(component.maxMeasure.real_value).toBe(20);
+    expect(component.minMeasure.real_value).toBe(20);
+
+    component.newMeasure(measure2);
+    expect(component.nSamples).toBe(2);
+    expect(component.avgMeasure).toBe(25);
+    expect(component.maxMeasure.real_value).toBe(30);
+    expect(component.minMeasure.real_value).toBe(20);
+
+    component.newMeasure(measure3);
+    expect(component.avgMeasure).toBe(20);
+    expect(component.maxMeasure.real_value).toBe(30);
+    expect(component.minMeasure.real_value).toBe(10);
+  });
+});

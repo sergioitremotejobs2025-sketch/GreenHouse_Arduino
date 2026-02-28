@@ -8,7 +8,7 @@ import { Microcontroller } from '@models/microcontroller.model'
 
 @Component({
   selector: 'app-dashboard',
-  styleUrls: [ './dashboard.component.less' ],
+  styleUrls: ['./dashboard.component.less'],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
@@ -47,8 +47,10 @@ export class DashboardComponent implements OnInit {
   }
 
   changeActivity(micro: Microcontroller) {
-    const idx = this.microcontrollers.indexOf(micro)
-    this.microcontrollers[idx] = micro
+    const idx = this.microcontrollers.findIndex(m => m.ip === micro.ip && m.measure === micro.measure)
+    if (idx !== -1) {
+      this.microcontrollers[idx] = micro
+    }
   }
 
 }

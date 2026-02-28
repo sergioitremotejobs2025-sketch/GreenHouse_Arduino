@@ -41,9 +41,9 @@ export class AuthServiceStub {
 
   login(username: string, password: string): Observable<any> {
     return of({
-        refreshToken: '54321',
-        token: '12345'
-      })
+      refreshToken: '54321',
+      token: '12345'
+    })
       .pipe(
         tap(
           (response: { refreshToken: string, token: string }) => {
@@ -56,9 +56,9 @@ export class AuthServiceStub {
 
   register(username: string, password: string): Observable<any> {
     return of({
-        refreshToken: '54321',
-        token: '12345'
-      })
+      refreshToken: '54321',
+      token: '12345'
+    })
       .pipe(
         tap(
           (response: { refreshToken: string, token: string }) => {
@@ -70,9 +70,9 @@ export class AuthServiceStub {
   }
 
   refresh(refreshToken: string): Promise<any> {
-    return of({ 
-        refreshToken: '55555'
-      })
+    return of({
+      refreshToken: '55555'
+    })
       .pipe(
         tap(
           (response: { refreshToken: string, token: string }) => {
@@ -118,6 +118,14 @@ export class AuthServiceStub {
     console.log(JSON.parse(jsonPayload).exp - Date.now() / 1000);
 
     return JSON.parse(jsonPayload).exp - Date.now() / 1000 < 20;
+  }
+
+  getUser() {
+    return localStorage.getItem('iot-ms-user') || '';
+  }
+
+  changePassword(password: string): Observable<any> {
+    return of({ success: true });
   }
 
 }

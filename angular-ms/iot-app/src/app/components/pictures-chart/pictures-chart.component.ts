@@ -31,18 +31,18 @@ export class PicturesChartComponent extends MeasureChart {
         const picInfo = await this.arduinoService.getCurrentMeasure(this.micro.ip, 'pictures') as Pictures
 
         if (picInfo) {
-            this.lastPicture = picInfo
-            if (this.history.length === 0 || this.history[0].timestamp !== picInfo.timestamp) {
-                this.history.unshift(picInfo)
-                if (this.history.length > 10) this.history.pop()
-            }
             this.handleMeasure(picInfo, isFirstTime)
         } else if (!this.micro.isInactive) {
             this.setInactivity(true)
         }
     }
 
-    drawData(pictures: Pictures) {
+    drawData(picInfo: Pictures) {
+        this.lastPicture = picInfo
+        if (this.history.length === 0 || this.history[0].timestamp !== picInfo.timestamp) {
+            this.history.unshift(picInfo)
+            if (this.history.length > 10) this.history.pop()
+        }
         this.isChartReady = true
     }
 

@@ -26,7 +26,7 @@ export class ArduinoServiceStub {
     if (this.microcontrollers.length) {
       return of(this.microcontrollers);
     } else {
-      return of([ microcontrollerMock ]);
+      return of([microcontrollerMock]);
     }
   }
 
@@ -43,7 +43,7 @@ export class ArduinoServiceStub {
   }
 
   getCurrentTemperatures(measure: string): Observable<Temperature[]> {
-    return of([ temperatureMock ]);
+    return of([temperatureMock]);
   }
 
   async getCurrentTemperature(ip: string, measure: string): Promise<Temperature> {
@@ -51,8 +51,40 @@ export class ArduinoServiceStub {
     return temperatures.filter(temperature => temperature.ip === ip)[0];
   }
 
+  postMicrocontroller(micro: Microcontroller): Observable<any> {
+    return of({});
+  }
+
+  deleteMicrocontroller(micro: Microcontroller): Observable<any> {
+    return of({});
+  }
+
+  putMicrocontroller(micro: any): Observable<any> {
+    return of({});
+  }
+
+  clearMicrocontrollers() {
+    this.microcontrollers = [];
+  }
+
+  getCurrentMeasure(ip: string, measure: string): Promise<any> {
+    return Promise.resolve({ ip, real_value: 20 });
+  }
+
+  postLightStatus(ip: string, status: string): Promise<any> {
+    return Promise.resolve({ ip, sensor: 'Photoresistor' });
+  }
+
+  getPreviousMeasures(ip: string, measure: string, group: string, init: string, end: string): Observable<any[]> {
+    return of([]);
+  }
+
+  getPicturesHistory(ip: string, init: string, end: string): Observable<any[]> {
+    return of([]);
+  }
+
   getPreviousTemperatures(ip: string, init_date: string, end_date: string): Observable<TemperatureStats[]> {
-    return of([ temperatureStatsMock ]);
+    return of([temperatureStatsMock]);
   }
 
 }

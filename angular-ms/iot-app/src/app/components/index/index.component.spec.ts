@@ -9,9 +9,9 @@ describe('IndexComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [ IndexComponent ],
-        imports: [ TestModule ]
-      })
+      declarations: [IndexComponent],
+      imports: [TestModule]
+    })
       .compileComponents();
   }));
 
@@ -23,5 +23,14 @@ describe('IndexComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should toggle showBtn1 on mouse events', () => {
+    const card = fixture.debugElement.nativeElement.querySelector('mat-card');
+    card.dispatchEvent(new Event('mouseenter'));
+    expect(component.showBtn1).toBeTrue();
+
+    card.dispatchEvent(new Event('mouseleave'));
+    expect(component.showBtn1).toBeFalse();
   });
 });

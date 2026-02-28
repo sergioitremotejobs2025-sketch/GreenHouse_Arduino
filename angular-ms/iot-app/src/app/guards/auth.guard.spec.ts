@@ -1,21 +1,67 @@
-import { TestBed } from '@angular/core/testing'
-
-import { AuthGuard } from './auth.guard'
-
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of, throwError } from 'rxjs';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from '@services/auth.service';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 describe('AuthGuard', () => {
-  let guard: AuthGuard
+  let guard: AuthGuard;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(() => {
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn', 'getRefreshToken', 'refresh', 'removeTokens']);
+
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule]
-    })
-    guard = TestBed.inject(AuthGuard)
-  })
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      providers: [
+        AuthGuard,
+        { provide: AuthService, useValue: authServiceSpy }
+      ]
+    });
+    guard = TestBed.inject(AuthGuard);
+  });
 
   it('should be created', () => {
-    expect(guard).toBeTruthy()
-  })
-})
+    expect(guard).toBeTruthy();
+  });
+
+  const mockRoute = { url: [] } as any as ActivatedRouteSnapshot;
+  const mockState = {} as any as RouterStateSnapshot;
+
+  it('should return true if user is logged in', async () => {
+    authServiceSpy.isLoggedIn.and.returnValue(true);
+    const result = await guard.canActivate(mockRoute, mockState);
+    expect(result).toBeTrue();
+  });
+
+  it('should refresh token and return true if refresh token exists', async () => {
+    authServiceSpy.isLoggedIn.and.returnValue(false);
+    authServiceSpy.getRefreshToken.and.returnValue('valid-refresh-token');
+    authServiceSpy.refresh.and.returnValue(of({ accessToken: 'a', refreshToken: 'b' }));
+
+    const result = await guard.canActivate(mockRoute, mockState);
+    expect(result).toBeTrue();
+    expect(authServiceSpy.refresh).toHaveBeenCalled();
+  });
+
+  it('should remove tokens and return false if refresh fails', async () => {
+    authServiceSpy.isLoggedIn.and.returnValue(false);
+    authServiceSpy.getRefreshToken.and.returnValue('bad-token');
+    authServiceSpy.refresh.and.returnValue(throwError(() => new Error('Refresh error')));
+
+    const result = await guard.canActivate(mockRoute, mockState);
+    expect(result).toBeFalse();
+    expect(authServiceSpy.removeTokens).toHaveBeenCalled();
+  });
+
+  it('should return false if no credentials exist', async () => {
+    authServiceSpy.isLoggedIn.and.returnValue(false);
+    authServiceSpy.getRefreshToken.and.returnValue(null);
+
+    const result = await guard.canActivate(mockRoute, mockState);
+    expect(result).toBeFalse();
+    expect(authServiceSpy.removeTokens).toHaveBeenCalled();
+  });
+});

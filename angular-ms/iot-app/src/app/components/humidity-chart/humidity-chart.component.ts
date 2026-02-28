@@ -34,7 +34,6 @@ export class HumidityChartComponent extends MeasureChart {
     const humidity = await this.arduinoService.getCurrentMeasure(this.micro.ip, this.micro.measure) as Humidity
 
     if (humidity) {
-      this.lastHumidity = humidity.real_value
       this.handleMeasure(humidity, isFirstTime)
     } else if (!this.micro.isInactive) {
       this.setInactivity(true)
@@ -42,6 +41,7 @@ export class HumidityChartComponent extends MeasureChart {
   }
 
   drawData(humidity: Humidity) {
+    this.lastHumidity = humidity.real_value
     if (this.chart.dataTable.length === 2) {
       this.chart.dataTable.pop()
     }
