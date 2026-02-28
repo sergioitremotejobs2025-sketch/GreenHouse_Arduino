@@ -34,9 +34,9 @@ const methodToConnectedService = async (res, url, method, body = {}, status = 20
 
 module.exports = class ServicesController {
 
-  async getToConnectedService(res, service, path = '', query = {}) {
+  async getToConnectedService(res, service, path = '', query = {}, returnResponse = false) {
     const url = `http://${service}/${path}?${queryString.stringify(query)}`
-    return await methodToConnectedService(res, url, 'get', {}, 200, false, buildHeaders(service))
+    return await methodToConnectedService(res, url, 'get', {}, 200, returnResponse, buildHeaders(service))
   }
 
   async postToConnectedService(res, service, path = '', body, status, returnResponse) {

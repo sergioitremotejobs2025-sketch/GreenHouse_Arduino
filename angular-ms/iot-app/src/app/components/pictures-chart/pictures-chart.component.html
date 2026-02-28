@@ -1,40 +1,50 @@
 <div class="pictures-container">
   <!-- Camera offline state -->
-  <div class="camera-offline" *ngIf="!lastPicture && micro?.isInactive">
-    <div class="offline-icon">📷</div>
+  <div class="camera-offline glass" *ngIf="!lastPicture && micro?.isInactive">
+    <mat-icon class="offline-icon">videocam_off</mat-icon>
     <p class="offline-msg">Cámara no disponible</p>
-    <p class="offline-sub">El dispositivo no responde</p>
+    <p class="offline-sub text-muted">El dispositivo no responde en este momento</p>
   </div>
 
-  <!-- Loading state: not yet received first picture and not inactive -->
-  <div class="camera-loading" *ngIf="!lastPicture && !micro?.isInactive">
-    <div class="loading-spinner"></div>
+  <!-- Loading state -->
+  <div class="camera-loading glass" *ngIf="!lastPicture && !micro?.isInactive">
+    <mat-spinner diameter="40"></mat-spinner>
     <p class="loading-msg">Conectando con la cámara…</p>
   </div>
 
-  <div class="current-picture" *ngIf="lastPicture">
-    <h3>Etapa Actual: {{ lastPicture.stage | titlecase }}</h3>
-    <p>Minutos transcurridos: {{ lastPicture.elapsed_minutes }}</p>
-    <img [src]="lastPicture.image_url" alt="Plant growth stage" class="main-img">
-  </div>
+  <div class="picture-layout" *ngIf="lastPicture">
+    <div class="main-display card shadow-sm">
+      <div class="display-header">
+        <div class="stage-badge" [attr.data-stage]="lastPicture.stage">{{ lastPicture.stage | titlecase }}</div>
+        <span class="elapsed-time text-muted">
+          <mat-icon>timer</mat-icon>
+          {{ lastPicture.elapsed_minutes }} min
+        </span>
+      </div>
+      <div class="img-frame">
+        <img [src]="lastPicture.image_url" alt="Plant growth stage" class="main-img">
+      </div>
+      <div class="display-footer">
+        <button mat-flat-button color="accent" (click)="goToHistory()">
+          <mat-icon>history</mat-icon>
+          Ver historial completo
+        </button>
+      </div>
+    </div>
 
-  <div class="history-log" *ngIf="history.length > 0">
-    <h4>Log de Imágenes</h4>
-    <div class="history-scroll">
-      <div class="history-item" *ngFor="let item of history">
-        <img [src]="item.image_url" class="thumb-img">
-        <div class="item-info">
-          <span>{{ item.timestamp | date:'HH:mm:ss' }}</span>
-          <span>{{ item.stage }}</span>
+    <div class="history-sidebar glass" *ngIf="history.length > 0">
+      <h4 class="sidebar-title">Actividad reciente</h4>
+      <div class="history-scroll custom-scrollbar">
+        <div class="history-item" *ngFor="let item of history">
+          <div class="thumb-frame">
+            <img [src]="item.image_url" class="thumb-img">
+          </div>
+          <div class="item-info">
+            <span class="item-time">{{ item.timestamp | date:'HH:mm:ss' }}</span>
+            <span class="item-stage text-muted">{{ item.stage | titlecase }}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="history-nav" *ngIf="lastPicture">
-    <button mat-stroked-button color="accent" (click)="goToHistory()">
-      <mat-icon>history</mat-icon>
-      Ver historial completo
-    </button>
   </div>
 </div>

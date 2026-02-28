@@ -19,6 +19,10 @@ import { MatStepperModule } from '@angular/material/stepper'
 import { MatTableModule } from '@angular/material/table'
 import { MatToolbarModule } from '@angular/material/toolbar'
 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatSnackBarModule } from '@angular/material/snack-bar'
+
 @NgModule({
   exports: [
     MatButtonModule,
@@ -37,7 +41,10 @@ import { MatToolbarModule } from '@angular/material/toolbar'
     MatSlideToggleModule,
     MatStepperModule,
     MatTableModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   providers: [
     {

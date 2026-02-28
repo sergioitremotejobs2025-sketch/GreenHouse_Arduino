@@ -4,11 +4,14 @@ This document outlines the next steps for maturing the IoT Microservices project
 
 ## 🚀 Phase 1: Real-time & Modern UI (Frontend)
 
-- [ ] **Modern Aesthetics Refactor**: Implement a "Premium" look using glassmorphism, subtle gradients, and custom typography (Inter or Roboto).
-- [ ] **Dark Mode Support**: Add a theme switcher to the dashboard with persistent storage of user preference.
-- [ ] **Real-time Updates (WebSockets)**: Integrate `socket.io` to push sensor data from `measure-ms` (via Orchestrator) to the frontend without polling.
-- [ ] **Interactive Data Exploration**: Enhance `PicturesHistoryComponent` and charts with advanced filtering, zooming, and "compare dates" functionality.
-- [ ] **Alerting System**: Visual notifications/toasts when sensor values (Temperature/Humidity) reach critical thresholds.
+- [x] **Modern Aesthetics Refactor**: Implement a "Premium" look using glassmorphism, subtle gradients, and custom typography.
+- [x] **Dark Mode Support**: Add a theme switcher to the dashboard with persistent storage of user preference.
+- [x] **Real-time Updates (WebSockets)**: Integrate `socket.io` to push sensor data from `measure-ms` (via Orchestrator) to the frontend without polling.
+- [x] **Interactive Data Exploration**: Enhance `PicturesHistoryComponent` and charts with advanced filtering, zooming, and "compare dates" functionality.
+- [x] **Threshold Alerting System**: 
+  - [x] Add `thresholdMin` and `thresholdMax` to Microcontroller model.
+  - [x] Implement visual notifications (SnackBars) when sensor values reach critical levels.
+  - [x] Update "Edit Microcontroller" UI to configure these thresholds.
 
 ## 🏗️ Phase 2: Observability & Reliability (DevOps)
 
@@ -44,6 +47,11 @@ This document outlines the next steps for maturing the IoT Microservices project
 
 *See [TODO27022026_1.md](file:///Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/TODO27022026_1.md) for the full list of recently finished items.*
 
+- [x] UI Modernization (Glassmorphism & Gradients)
+- [x] Theme Management (Dark/Light Mode)
+- [x] WebSocket Integration for Real-time Monitoring
+- [x] Threshold Alerting System
+- [x] Interactive Data Exploration (Zoom, Comparison, Timelapse)
 - [x] Angular v15 Upgrade
 - [x] MongoDB Indexing & Persistence
 - [x] Auth-ms Refactor & Testing (Go)

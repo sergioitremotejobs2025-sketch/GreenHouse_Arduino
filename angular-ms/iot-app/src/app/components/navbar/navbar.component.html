@@ -1,10 +1,19 @@
-<nav class="bg-blue white">
-  <button class="float-left" (click)="toggle()" mat-icon-button>
+<nav class="glass shadow-md">
+  <button class="menu-btn" (click)="toggle()" mat-icon-button>
     <mat-icon>menu</mat-icon>
   </button>
-  <span class="float-left metal-mania nav-item nav-title user-select-none white">
-    <a routerLink="/">IoT_Microservices</a>
+
+  <span class="nav-title metal-mania user-select-none">
+    <a routerLink="/" class="logo-link">IoT_Microservices</a>
   </span>
-  <app-login></app-login>
-  <span class="float-right nav-date">{{ today | date: 'dd/MM/yyyy' }}</span>
+
+  <div class="nav-actions">
+    <button mat-icon-button (click)="toggleTheme()" matTooltip="Cambiar tema">
+      <mat-icon>{{ (theme$ | async) === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+    </button>
+
+    <app-login></app-login>
+
+    <span class="nav-date">{{ today | date: 'dd/MM/yyyy' }}</span>
+  </div>
 </nav>

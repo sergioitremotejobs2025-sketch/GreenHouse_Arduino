@@ -1,21 +1,129 @@
+.history-page {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.glass-panel {
+  background: var(--color-glass);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--color-glass-border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.history-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.date-range {
+  display: flex;
+  gap: 16px;
+  flex-grow: 1;
+
+  mat-form-field {
+    flex-grow: 1;
+  }
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-glass-border);
+  padding-top: 24px;
+}
+
+.view-stats-select {
+  width: 300px;
+}
+
+.submit-btn {
+  height: 56px;
+  padding: 0 32px;
+  border-radius: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-container {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.chart-hints {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  opacity: 0.6;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.chart-wrapper {
+  flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
 google-chart {
   width: 100%;
-
-  @media screen and (max-width: 500px) {
-    width: auto
-  }
 }
 
-button,
-mat-form-field {
-  margin-right: 5%;
-  width: 200px;
+@media screen and (max-width: 768px) {
 
-  @media screen and (max-width: 500px) {
-    width: 100%
+  .form-row,
+  .date-range,
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
-}
 
-.view-stats {
-  margin-top: 20px;
+  .view-stats-select {
+    width: 100%;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
 }

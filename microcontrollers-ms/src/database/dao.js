@@ -2,7 +2,7 @@ const mysql = require('mysql')
 
 const { DB_NAME, MYSQL, PASSWORD, USERNAME } = require('../config/mysql.config')
 
-const abstractQuery = (db, query, values=[]) => {
+const abstractQuery = (db, query, values = []) => {
   return new Promise((resolve, reject) => {
     db.query(query, values, (error, results) => {
       error ? reject(error) : resolve(results)
@@ -42,29 +42,29 @@ module.exports = class Mysql {
   findByMeasure(measure) {
     return this.query(
       'SELECT * FROM microcontrollers WHERE measure = ?',
-      [ measure ]
+      [measure]
     )
   }
 
   findByUsername(username) {
     return this.query(
       'SELECT * FROM microcontrollers WHERE username = ?',
-      [ username ]
+      [username]
     )
   }
 
-  async insertMicrocontroller({ ip, measure, sensor, username }) {
+  async insertMicrocontroller({ ip, measure, sensor, username, thresholdMin, thresholdMax }) {
     const result = await this.query(
-      'INSERT INTO microcontrollers(ip, measure, sensor, username) VALUES (?, ?, ?, ?)',
-      [ ip, measure, sensor, username ]
+      'INSERT INTO microcontrollers(ip, measure, sensor, username, thresholdMin, thresholdMax) VALUES (?, ?, ?, ?, ?, ?)',
+      [ip, measure, sensor, username, thresholdMin, thresholdMax]
     )
     return !!result.affectedRows
   }
 
-  async updateMicrocontroller({ ip, measure, old_ip, sensor, username }) {
+  async updateMicrocontroller({ ip, measure, old_ip, sensor, username, thresholdMin, thresholdMax }) {
     const result = await this.query(
-      'UPDATE microcontrollers SET ip = ?, measure = ?, sensor = ?, username = ? WHERE ip = ? AND measure = ?', 
-      [ ip, measure, sensor, username, old_ip, measure ]
+      'UPDATE microcontrollers SET ip = ?, measure = ?, sensor = ?, username = ?, thresholdMin = ?, thresholdMax = ? WHERE ip = ? AND measure = ?',
+      [ip, measure, sensor, username, thresholdMin, thresholdMax, old_ip, measure]
     )
     return !!result.affectedRows
   }
@@ -72,7 +72,7 @@ module.exports = class Mysql {
   async deleteMicrocontroller({ ip, measure }) {
     const result = await this.query(
       'DELETE FROM microcontrollers WHERE ip = ? AND measure = ?',
-      [ ip, measure ]
+      [ip, measure]
     )
     return !!result.affectedRows
   }

@@ -16,10 +16,27 @@ export class PicturesHistoryComponent implements OnInit {
 
     micro: Microcontroller
     pictures: Pictures[] = []
+    filteredPictures: Pictures[] = []
     isLoading = false
     noResults = false
 
+    // Timelapse state
+    isTimelapsePlaying = false
+    timelapseIndex = 0
+    timelapseTimer: any
+    timelapseSpeed = 500
+
     historyForm: FormGroup
+    currentStageFilter = 'all'
+
+    stages = [
+        { value: 'all', label: 'Todos los estados' },
+        { value: 'seedling', label: '🌱 Brote' },
+        { value: 'young_plant', label: '🌿 Planta joven' },
+        { value: 'flowering', label: '🌸 Floración' },
+        { value: 'green_fruit', label: '🍅 Fruto verde' },
+        { value: 'ripe_fruit', label: '🍅 Fruto maduro' }
+    ]
 
     constructor(
         private route: ActivatedRoute,
@@ -47,6 +64,7 @@ export class PicturesHistoryComponent implements OnInit {
         this.isLoading = true
         this.noResults = false
         this.pictures = []
+        this.stopTimelapse()
 
         this.arduinoService.getPicturesHistory(
             this.micro.ip,
@@ -55,6 +73,7 @@ export class PicturesHistoryComponent implements OnInit {
         ).subscribe(
             (data: Pictures[]) => {
                 this.pictures = data
+                this.applyFilter()
                 this.noResults = data.length === 0
                 this.isLoading = false
             },
@@ -63,6 +82,41 @@ export class PicturesHistoryComponent implements OnInit {
                 this.isLoading = false
             }
         )
+    }
+
+    applyFilter() {
+        if (this.currentStageFilter === 'all') {
+            this.filteredPictures = [...this.pictures]
+        } else {
+            this.filteredPictures = this.pictures.filter(p => p.stage === this.currentStageFilter)
+        }
+        this.noResults = this.filteredPictures.length === 0
+    }
+
+    toggleTimelapse() {
+        if (this.isTimelapsePlaying) {
+            this.stopTimelapse()
+        } else if (this.filteredPictures.length > 0) {
+            this.isTimelapsePlaying = true
+            this.timelapseIndex = 0
+            this.playNextFrame()
+        }
+    }
+
+    playNextFrame() {
+        this.timelapseTimer = setTimeout(() => {
+            this.timelapseIndex = (this.timelapseIndex + 1) % this.filteredPictures.length
+            if (this.isTimelapsePlaying) {
+                this.playNextFrame()
+            }
+        }, this.timelapseSpeed)
+    }
+
+    stopTimelapse() {
+        this.isTimelapsePlaying = false
+        if (this.timelapseTimer) {
+            clearTimeout(this.timelapseTimer)
+        }
     }
 
     stageLabel(stage: string): string {

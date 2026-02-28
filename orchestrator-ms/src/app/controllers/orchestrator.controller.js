@@ -27,7 +27,22 @@ module.exports = class OrchestratorController {
     let { path, ...query } = req.query
     if (!path) path = req.route.path.substring(1)
     query.username = req.user.username
-    await servicesController.getToConnectedService(res, MEASURE_MS, path, query)
+
+    // Call service but get full response to broadcast it
+    const response = await servicesController.getToConnectedService(res, MEASURE_MS, path, query, true)
+
+    if (response && response.data) {
+      const io = req.app.get('io');
+      if (io) {
+        // Broadcast the measurement update to all clients
+        io.emit('measure_update', {
+          measure: path,
+          data: response.data,
+          username: req.user.username
+        });
+      }
+      return res.json(response.data);
+    }
   }
 
   async postMeasureService(req, res) {

@@ -1,24 +1,32 @@
-<span>
-  {{ micro.measure | measureView }}:&nbsp;
-  <i>{{ micro.sensor }}</i>
-</span>
-<span class="float-right">
-  <mat-icon class="connection-icon" *ngIf="!micro.isInactive">wifi</mat-icon>
-  <mat-icon class="connection-icon yellow" *ngIf="micro.isInactive">wifi_off</mat-icon>
-  &nbsp;{{ micro.ip }}&nbsp;
-  <ng-container *ngIf="!isHistory">
-    <button class="arrow-btn" mat-icon-button [matMenuTriggerFor]="menu">
-      <mat-icon>keyboard_arrow_down</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item [routerLink]="[ '/history', micro.ip, micro.measure ]">
-        <mat-icon>bar_chart</mat-icon>
-        <span>Estadísticas</span>
+<div class="micro-header">
+  <div class="micro-info">
+    <div class="measure-type">
+      <mat-icon class="measure-icon">{{ micro.measure | measureIcon }}</mat-icon>
+      <span class="measure-label">{{ micro.measure | measureView }}</span>
+    </div>
+    <span class="sensor-name">{{ micro.sensor }}</span>
+  </div>
+
+  <div class="micro-status">
+    <div class="connection-pill" [class.offline]="micro.isInactive">
+      <mat-icon>{{ micro.isInactive ? 'wifi_off' : 'wifi' }}</mat-icon>
+      <span>{{ micro.ip }}</span>
+    </div>
+
+    <ng-container *ngIf="!isHistory">
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="action-btn">
+        <mat-icon>more_vert</mat-icon>
       </button>
-      <button mat-menu-item [routerLink]="[ '/my-microcontrollers/edit', micro.ip, micro.measure ]">
-        <mat-icon>edit</mat-icon>
-        <span>Editar</span>
-      </button>
-    </mat-menu>
-  </ng-container>
-</span>
+      <mat-menu #menu="matMenu" class="modern-menu">
+        <button mat-menu-item [routerLink]="[ '/history', micro.ip, micro.measure ]">
+          <mat-icon>analytics</mat-icon>
+          <span>Estadísticas</span>
+        </button>
+        <button mat-menu-item [routerLink]="[ '/my-microcontrollers/edit', micro.ip, micro.measure ]">
+          <mat-icon>settings</mat-icon>
+          <span>Configurar</span>
+        </button>
+      </mat-menu>
+    </ng-container>
+  </div>
+</div>

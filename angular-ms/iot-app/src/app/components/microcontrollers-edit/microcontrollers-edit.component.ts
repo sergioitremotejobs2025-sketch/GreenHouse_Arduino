@@ -18,6 +18,7 @@ export class MicrocontrollersEditComponent implements OnInit {
   lastForm: FormGroup
   measureForm: FormGroup
   sensorForm: FormGroup
+  thresholdForm: FormGroup
   measures: { name: string, view: string }[] = [
     { name: 'humidity', view: 'Humedad' },
     { name: 'light', view: 'Bombilla inteligente' },
@@ -41,6 +42,10 @@ export class MicrocontrollersEditComponent implements OnInit {
     this.lastForm = new FormGroup({})
     this.measureForm = new FormGroup({ measure: new FormControl('', [Validators.required]) })
     this.sensorForm = new FormGroup({ sensor: new FormControl('', [Validators.required]) })
+    this.thresholdForm = new FormGroup({
+      thresholdMin: new FormControl(''),
+      thresholdMax: new FormControl('')
+    })
   }
 
   ngOnInit() {
@@ -57,6 +62,10 @@ export class MicrocontrollersEditComponent implements OnInit {
           const measures = this.measures.filter(m => m.name === micro.measure)
           this.measureForm.setValue({ measure: measures[0].name })
           this.sensorForm.setValue({ sensor: micro.sensor })
+
+          if (micro.thresholdMin !== undefined) this.thresholdForm.patchValue({ thresholdMin: micro.thresholdMin })
+          if (micro.thresholdMax !== undefined) this.thresholdForm.patchValue({ thresholdMax: micro.thresholdMax })
+
           this.measureForm.disable()
           this.sensorForm.disable()
         })
@@ -68,7 +77,9 @@ export class MicrocontrollersEditComponent implements OnInit {
       ip,
       measure,
       sensor,
-      username: this.authService.getUser()
+      username: this.authService.getUser(),
+      thresholdMin: this.thresholdForm.value.thresholdMin !== '' ? Number(this.thresholdForm.value.thresholdMin) : undefined,
+      thresholdMax: this.thresholdForm.value.thresholdMax !== '' ? Number(this.thresholdForm.value.thresholdMax) : undefined
     }
 
     if (this.isEdit) {

@@ -34,9 +34,30 @@
           <mat-form-field>
             <mat-label>Sensor</mat-label>
             <mat-select formControlName="sensor">
-              <mat-option *ngFor="let sensor of getAvailableSensors(measureForm.value.measure)" [value]="sensor">{{ sensor }}</mat-option>
+              <mat-option *ngFor="let sensor of getAvailableSensors(measureForm.value.measure)" [value]="sensor">{{
+                sensor }}</mat-option>
             </mat-select>
           </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious>Atrás</button>
+            <button mat-button matStepperNext>Siguiente</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="thresholdForm">
+        <form [formGroup]="thresholdForm">
+          <ng-template matStepLabel>Configura umbrales de alerta (Opcional)</ng-template>
+          <div class="threshold-container">
+            <mat-form-field>
+              <mat-label>Valor Mínimo</mat-label>
+              <input matInput type="number" formControlName="thresholdMin" placeholder="Ej: 10">
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Valor Máximo</mat-label>
+              <input matInput type="number" formControlName="thresholdMax" placeholder="Ej: 35">
+            </mat-form-field>
+          </div>
+          <p class="hint">Se mostrará una notificación si el valor sale de este rango.</p>
           <div>
             <button mat-button matStepperPrevious>Atrás</button>
             <button mat-button matStepperNext>Siguiente</button>

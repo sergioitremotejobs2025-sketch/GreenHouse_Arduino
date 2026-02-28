@@ -1,45 +1,58 @@
 <main class="container">
-  <div class="empty-state" *ngIf="microcontrollers.length === 0">
-    <div class="empty-icon">🔌</div>
+  <div class="empty-state glass" *ngIf="microcontrollers.length === 0">
+    <div class="empty-icon shadow-lg">🔌</div>
     <h2>No tienes microcontroladores registrados</h2>
-    <p>Empieza por añadir tu primer dispositivo en la sección de ajustes.</p>
-    <button mat-raised-button color="primary" routerLink="/settings">Ir a Ajustes</button>
+    <p class="text-muted">Empieza por añadir tu primer dispositivo en la sección de ajustes para monitorizar tus
+      plantas.</p>
+    <button mat-flat-button color="primary" routerLink="/settings">Añadir dispositivo</button>
   </div>
 
-  <div class="measure-block" *ngFor="let micro of microcontrollers">
-    <h1 class="topic-title white">
+  <div class="measure-section" *ngFor="let micro of microcontrollers">
+    <div class="section-header">
       <app-dashboard-microcontroller [isHistory]="false" [micro]="micro"></app-dashboard-microcontroller>
-    </h1>
-    <div class="cards-container" *ngIf="micro.measure === 'humidity'">
-      <div class="card card-left">
+    </div>
+
+    <!-- Humidity -->
+    <div class="dashboard-grid" *ngIf="micro.measure === 'humidity'">
+      <div class="card chart-card shadow-sm">
         <app-humidity-chart (inactivity)="changeActivity($event)" (measure)="humidityStats.newMeasure($event)"
-          [micro]="micro" *ngIf="humidityStats"></app-humidity-chart>
+          [micro]="micro" *ngIf="humidityStats">
+        </app-humidity-chart>
       </div>
-      <div class="card card-right">
+      <div class="card stats-card shadow-sm">
         <app-humidity-stats #humidityStats></app-humidity-stats>
       </div>
     </div>
-    <div class="cards-container" *ngIf="micro.measure === 'light'">
-      <div class="card card-left">
+
+    <!-- Light -->
+    <div class="dashboard-grid" *ngIf="micro.measure === 'light'">
+      <div class="card chart-card shadow-sm">
         <app-light-chart (inactivity)="changeActivity($event)" (measure)="lightStats.newMeasure($event)" [micro]="micro"
-          *ngIf="lightStats"></app-light-chart>
+          *ngIf="lightStats">
+        </app-light-chart>
       </div>
-      <div class="card card-right">
+      <div class="card stats-card shadow-sm">
         <app-light-stats #lightStats></app-light-stats>
       </div>
     </div>
-    <div class="cards-container" *ngIf="micro.measure === 'temperature'">
-      <div class="card card-left">
+
+    <!-- Temperature -->
+    <div class="dashboard-grid" *ngIf="micro.measure === 'temperature'">
+      <div class="card chart-card shadow-sm">
         <app-temperature-chart (inactivity)="changeActivity($event)" (measure)="temperatureStats.newMeasure($event)"
-          [micro]="micro" *ngIf="temperatureStats"></app-temperature-chart>
+          [micro]="micro" *ngIf="temperatureStats">
+        </app-temperature-chart>
       </div>
-      <div class="card card-right">
+      <div class="card stats-card shadow-sm">
         <app-temperature-stats #temperatureStats></app-temperature-stats>
       </div>
     </div>
-    <div class="cards-container" *ngIf="micro.measure === 'pictures'">
-      <div class="card card-full">
-        <app-pictures-chart (inactivity)="changeActivity($event)" [micro]="micro"></app-pictures-chart>
+
+    <!-- Pictures -->
+    <div class="dashboard-grid full-width" *ngIf="micro.measure === 'pictures'">
+      <div class="card picture-card shadow-sm">
+        <app-pictures-chart (inactivity)="changeActivity($event)" [micro]="micro">
+        </app-pictures-chart>
       </div>
     </div>
   </div>

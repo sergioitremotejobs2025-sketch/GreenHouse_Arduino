@@ -3,5 +3,7 @@ export interface Microcontroller {
   isInactive?: boolean,
   measure: string,
   sensor: string,
-  username: string
+  username: string,
+  thresholdMin?: number,
+  thresholdMax?: number
 }
