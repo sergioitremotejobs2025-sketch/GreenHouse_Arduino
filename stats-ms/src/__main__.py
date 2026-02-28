@@ -4,6 +4,19 @@ from src.measures.light import Light
 from src.measures.temperature import Temperature
 from src.queue.queue import Queue
 from threading import Thread
+import os
+from flask import Flask, Response
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+
+app = Flask(__name__)
+
+@app.route('/health')
+def health():
+    return {"status": "ok", "service": "stats-ms"}
+
+@app.route('/metrics')
+def metrics():
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 controllers = [
     Humidity(QUEUE_HUMIDITY_NAME, 60),
@@ -11,8 +24,15 @@ controllers = [
     Temperature(QUEUE_TEMPERATURE_NAME, 60)
 ]
 
+def run_metrics():
+    port = int(os.environ.get('METRICS_PORT', 3000))
+    app.run(host='0.0.0.0', port=port)
+
 def main():
     print('main')
+    # Start metrics server in a separate thread
+    Thread(target=run_metrics).start()
+    
     for controller in controllers:
         Thread(target=Queue, args=(controller, )).start()
 

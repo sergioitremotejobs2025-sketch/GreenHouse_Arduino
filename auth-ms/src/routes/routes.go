@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // App initializes routes for auth-ms using the MySQL-backed repository.
@@ -23,6 +24,8 @@ func App(port string) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"ok","service":"auth-ms"}`))
 	}).Methods("GET")
+
+	router.Handle("/metrics", promhttp.Handler()).Methods("GET")
 
 	http.ListenAndServe(port, router)
 }

@@ -15,10 +15,10 @@ This document outlines the next steps for maturing the IoT Microservices project
 
 ## 🏗️ Phase 2: Observability & Reliability (DevOps)
 
-- [ ] **Centralized Logging**: Configure a logging stack (e.g., Loki/Promtail or ELK) in the Kubernetes manifests to aggregate logs from all pods.
-- [ ] **Metrics & Monitoring**: 
-  - [ ] Add `/metrics` endpoints (Prometheus format) to all microservices.
-  - [ ] Create a basic Grafana dashboard to track service health and sensor data frequency.
+- [x] **Centralized Logging**: Configure a logging stack (Loki/Promtail) in the Kubernetes manifests to aggregate logs from all pods.
+- [x] **Metrics & Monitoring**: 
+  - [x] Add `/metrics` endpoints (Prometheus format) to all microservices.
+  - [x] Create basic Grafana & Prometheus configurations to track service health.
 - [ ] **API Documentation (Swagger)**: Implement OpenAPI/Swagger for `orchestrator-ms`, `auth-ms` (Go), and `stats-ms` (Python).
 - [ ] **Health-check Standardization**: Ensure `publisher-ms` and `stats-ms` have consistent `/health` endpoints and are monitored by K8s liveness/readiness probes.
 
@@ -52,6 +52,8 @@ This document outlines the next steps for maturing the IoT Microservices project
 - [x] WebSocket Integration for Real-time Monitoring
 - [x] Threshold Alerting System
 - [x] Interactive Data Exploration (Zoom, Comparison, Timelapse)
+- [x] Centralized Logging (Loki/Promtail)
+- [x] Metrics & Monitoring (Prometheus/Grafana)
 - [x] Angular v15 Upgrade
 - [x] MongoDB Indexing & Persistence
 - [x] Auth-ms Refactor & Testing (Go)
