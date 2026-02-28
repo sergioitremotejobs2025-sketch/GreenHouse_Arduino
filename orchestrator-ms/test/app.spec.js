@@ -35,4 +35,22 @@ describe('App endpoints and Rate Limiting', () => {
 
         expect(res.statusCode).toBe(401)
     })
+
+    it('should forward non-UnauthorizedErrors to the default error handler', async () => {
+        // Test the internal router error handler directly
+        const router = require('../src/app/routes/orchestrator.routes');
+        // The error handler is the last registered middleware on the router stack
+        const errorHandler = router.stack[router.stack.length - 1].handle;
+
+        const mockError = new Error('Generic Error');
+        mockError.name = 'GenericError';
+        const mockReq = {};
+        const mockRes = { sendStatus: jest.fn() };
+        const mockNext = jest.fn();
+
+        errorHandler(mockError, mockReq, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(mockError);
+        expect(mockRes.sendStatus).not.toHaveBeenCalled();
+    })
 })
