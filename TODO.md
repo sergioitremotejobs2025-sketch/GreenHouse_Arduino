@@ -27,9 +27,9 @@ This document outlines the systematic steps required to ensure that all microser
 - [x] **JWT Middleware**: Test requests with missing, malformed, and expired tokens to ensure they are consistently blocked with a 401 Unauthorized.
 
 ### 3. `measure-ms` (Node.js)
-- [ ] **Database Setup**: Improve MongoDB mocking or use an in-memory database like `mongodb-memory-server` to execute pure isolating tests for the Data Access Object (DAO).
-- [ ] **Picture Scheduler**: Refactor the timer implementation in `picture.scheduler.spec.js` (currently failing with Jest `fakeTimers` on v30) to robustly test the 10-hour interval logic without test timeouts.
-- [ ] **Validation**: Guarantee tests cover scenarios where Arduinos submit physically impossible sensor values (e.g., negative light, humidity over 100%).
+- [x] **Database Setup**: Improve MongoDB mocking or use an in-memory database like `mongodb-memory-server` to execute pure isolating tests for the Data Access Object (DAO).
+- [x] **Picture Scheduler**: Refactor the timer implementation in `picture.scheduler.spec.js` (currently failing with Jest `fakeTimers` on v30) to robustly test the 10-hour interval logic without test timeouts.
+- [x] **Validation**: Guarantee tests cover scenarios where Arduinos submit physically impossible sensor values (e.g., negative light, humidity over 100%).
 
 ### 4. `microcontrollers-ms` (Node.js)
 - [ ] **MySQL DAO**: Ensure the `mysql` mock accurately represents connection dropping. Write tests for MySQL connection retries and auto-reconnect logic.

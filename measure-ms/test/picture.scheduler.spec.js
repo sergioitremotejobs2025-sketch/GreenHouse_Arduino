@@ -38,11 +38,11 @@ jest.mock('axios', () => ({
     })
 }))
 
-xdescribe('PictureScheduler', () => {
+describe('PictureScheduler', () => {
     let scheduler, db, microsModule
 
     beforeEach(() => {
-        jest.useFakeTimers()
+        jest.useFakeTimers({ legacyFakeTimers: true })
         db = makeDb()
         microsModule = makeMicrosModule()
         scheduler = new PictureScheduler(db, microsModule)
@@ -106,7 +106,7 @@ xdescribe('PictureScheduler', () => {
         }))
     })
 
-    xit('skips save and does not throw when camera is unreachable', async () => {
+    it('skips save and does not throw when camera is unreachable', async () => {
         const axios = require('axios')
         axios.get.mockRejectedValueOnce(new Error('ECONNREFUSED'))
 
