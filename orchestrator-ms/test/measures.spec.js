@@ -8,6 +8,7 @@ const password = 'password'
 
 describe('Measure endpoints', () => {
   beforeAll(done => {
+    app.set('io', { emit: jest.fn() })
     request(app)
       .post('/login')
       .send({ username, password })
@@ -77,5 +78,25 @@ describe('Measure endpoints', () => {
   it('Get temperatures without access token', async () => {
     const res = await request(app).get('/temperature?path=temperatures')
     expect(res.statusCode).toEqual(401)
+  }, 10000)
+
+  it('Post light with access token', async () => {
+    const res = await request(app).post('/light').send({ value: 1 }).set('Authorization', `Bearer ${accessToken}`)
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        value: 1,
+        username: expect.any(String)
+      })
+    )
+  }, 10000)
+
+  it('Post light with connection error mocked', async () => {
+    const axios = require('axios')
+    const originalPost = axios.post
+    axios.post = jest.fn().mockRejectedValue(new Error('ECONNREFUSED'))
+    const res = await request(app).post('/light').send({ value: 1 }).set('Authorization', `Bearer ${accessToken}`)
+    expect(res.statusCode).toEqual(400)
+    axios.post = originalPost // restore
   }, 10000)
 })

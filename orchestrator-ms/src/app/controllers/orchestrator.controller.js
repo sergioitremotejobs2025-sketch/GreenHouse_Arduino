@@ -82,21 +82,21 @@ module.exports = class OrchestratorController {
 
   async getMicrocontrollers(req, res) {
     const { username } = req.user
-    await servicesController.getToConnectedService(res, MICROCONTROLLERS_MS, '', { username })
+    await servicesController.getToConnectedService(res, MICROCONTROLLERS_MS, undefined, { username })
   }
 
   async postMicrocontrollers(req, res) {
     const microcontroller = req.body
     // Ensure username is present
     microcontroller.username = req.user.username
-    await servicesController.postToConnectedService(res, MICROCONTROLLERS_MS, '', microcontroller, 201)
+    await servicesController.postToConnectedService(res, MICROCONTROLLERS_MS, undefined, microcontroller, 201)
   }
 
   async putMicrocontrollers(req, res) {
     const updatedMicrocontroller = req.body
     // Ensure username is present
     updatedMicrocontroller.username = req.user.username
-    await servicesController.putToConnectedService(res, MICROCONTROLLERS_MS, '', updatedMicrocontroller, 201)
+    await servicesController.putToConnectedService(res, MICROCONTROLLERS_MS, undefined, updatedMicrocontroller, 201)
   }
 
   async deleteMicrocontrollers(req, res) {
@@ -104,7 +104,7 @@ module.exports = class OrchestratorController {
     await servicesController.deleteToConnectedService(
       res,
       MICROCONTROLLERS_MS,
-      '',
+      undefined,
       {
         ip,
         measure,

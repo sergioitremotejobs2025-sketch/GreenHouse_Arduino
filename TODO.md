@@ -22,9 +22,9 @@ This document outlines the systematic steps required to ensure that all microser
 - [ ] **JWT Logic**: Add unit tests for token expiration, signature validation, and refresh token rotation logic.
 
 ### 2. `orchestrator-ms` (Node.js)
-- [ ] **Rate Limiting**: Write tests to simulate surpassing the rate limit and verify that a HTTP 429 response is correctly returned.
-- [ ] **Proxy/Bridge Routes**: Fully mock `axios` interactions to test how the orchestrator handles network timeouts (`ECONNREFUSED`) or 500 errors from backend microservices.
-- [ ] **JWT Middleware**: Test requests with missing, malformed, and expired tokens to ensure they are consistently blocked with a 401 Unauthorized.
+- [x] **Rate Limiting**: Write tests to simulate surpassing the rate limit and verify that a HTTP 429 response is correctly returned.
+- [x] **Proxy/Bridge Routes**: Fully mock `axios` interactions to test how the orchestrator handles network timeouts (`ECONNREFUSED`) or 500 errors from backend microservices.
+- [x] **JWT Middleware**: Test requests with missing, malformed, and expired tokens to ensure they are consistently blocked with a 401 Unauthorized.
 
 ### 3. `measure-ms` (Node.js)
 - [ ] **Database Setup**: Improve MongoDB mocking or use an in-memory database like `mongodb-memory-server` to execute pure isolating tests for the Data Access Object (DAO).

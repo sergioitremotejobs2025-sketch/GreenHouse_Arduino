@@ -44,9 +44,9 @@ module.exports = class ServicesController {
     return await methodToConnectedService(res, url, 'post', body, status, returnResponse, buildHeaders(service))
   }
 
-  async putToConnectedService(res, service, path = '', body, status) {
+  async putToConnectedService(res, service, path = '', body, status, returnResponse = false) {
     const url = `http://${service}/${path}`
-    return await methodToConnectedService(res, url, 'put', body, status, false, buildHeaders(service))
+    return await methodToConnectedService(res, url, 'put', body, status, returnResponse, buildHeaders(service))
   }
 
   async deleteToConnectedService(res, service, path = '', body) {

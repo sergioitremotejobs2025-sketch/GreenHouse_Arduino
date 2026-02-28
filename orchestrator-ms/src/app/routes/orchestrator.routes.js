@@ -239,6 +239,8 @@ router.put('/change-password', jwtMiddleware, orchestratorController.changePassw
 router.use((error, req, res, next) => {
   if (error.name === 'UnauthorizedError') {
     res.sendStatus(401)
+  } else {
+    next(error)
   }
 })
 

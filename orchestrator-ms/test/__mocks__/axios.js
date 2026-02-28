@@ -31,11 +31,15 @@ module.exports = {
       return Promise.resolve({ data: body.username === 'Rocky' && body.newRefreshToken && body.refreshToken })
     } else if (url.includes(`${MICROCONTROLLERS_MS}`)) {
       return Promise.resolve({ data: body })
+    } else if (url.includes(`${MEASURE_MS}`)) {
+      return Promise.resolve({ data: body })
     }
   },
   put: (url = '', body = {}) => {
     if (url.includes(`${MICROCONTROLLERS_MS}`)) {
       return Promise.resolve({ data: body })
+    } else if (url.includes(`${AUTH_MS}/change-password`)) {
+      return Promise.resolve({ data: 'true' })
     }
   }
 }

@@ -34,7 +34,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "jest --coverage"
+    "test": "INTERNAL_API_KEY=testkey jest --coverage"
   },
   "jest": {
     "coverageThreshold": {

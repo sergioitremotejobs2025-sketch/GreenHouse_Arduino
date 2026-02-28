@@ -19,6 +19,8 @@ describe('Auth endpoints', () => {
         refreshToken: expect.any(String)
       })
     )
+    accessToken = res.body.accessToken
+    refreshToken = res.body.refreshToken
   })
 
   it('Bad login', async () => {
@@ -50,6 +52,16 @@ describe('Auth endpoints', () => {
   it('Register incorrect', async () => {
     const res = await request(app).post('/register').send({ username, password })
     expect(res.statusCode).toBe(401)
+  })
+  it('Change password correct', async () => {
+    const res = await request(app).put('/change-password').send({ password: 'newpassword' }).set('Authorization', `Bearer ${accessToken}`)
+    expect(res.statusCode).toBe(200)
+    expect(res.body.success).toBe(true)
+  })
+
+  it('Change password without password', async () => {
+    const res = await request(app).put('/change-password').send({}).set('Authorization', `Bearer ${accessToken}`)
+    expect(res.statusCode).toBe(400)
   })
 })
 
