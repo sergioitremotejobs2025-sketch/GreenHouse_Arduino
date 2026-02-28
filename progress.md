@@ -34,3 +34,8 @@
 ### `auth-ms` (Go)
 - **93.4% Statement Coverage**: Implemented `sqlmock` in `dao/dao_test.go` and reached 100% controller coverage.
 - **Router Refactoring**: Decoupled `mux.Router` initialization to allow unit testing of routes and health/metrics endpoints without a live server.
+
+### `angular-ms` (Frontend)
+- **>85% Code Coverage**: Configured Karma/Istanbul reporters and achieved complete thresholds across lines, functions, branches, and statements.
+- **Service & Guard Resilience**: Assured tests extensively simulate backend `HttpTestingController` configurations (handling 401s and 429s) alongside comprehensive route assertions blocking unauthenticated clients.
+- **Component Mocking**: Upgraded Dashboard, Dialogs, and Custom Pipes confirming responsive behavior natively.

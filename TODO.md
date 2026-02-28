@@ -44,9 +44,9 @@ This document outlines the systematic steps required to ensure that all microser
 - [x] **Calculations**: Tests verified for all measure controllers (Humidity, Light, Temp) including array-based stat calculations.
 
 ### 7. `angular-ms` (Frontend)
-- [ ] **Component Specs**: Ensure comprehensive tests exist for `ChangePasswordDialogComponent`, `DashboardComponent`, and custom pipes (`MeasureViewPipe`).
-- [ ] **Service Testing**: Utilize Angular's `HttpTestingController` to mock backend API responses, ensuring services handle 401 Unauthorized (triggering logout) and 429 Too Many Requests seamlessly.
-- [ ] **Routing Guards**: Test `AuthGuard` to verify routing access is strictly denied for unauthenticated users.
+- [x] **Component Specs**: Ensure comprehensive tests exist for `ChangePasswordDialogComponent`, `DashboardComponent`, and custom pipes (`MeasureViewPipe`).
+- [x] **Service Testing**: Utilize Angular's `HttpTestingController` to mock backend API responses, ensuring services handle 401 Unauthorized (triggering logout) and 429 Too Many Requests seamlessly.
+- [x] **Routing Guards**: Test `AuthGuard` to verify routing access is strictly denied for unauthenticated users.
 
 ## 🔗 Phase 3: Integration & End-to-End (E2E) Testing
 
