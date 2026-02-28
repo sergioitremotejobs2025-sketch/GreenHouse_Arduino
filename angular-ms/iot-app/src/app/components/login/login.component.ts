@@ -8,17 +8,18 @@ import { AuthService } from '@services/auth.service'
 
 import { LoginDialogComponent } from '@components/login/login-dialog.component'
 import { RegisterDialogComponent } from '@components/login/register-dialog.component'
+import { ChangePasswordDialogComponent } from '@components/login/change-password-dialog.component'
 
 import { AuthGuard } from '@guards/auth.guard'
 
 @Component({
   selector: 'app-login',
-  styleUrls: [ './login.component.less' ],
+  styleUrls: ['./login.component.less'],
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnDestroy, OnInit {
 
-  dialogConf = { data: { }, width: '500px' }
+  dialogConf = { data: {}, width: '500px' }
   dialogRef: MatDialogRef<LoginDialogComponent | RegisterDialogComponent>
   icon = 'keyboard_arrow_down'
   isDialogOpen = false
@@ -57,6 +58,10 @@ export class LoginComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe()
+  }
+
+  openChangePasswordDialog() {
+    this.dialog.open(ChangePasswordDialogComponent, this.dialogConf)
   }
 
   logout() {

@@ -8,4 +8,5 @@ type Repository interface {
 	Exists(user model.User) (bool, model.User)
 	Insert(user model.User) bool
 	Update(credentials model.Credential) int64
+	UpdatePassword(username string, newPassword string) bool
 }

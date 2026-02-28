@@ -24,11 +24,11 @@ This document outlines the next steps for maturing the IoT Microservices project
 
 ## 🔐 Phase 3: Security & Performance
 
-- [ ] **API Gateway Rate Limiting**: Implement rate limiting in `orchestrator-ms` using `express-rate-limit` or a Redis-based solution.
-- [ ] **Network Isolation**: Add Kubernetes `NetworkPolicies` to ensure only the `orchestrator-ms` can communicate with internal services (`auth`, `measure`, etc.).
-- [ ] **Advanced Auth**: 
-  - [ ] Implement Refresh Token rotation for better security.
-  - [ ] Add a "Change Password" feature in the Angular UI.
+- [x] **API Gateway Rate Limiting**: Implement rate limiting in `orchestrator-ms` using `express-rate-limit`.
+- [x] **Network Isolation**: Implement Kubernetes `NetworkPolicy` to ensure only the `orchestrator-ms` can communicate with internal services.
+- [x] **Advanced Auth**: 
+  - [x] Implement Refresh Token rotation for better security.
+  - [x] Add a "Change Password" feature in the Angular UI.
 - [ ] **Dependency Audit**: Standardize Node.js versions across all microservices and resolve remaining `npm audit` high-risk vulnerabilities.
 
 ## 📊 Phase 4: Service Modernization
@@ -56,6 +56,9 @@ This document outlines the next steps for maturing the IoT Microservices project
 - [x] Metrics & Monitoring (Prometheus/Grafana)
 - [x] API Documentation (Swagger/OpenAPI)
 - [x] Kubernetes Health Checks (Liveness/Readiness)
+- [x] API Gateway Rate Limiting
+- [x] K8s Network Isolation (Policies)
+- [x] Advanced Auth (Change Password/Rotation)
 - [x] Angular v15 Upgrade
 - [x] MongoDB Indexing & Persistence
 - [x] Auth-ms Refactor & Testing (Go)

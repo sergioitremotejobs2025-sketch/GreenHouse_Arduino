@@ -76,6 +76,10 @@ export class AuthService {
       )
   }
 
+  changePassword(password: string): Observable<{ success: boolean }> {
+    return this.http.put<{ success: boolean }>(`${environment.ORCHESTRATOR_MS}/change-password`, { password })
+  }
+
   setTokens(tokens: AuthResponse) {
     localStorage.setItem('iot-ms-token', tokens.accessToken)
     localStorage.setItem('iot-ms-refresh-token', tokens.refreshToken)

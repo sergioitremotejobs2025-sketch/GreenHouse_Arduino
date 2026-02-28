@@ -113,4 +113,18 @@ module.exports = class OrchestratorController {
     )
   }
 
+  async changePassword(req, res) {
+    const { password } = req.body
+    if (!password) return res.sendStatus(400)
+
+    const body = {
+      username: req.user.username,
+      password: hashPassword(password)
+    }
+
+    const response = await servicesController.putToConnectedService(res, AUTH_MS, 'change-password', body, null, true)
+    if (!response.data) return res.sendStatus(400)
+    return res.json({ success: response.data === 'true' })
+  }
+
 }

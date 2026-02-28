@@ -19,6 +19,7 @@ func App(port string) {
 	router.HandleFunc("/login", handlers.Login).Methods("POST")
 	router.HandleFunc("/register", handlers.Register).Methods("POST")
 	router.HandleFunc("/refresh", handlers.Refresh).Methods("POST")
+	router.HandleFunc("/change-password", handlers.ChangePassword).Methods("PUT")
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

@@ -213,6 +213,29 @@ router.post('/register', orchestratorController.register)
  */
 router.post('/refresh', orchestratorController.refresh)
 
+/**
+ * @swagger
+ * /change-password:
+ *   put:
+ *     summary: Change user password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.put('/change-password', jwtMiddleware, orchestratorController.changePassword)
+
 router.use((error, req, res, next) => {
   if (error.name === expressJwt.UnauthorizedError.name) {
     res.sendStatus(401)

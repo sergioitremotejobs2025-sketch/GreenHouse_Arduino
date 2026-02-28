@@ -93,3 +93,21 @@ func (r *MysqlRepository) Update(credentials model.Credential) int64 {
 
 	return rows
 }
+
+// UpdatePassword updates the user's password in the DB.
+func (r *MysqlRepository) UpdatePassword(username string, newPassword string) bool {
+	db := connect()
+	defer db.Close()
+
+	pStmt, _ := db.Prepare("UPDATE iot.users SET password = ? WHERE username = ?")
+	defer pStmt.Close()
+
+	_, err := pStmt.Exec(newPassword, username)
+
+	if err != nil {
+		log.Println("Failed to update password for user:", username)
+		return false
+	}
+
+	return true
+}

@@ -15,6 +15,7 @@ type mockRepository struct {
 	existsUser   model.User
 	insertResult bool
 	updateRows   int64
+	updatePass   bool
 }
 
 func (m *mockRepository) Exists(user model.User) (bool, model.User) {
@@ -27,6 +28,10 @@ func (m *mockRepository) Insert(user model.User) bool {
 
 func (m *mockRepository) Update(credentials model.Credential) int64 {
 	return m.updateRows
+}
+
+func (m *mockRepository) UpdatePassword(username string, newPassword string) bool {
+	return m.updatePass
 }
 
 func newTestHandlers(repo *mockRepository) *Handlers {
@@ -178,5 +183,22 @@ func TestRefresh_EmptyBody(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Errorf("expected 200, got %d", w.Code)
+	}
+}
+
+// ── ChangePassword tests ──────────────────────────────────────────────────────
+
+func TestChangePassword_Success(t *testing.T) {
+	mock := &mockRepository{updatePass: true}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "new-password"})
+	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.ChangePassword(w, req)
+
+	if w.Body.String() != "true" {
+		t.Errorf("expected 'true', got %q", w.Body.String())
 	}
 }

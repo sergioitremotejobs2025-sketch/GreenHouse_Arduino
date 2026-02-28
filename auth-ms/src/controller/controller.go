@@ -87,3 +87,17 @@ func (h *Handlers) Refresh(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, fmt.Sprintf("%t", success))
 }
+
+// ChangePassword handles PUT /change-password.
+func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	log.Println("PUT /change-password")
+
+	user := getBodyContent(r)
+	if user.Username == "" || user.Password == "" {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	success := h.Repo.UpdatePassword(user.Username, user.Password)
+	fmt.Fprintf(w, fmt.Sprintf("%t", success))
+}
