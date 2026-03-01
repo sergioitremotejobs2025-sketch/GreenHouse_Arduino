@@ -8,7 +8,7 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 - [x] **Update Vulnerable Dependencies**: Several legacy packages (like `glob`) triggered NPM vulnerabilities during the `angular-ms` build. We should perform an `npm audit fix` and upgrade outdated dependencies across all Node.js and Python microservices.
 
 ## 2. CI/CD & Infrastructure Automation
-- [ ] **Implement Continuous Deployment (CD)**: Set up [ArgoCD](https://argo-cd.readthedocs.io/) or Flux to watch the `manifests-k8s/prod` folder. Whenever you update a YAML file or push a new Docker image tag, ArgoCD will automatically sync the changes directly into the Kubernetes cluster.
+- [x] **Implement Continuous Deployment (CD)**: Set up [ArgoCD](https://argo-cd.readthedocs.io/) on the cluster to watch the `manifests-k8s/prod` folder. Configured the root `Application` manifest for automated syncing and self-healing.
 - [x] **Automated Semantic Versioning**: Update the GitHub Actions pipelines to automatically tag Docker builds with semantic version numbers (e.g., `v1.2.0`) instead of just `latest` or timestamps, allowing for safe rollbacks.
 
 ## 3. Kubernetes Scalability & Reliability

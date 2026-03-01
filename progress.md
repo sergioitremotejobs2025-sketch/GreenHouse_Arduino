@@ -71,4 +71,8 @@
   - **Socket.io Broadcasting**: Data consumed from RabbitMQ is now instantly emitted to connected clients via Socket.io `measure_update` events.
   - **Gateway Upgrades**: Updated the `angular-ms` Nginx configuration to support the **HTTP 1.1 Upgrade** protocol for WebSockets at the `/socket.io/` endpoint.
   - **Infrastructure**: Updated Kubernetes manifests for `orchestrator-ms` to inject RabbitMQ credentials and connectivity parameters.
+- **Continuous Deployment (ArgoCD)**: Implemented automated GitOps workflows.
+  - **ArgoCD Installation**: Installed the ArgoCD controller in the `argocd` namespace using server-side apply to handle large CRDs.
+  - **GitOps Application**: Configuring a root `Application` manifest that monitors the `manifests-k8s/prod` path in the repository. Enabled **Prune** and **Self-Heal** policies to ensure the cluster state matches the git source of truth automatically.
+  - **UI Access**: Patched the `argocd-server` to `NodePort` for local dashboard access.
 
