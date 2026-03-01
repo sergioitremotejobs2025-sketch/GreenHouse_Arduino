@@ -35,7 +35,7 @@ spec:
             secretKeyRef:
               key: MYSQL_ROOT_PASSWORD
               name: secrets
-        image: 7rocky/mysql-iot
+        image: sergioitremotejobs2025/mysql-iot
         imagePullPolicy: Always
         name: mysql
         ports:

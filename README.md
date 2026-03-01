@@ -160,7 +160,7 @@ Kubernetes offers the possibility to configure environment variables. All releva
 
 ## 9. Deploy your own Docker images on Kubernetes
 
-Take a look at the YAML files and note that there is a property called `image: 7rocky/<name-of-the-image>`. You will need to change `7rocky` for your username, and put the name of the Docker image you want to deploy (the image must be uploaded to [Docker Hub](https://hub.docker.com)).
+Take a look at the YAML files and note that there is a property called `image: sergioitremotejobs2025/<name-of-the-image>`. You will need to change `sergioitremotejobs2025` for your username, and put the name of the Docker image you want to deploy (the image must be uploaded to [Docker Hub](https://hub.docker.com)).
 
 However, if you just want to try the application, you are allowed to use the images that are already set, because they are accesible from Docker Hub.
 

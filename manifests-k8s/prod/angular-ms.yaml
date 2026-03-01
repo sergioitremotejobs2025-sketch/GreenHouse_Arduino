@@ -31,7 +31,7 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: 7rocky/angular-ms
+      - image: sergioitremotejobs2025/angular-ms
         imagePullPolicy: IfNotPresent
         name: angular-ms
         ports:

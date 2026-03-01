@@ -71,7 +71,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: 7rocky/orchestrator-ms
+        image: sergioitremotejobs2025/orchestrator-ms
         imagePullPolicy: IfNotPresent
         name: orchestrator-ms
         ports:

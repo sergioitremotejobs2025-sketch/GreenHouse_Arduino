@@ -61,7 +61,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: 7rocky/microcontrollers-ms
+        image: sergioitremotejobs2025/microcontrollers-ms
         imagePullPolicy: IfNotPresent
         name: microcontrollers-ms
         ports:

@@ -86,7 +86,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: 7rocky/measure-ms
+        image: sergioitremotejobs2025/measure-ms
         imagePullPolicy: IfNotPresent
         name: measure-ms
         ports:

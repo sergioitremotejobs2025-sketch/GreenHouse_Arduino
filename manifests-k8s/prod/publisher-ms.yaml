@@ -55,7 +55,7 @@ spec:
                   key: RABBITMQ_SERVICE_PORT
                   name: env-configmap
             name: publisher-ms
-            image: 7rocky/publisher-ms
+            image: sergioitremotejobs2025/publisher-ms
             imagePullPolicy: Always
           restartPolicy: OnFailure
   schedule: '*/1 * * * *'
