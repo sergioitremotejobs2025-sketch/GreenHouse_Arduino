@@ -13,7 +13,7 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 
 ## 3. Kubernetes Scalability & Reliability
 - [x] **Add Readiness and Liveness Probes**: Ensure all microservice deployments in `manifests-k8s/prod` have `livenessProbe` and `readinessProbe` blocks configured. This informs Kubernetes exactly when a replica is fully booted and healthy enough to accept traffic.
-- [ ] **Horizontal Pod Autoscaling (HPA)**: Configure HPA for high-traffic microservices like `measure-ms` and `orchestrator-ms`. This will automatically scale the number of pod replicas based on CPU or memory utilization.
+- [x] **Horizontal Pod Autoscaling (HPA)**: Configure HPA for high-traffic microservices like `measure-ms` and `orchestrator-ms`. This will automatically scale the number of pod replicas based on CPU or memory utilization.
 - [x] **Resource Limits**: Define strict `resources: requests` and `limits` in the deployment YAMLs to prevent any single microservice from consuming the entire cluster's memory and crashing the node.
 
 ## 4. Frontend & User Experience Improvements
