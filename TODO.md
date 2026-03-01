@@ -50,9 +50,9 @@ This document outlines the systematic steps required to ensure that all microser
 
 ## 🔗 Phase 3: Integration & End-to-End (E2E) Testing
 
-- [ ] **Docker Compose Testing Environment**: Create a `docker-compose.test.yml` that stands up the entire microservice architecture alongside ephemeral databases.
-- [ ] **API Integration Tests**: Write Postman/Newman or `supertest`-based suites that execute cross-service flows (e.g., Login -> Get Token -> Send Orchestrator Request -> Microcontroller MS -> Response).
-- [ ] **Cypress E2E Tests**: Set up Cypress in the Angular MS to run automated browser clicks simulating user registration, login, viewing dashboards, and modifying microcontroller configurations.
+- [x] **Docker Compose Testing Environment**: Create a `docker-compose.test.yml` that stands up the entire microservice architecture alongside ephemeral databases.
+- [x] **API Integration Tests**: Write Postman/Newman or `supertest`-based suites that execute cross-service flows (e.g., Login -> Get Token -> Send Orchestrator Request -> Microcontroller MS -> Response).
+- [x] **Cypress E2E Tests**: Set up Cypress in the Angular MS to run automated browser clicks simulating user registration, login, viewing dashboards, and modifying microcontroller configurations.
 
 ## 🛠 Phase 4: Developer Experience & Maintenance
 

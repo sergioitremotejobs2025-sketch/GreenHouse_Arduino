@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  # Databases / Message Brokers
+  mysql:
+    image: mysql:8.0
+    container_name: iot_mysql_test
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=iot
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo:
+    image: mongo:latest
+    container_name: iot_mongo_test
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_DATABASE=iot
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: iot_rabbitmq_test
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservices
+  auth-ms:
+    build:
+      context: ./auth-ms
+      dockerfile: Dockerfile
+    container_name: iot_auth_ms_test
+    environment:
+      - MYSQL_HOSTNAME=mysql
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_DATABASE_NAME=iot
+      - MYSQL_ROOT_USERNAME=root
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - PORT=80
+    ports:
+      - "5000:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  microcontrollers-ms:
+    build:
+      context: ./microcontrollers-ms
+      dockerfile: Dockerfile
+    container_name: iot_microcontrollers_ms_test
+    environment:
+      - MYSQL_HOSTNAME=mysql
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_DATABASE_NAME=iot
+      - MYSQL_ROOT_USERNAME=root
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - PORT=80
+    ports:
+      - "6000:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  measure-ms:
+    build:
+      context: ./measure-ms
+      dockerfile: Dockerfile
+    container_name: iot_measure_ms_test
+    environment:
+      - MONGO_HOSTNAME=mongo
+      - MONGO_SERVICE_PORT=27017
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_DATABASE_NAME=iot
+      - INTERNAL_API_KEY=testkey
+      - PORT=80
+    ports:
+      - "4000:80"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  orchestrator-ms:
+    build:
+      context: ./orchestrator-ms
+      dockerfile: Dockerfile
+    container_name: iot_orchestrator_ms_test
+    environment:
+      - AUTH_MS_HOSTNAME=auth-ms
+      - AUTH_MS_SERVICE_PORT=80
+      - MEASURE_MS_HOSTNAME=measure-ms
+      - MEASURE_MS_SERVICE_PORT=80
+      - MICROCONTROLLERS_MS_HOSTNAME=microcontrollers-ms
+      - MICROCONTROLLERS_MS_SERVICE_PORT=80
+      - INTERNAL_API_KEY=testkey
+      - JWT_SECRET=test_jwt_secret
+      - PORT=80
+    ports:
+      - "3000:80"
+    depends_on:
+      - auth-ms
+      - measure-ms
+      - microcontrollers-ms
+
+  publisher-ms:
+    build:
+      context: ./publisher-ms
+      dockerfile: Dockerfile
+    container_name: iot_publisher_ms_test
+    environment:
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_SERVICE_PORT=5672
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+      - PORT=80
+    ports:
+      - "7000:80"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  stats-ms:
+    build:
+      context: ./stats-ms
+      dockerfile: Dockerfile
+    container_name: iot_stats_ms_test
+    environment:
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_SERVICE_PORT=5672
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+      - ORCHESTRATOR_MS_HOSTNAME=orchestrator-ms
+      - ORCHESTRATOR_MS_SERVICE_PORT=80
+      - PORT=80
+    ports:
+      - "8000:80"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orchestrator-ms:
+        condition: service_started

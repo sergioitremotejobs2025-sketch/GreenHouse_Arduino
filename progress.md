@@ -39,3 +39,8 @@
 - **>85% Code Coverage**: Configured Karma/Istanbul reporters and achieved complete thresholds across lines, functions, branches, and statements.
 - **Service & Guard Resilience**: Assured tests extensively simulate backend `HttpTestingController` configurations (handling 401s and 429s) alongside comprehensive route assertions blocking unauthenticated clients.
 - **Component Mocking**: Upgraded Dashboard, Dialogs, and Custom Pipes confirming responsive behavior natively.
+
+## Phase 3: Integration & End-to-End (E2E) Testing
+- **Docker Compose Test Config**: Established a `docker-compose.test.yml` architecture mapped specifically to bridge ephemeral RabbitMQ, Mongo, and MySQL database networks with backend nodes, exposing root application testing ports.
+- **Supertest API Suite**: Delivered an isolated API validation suite inside `integration-tests` leveraging Supertest to validate external cross-service behavior such as credential logins and microcontrollers proxy mapping payload.
+- **Cypress Frontend Simulation**: Installed `@cypress` and configured generic browser automation suites simulating dialog interaction tests natively triggering Angular Material interface clicks.
