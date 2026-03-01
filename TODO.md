@@ -19,6 +19,6 @@ This document tracks the tasks required to fix the specific errors currently cau
   - **Fix**: Update `go-version: '1.20'` to `go-version: '1.23.0'` in `.github/workflows/ci.yml`.
 
 ## 4. Provide Missing GitHub Secrets for Docker Registry
-- [ ] **Job: `Build and Push Angular Image` (inside deploy.yml or similar)**
+- [x] **Job: `Build and Push Angular Image` (inside deploy.yml or similar)**
   - **Issue**: Deploy step crashes with `##[error]Username and password required` during Docker Hub login.
   - **Fix**: Set the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets in the Repository Settings -> Secrets and variables -> Actions.
