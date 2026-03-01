@@ -3,7 +3,7 @@
 Now that the foundational CI/CD workflows are stabilized and Docker images are properly building and pushing to your own repository (`sergioitremotejobs2025`), here is a prioritized list of recommended next steps to improve the architecture, security, and developer experience of the project.
 
 ## 1. Security Enhancements
-- [ ] **Remove Hardcoded Secrets from Git**: The `manifests-k8s/config/secrets.yaml` file contains Base64 encoded secrets (like database passwords and internal API keys) checked directly into version control. Implement a secrets management solution like [Bitnami Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) or HashiCorp Vault.
+- [x] **Remove Hardcoded Secrets from Git**: The `manifests-k8s/config/secrets.yaml` file contains Base64 encoded secrets (like database passwords and internal API keys) checked directly into version control. Implement a secrets management solution like [Bitnami Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) or HashiCorp Vault.
 - [ ] **Rotate Default Passwords**: Generate secure, random passwords for MongoDB, MySQL, and RabbitMQ to replace the default ones (`secret`, `my-secret-pw`, etc.) in production environments.
 - [ ] **Update Vulnerable Dependencies**: Several legacy packages (like `glob`) triggered NPM vulnerabilities during the `angular-ms` build. We should perform an `npm audit fix` and upgrade outdated dependencies across all Node.js and Python microservices.
 
