@@ -40,6 +40,22 @@ spec:
         name: mysql
         ports:
         - containerPort: 3306
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            memory: 128Mi
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 15
+          periodSeconds: 10
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-persistent-storage

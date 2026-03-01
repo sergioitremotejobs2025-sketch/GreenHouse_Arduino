@@ -42,6 +42,18 @@ spec:
             memory: 64Mi
           requests:
             memory: 8Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
         volumeMounts:
         - name: nginx-config-volume
           mountPath: /etc/nginx/conf.d

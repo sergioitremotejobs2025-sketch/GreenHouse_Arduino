@@ -12,9 +12,9 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 - [ ] **Automated Semantic Versioning**: Update the GitHub Actions pipelines to automatically tag Docker builds with semantic version numbers (e.g., `v1.2.0`) instead of just `latest` or timestamps, allowing for safe rollbacks.
 
 ## 3. Kubernetes Scalability & Reliability
-- [ ] **Add Readiness and Liveness Probes**: Ensure all microservice deployments in `manifests-k8s/prod` have `livenessProbe` and `readinessProbe` blocks configured. This informs Kubernetes exactly when a replica is fully booted and healthy enough to accept traffic.
+- [x] **Add Readiness and Liveness Probes**: Ensure all microservice deployments in `manifests-k8s/prod` have `livenessProbe` and `readinessProbe` blocks configured. This informs Kubernetes exactly when a replica is fully booted and healthy enough to accept traffic.
 - [ ] **Horizontal Pod Autoscaling (HPA)**: Configure HPA for high-traffic microservices like `measure-ms` and `orchestrator-ms`. This will automatically scale the number of pod replicas based on CPU or memory utilization.
-- [ ] **Resource Limits**: Define strict `resources: requests` and `limits` in the deployment YAMLs to prevent any single microservice from consuming the entire cluster's memory and crashing the node.
+- [x] **Resource Limits**: Define strict `resources: requests` and `limits` in the deployment YAMLs to prevent any single microservice from consuming the entire cluster's memory and crashing the node.
 
 ## 4. Frontend & User Experience Improvements
 - [ ] **Design Polish**: Consider a redesign of the Angular dashboard to match modern Web App aesthetics (e.g., dynamic micro-animations, glassmorphism, or dark mode support).
@@ -22,4 +22,4 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 
 ## 5. Testing & Developer Experience
 - [ ] **Expand End-to-End Cypress Tests**: Extend the base Cypress tests to simulate complex user flows, such as adding new sensors, interacting with the charts, and handling invalid API responses.
-- [ ] **Local Development Scripting**: Unify the scattered bash scripts (`start_fake_iot.sh`, `run_k8s_local.sh`, `rebuild_all_k8s.sh`) into a single `Makefile` for a standardized cross-platform developer experience.
+- [x] **Local Development Scripting**: Unify the scattered bash scripts (`start_fake_iot.sh`, `run_k8s_local.sh`, `rebuild_all_k8s.sh`) into a single `Makefile` for a standardized cross-platform developer experience.
