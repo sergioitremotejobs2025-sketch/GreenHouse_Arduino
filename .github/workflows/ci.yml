@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
       - name: Install dependencies and test
         run: |
           cd ${{ matrix.service }}
@@ -50,7 +50,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.20'
+          go-version: '1.23.0'
       - name: Build & Test Go
         run: |
           cd auth-ms/src
@@ -69,9 +69,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
       - name: Install & Test Angular
         run: |
           cd angular-ms/iot-app
           npm ci || npm install
-          ng test --watch=false --browsers=ChromeHeadless --code-coverage
+          npx ng test --watch=false --browsers=ChromeHeadless --code-coverage
