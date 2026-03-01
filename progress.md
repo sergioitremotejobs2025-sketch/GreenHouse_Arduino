@@ -56,3 +56,13 @@
 - **Kubernetes Scaling**: Implemented strict Kubernetes reliability standards. Bound `readinessProbe` and `livenessProbe` TCP/HTTP checkers across `angular-ms`, `rabbitmq`, `mongo`, and `mysql` ensuring crashloop monitoring. Established strict CPU and Memory requests/limits securing against memory leak node overloads.
 - **Vulnerability Auditing**: Secured legacy recursive dependencies. Executed consecutive `npm audit fix` engines across orchestrator, measure, publishers, microcontrollers, and fake-arduino-iot bridging environments updating dozens of moderate-to-high nested vulnerabilities spanning all `package-lock.json` lockfiles seamlessly.
 - **Developer Local Architecture**: Condensed scattered arbitrary runtime initialization scripts like `run_k8s_local.sh`, `start_fake_iot.sh`, etc., into a highly intuitive root-level `Makefile` streamlining Developer Experiences immediately via `make start-k8s`.
+
+## Phase 6: Security Hardening & UI Polish
+- **Password Rotation**: Successfully rotated all high-risk default passwords for production-ready manifests. Updated `sealed-secrets.yaml` with unique 32-character hex strings for `INTERNAL_API_KEY`, `MONGO_INITDB_ROOT_PASSWORD`, `MYSQL_ROOT_PASSWORD`, and `RABBITMQ_DEFAULT_PASS`. Synchronized these changes across the cluster using `kubectl rollout restart`.
+- **Advanced CI/CD Orchestration**: Upgraded `build-angular.yml` to support **Automated Semantic Versioning**. Integrated `docker/metadata-action@v5` to dynamically generate tags for `latest`, semver patterns (`v1.2.3`), and short git SHAs, ensuring reproducible builds and safer rollbacks.
+- **Premium UI/UX Redesign**: Revitalized the Angular dashboard with modern aesthetics.
+  - **Typography**: Shifted to a tiered typography system using **Outfit** for headings and **Inter** for body text via Google Fonts integration.
+  - **Effects**: Upgraded the design system to use **16px glass-blur** and deeper, multi-layered shadows for enhanced depth.
+  - **Animations**: Added a premium **animated gradient background** to the Navigation Bar and consistent viewport-aware transitions to all dashboard cards.
+- **Kubernetes Metrics & Scaling**: Enabled the `metrics-server` addon in Minikube and verified the Horizontal Pod Autoscaler (**HPA**) configurations for `orchestrator-ms` and `measure-ms`, ensuring the cluster automatically scales replicas based on real-time CPU/Memory utilization.
+
