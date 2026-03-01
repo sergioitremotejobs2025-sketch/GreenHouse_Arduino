@@ -18,8 +18,13 @@ io.on('connection', (socket) => {
   });
 });
 
+const QueueManager = require('./modules/queue.module');
+
 // Attach io to app to make it accessible in routes
 app.set('io', io);
+
+// Initialize RabbitMQ consumer for real-time WebSocket streaming
+new QueueManager(io);
 
 server.listen(PORT, () => {
   console.log('orchestrator-ms with WebSockets at http://localhost:' + PORT);

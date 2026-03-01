@@ -1,6 +1,7 @@
 {
   "author": "Rocky",
   "dependencies": {
+    "amqplib": "^0.10.9",
     "axios": "^1.13.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",

@@ -18,7 +18,7 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 
 ## 4. Frontend & User Experience Improvements
 - [x] **Design Polish**: Consider a redesign of the Angular dashboard to match modern Web App aesthetics (e.g., dynamic micro-animations, glassmorphism, or dark mode support).
-- [ ] **Real-time WebSocket Integration**: The frontend currently polls for data. Upgrading `publisher-ms` and `orchestrator-ms` to expose a WebSocket connection would allow the dashboard to instantly stream live sensor metrics.
+- [x] **Real-time WebSocket Integration**: Implemented Socket.io relay in `orchestrator-ms` to consume RabbitMQ sensor feeds and broadcast them to the frontend. Configured Nginx WebSocket upgrades in `angular-ms`.
 
 ## 5. Testing & Developer Experience
 - [x] **Expand End-to-End Cypress Tests**: Extend the base Cypress tests to simulate complex user flows, such as adding new sensors, interacting with the charts, and handling invalid API responses.
