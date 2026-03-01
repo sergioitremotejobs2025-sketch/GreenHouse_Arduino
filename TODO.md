@@ -21,5 +21,5 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 - [ ] **Real-time WebSocket Integration**: The frontend currently polls for data. Upgrading `publisher-ms` and `orchestrator-ms` to expose a WebSocket connection would allow the dashboard to instantly stream live sensor metrics.
 
 ## 5. Testing & Developer Experience
-- [ ] **Expand End-to-End Cypress Tests**: Extend the base Cypress tests to simulate complex user flows, such as adding new sensors, interacting with the charts, and handling invalid API responses.
+- [x] **Expand End-to-End Cypress Tests**: Extend the base Cypress tests to simulate complex user flows, such as adding new sensors, interacting with the charts, and handling invalid API responses.
 - [x] **Local Development Scripting**: Unify the scattered bash scripts (`start_fake_iot.sh`, `run_k8s_local.sh`, `rebuild_all_k8s.sh`) into a single `Makefile` for a standardized cross-platform developer experience.

@@ -65,4 +65,5 @@
   - **Effects**: Upgraded the design system to use **16px glass-blur** and deeper, multi-layered shadows for enhanced depth.
   - **Animations**: Added a premium **animated gradient background** to the Navigation Bar and consistent viewport-aware transitions to all dashboard cards.
 - **Kubernetes Metrics & Scaling**: Enabled the `metrics-server` addon in Minikube and verified the Horizontal Pod Autoscaler (**HPA**) configurations for `orchestrator-ms` and `measure-ms`, ensuring the cluster automatically scales replicas based on real-time CPU/Memory utilization.
+- **E2E Test Expansion**: Extended the Cypress E2E suite in `iot.cy.ts` to cover the new premium UI elements. Added assertions for **Outfit/Inter font-family** injection, **dark mode theme switching** via computed style validation, and **glassmorphism blur** (16px) verification for empty state dashboards.
 
