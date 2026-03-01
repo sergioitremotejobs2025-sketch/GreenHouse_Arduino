@@ -5,7 +5,7 @@ Now that the foundational CI/CD workflows are stabilized and Docker images are p
 ## 1. Security Enhancements
 - [x] **Remove Hardcoded Secrets from Git**: The `manifests-k8s/config/secrets.yaml` file contains Base64 encoded secrets (like database passwords and internal API keys) checked directly into version control. Implement a secrets management solution like [Bitnami Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) or HashiCorp Vault.
 - [ ] **Rotate Default Passwords**: Generate secure, random passwords for MongoDB, MySQL, and RabbitMQ to replace the default ones (`secret`, `my-secret-pw`, etc.) in production environments.
-- [ ] **Update Vulnerable Dependencies**: Several legacy packages (like `glob`) triggered NPM vulnerabilities during the `angular-ms` build. We should perform an `npm audit fix` and upgrade outdated dependencies across all Node.js and Python microservices.
+- [x] **Update Vulnerable Dependencies**: Several legacy packages (like `glob`) triggered NPM vulnerabilities during the `angular-ms` build. We should perform an `npm audit fix` and upgrade outdated dependencies across all Node.js and Python microservices.
 
 ## 2. CI/CD & Infrastructure Automation
 - [ ] **Implement Continuous Deployment (CD)**: Set up [ArgoCD](https://argo-cd.readthedocs.io/) or Flux to watch the `manifests-k8s/prod` folder. Whenever you update a YAML file or push a new Docker image tag, ArgoCD will automatically sync the changes directly into the Kubernetes cluster.
