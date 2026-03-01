@@ -56,5 +56,5 @@ This document outlines the systematic steps required to ensure that all microser
 
 ## 🛠 Phase 4: Developer Experience & Maintenance
 
-- [ ] **Pre-commit Hooks**: Add `husky` and `lint-staged` to seamlessly run the test suite for any globally modified files before a `git commit` is permitted.
-- [ ] **TDD Documentation**: Add explicit instructions detailing how developers should create failing tests, write business logic, and refactor code inside the `README.md` or a `CONTRIBUTING.md` file.
+- [x] **Pre-commit Hooks**: Add `husky` and `lint-staged` to seamlessly run the test suite for any globally modified files before a `git commit` is permitted.
+- [x] **TDD Documentation**: Add explicit instructions detailing how developers should create failing tests, write business logic, and refactor code inside the `README.md` or a `CONTRIBUTING.md` file.

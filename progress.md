@@ -44,3 +44,7 @@
 - **Docker Compose Test Config**: Established a `docker-compose.test.yml` architecture mapped specifically to bridge ephemeral RabbitMQ, Mongo, and MySQL database networks with backend nodes, exposing root application testing ports.
 - **Supertest API Suite**: Delivered an isolated API validation suite inside `integration-tests` leveraging Supertest to validate external cross-service behavior such as credential logins and microcontrollers proxy mapping payload.
 - **Cypress Frontend Simulation**: Installed `@cypress` and configured generic browser automation suites simulating dialog interaction tests natively triggering Angular Material interface clicks.
+
+## Phase 4: Developer Experience & Maintenance
+- **Pre-commit Hooks**: Installed `husky` locally enforcing automated `lint-staged` hook sequences. Whenever `git commit` is utilized, changes mapping against `*.ts` or `*.js` natively trigger explicit static type-evaluations and `eslint --fix` corrections, actively blocking broken payloads natively.
+- **TDD Documentation**: Distributed structured Test-Driven Development architecture rulesets inside a globally available `CONTRIBUTING.md` instruction schema. This definitively isolates architectural decisions, enforces >85% standards across future extensions, and delineates expected strategies explicitly for NodeJS, Auth, Pytest, and Angular micro-services.

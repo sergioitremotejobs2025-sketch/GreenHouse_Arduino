@@ -1,0 +1,25 @@
+{
+  "name": "iot_microservices-master",
+  "version": "1.0.0",
+  "description": "You may check the web application at: https://iot-microservices.eu-gb.mybluemix.net.",
+  "main": "test_api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ],
+    "*.ts": [
+      "eslint --fix"
+    ]
+  }
+}
