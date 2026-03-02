@@ -22,6 +22,7 @@ import { TemperatureChartComponent } from '@components/temperature-chart/tempera
 import { TemperatureStatsComponent } from '@components/temperature-stats/temperature-stats.component'
 import { PicturesChartComponent } from '@components/pictures-chart/pictures-chart.component'
 import { PicturesHistoryComponent } from '@components/pictures-history/pictures-history.component'
+import { AiPredictorComponent } from '@components/ai-predictor/ai-predictor.component'
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { PicturesHistoryComponent } from '@components/pictures-history/pictures-
     TemperatureStatsComponent,
     PicturesChartComponent,
     PicturesHistoryComponent,
+    AiPredictorComponent,
   ],
   imports: [
     CommonModule,

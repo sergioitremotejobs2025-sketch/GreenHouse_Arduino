@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-ms
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-ms
+  template:
+    metadata:
+      labels:
+        app: ai-ms
+    spec:
+      containers:
+      - name: ai-ms
+        image: ai-ms:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URL
+          value: "mongo"
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: MONGO_USERNAME
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: MONGO_PASSWORD
+        - name: MONGO_DB
+          value: "iot"
+        resources:
+          limits:
+            cpu: "1.0"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-ms
+  namespace: default
+spec:
+  selector:
+    app: ai-ms
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  type: ClusterIP

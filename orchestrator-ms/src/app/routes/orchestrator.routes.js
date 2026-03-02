@@ -236,6 +236,34 @@ router.post('/refresh', orchestratorController.refresh)
  */
 router.put('/change-password', jwtMiddleware, orchestratorController.changePassword)
 
+/**
+ * @swagger
+ * /ai/train:
+ *   post:
+ *     summary: Train AI model for a sensor
+ *     tags: [AI]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.post('/ai/train', jwtMiddleware, orchestratorController.trainAI)
+
+/**
+ * @swagger
+ * /ai/predict:
+ *   post:
+ *     summary: Get prediction for a sensor
+ *     tags: [AI]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.post('/ai/predict', jwtMiddleware, orchestratorController.predictAI)
+
 router.use((error, req, res, next) => {
   if (error.name === 'UnauthorizedError') {
     res.sendStatus(401)

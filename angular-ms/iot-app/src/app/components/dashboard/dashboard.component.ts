@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
 
   microcontrollers: Microcontroller[] = []
   measure: String
+  recentValuesMap: Map<string, number[]> = new Map()
 
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +52,18 @@ export class DashboardComponent implements OnInit {
     if (idx !== -1) {
       this.microcontrollers[idx] = micro
     }
+  }
+
+  updateRecentValues(micro: Microcontroller, measure: any) {
+    const key = `${micro.ip}_${micro.measure}`
+    const values = this.recentValuesMap.get(key) || []
+    values.push(measure.real_value)
+    if (values.length > 20) values.shift()
+    this.recentValuesMap.set(key, values)
+  }
+
+  getRecentValues(micro: Microcontroller): number[] {
+    return this.recentValuesMap.get(`${micro.ip}_${micro.measure}`) || []
   }
 
 }

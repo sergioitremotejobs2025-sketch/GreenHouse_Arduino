@@ -1,0 +1,22 @@
+<div class="ai-container glass">
+    <div class="ai-header">
+        <h3>🤖 IA Forecast</h3>
+        <button mat-icon-button (click)="train()" [disabled]="training" matTooltip="Entrenar Modelo">
+            <mat-icon [class.rotating]="training">psychology</mat-icon>
+        </button>
+    </div>
+
+    <div class="ai-content">
+        <div class="prediction-box" *ngIf="prediction !== null; else noPrediction">
+            <span class="label">Próxima lectura estimada:</span>
+            <span class="value">{{ prediction | number:'1.1-2' }}</span>
+        </div>
+        <ng-template #noPrediction>
+            <p class="hint">Analiza tendencias usando redes neuronales LSTM.</p>
+        </ng-template>
+    </div>
+
+    <button mat-stroked-button color="accent" (click)="predict()" [disabled]="loading || recentValues.length < 10">
+        {{ loading ? 'Calculando...' : 'Predecir Futuro' }}
+    </button>
+</div>

@@ -1,4 +1,4 @@
-const { AUTH_MS, MEASURE_MS, MICROCONTROLLERS_MS } = require('../../config/services.config')
+const { AUTH_MS, MEASURE_MS, MICROCONTROLLERS_MS, AI_MS } = require('../../config/services.config')
 const { hashPassword } = require('../../helpers/helpers')
 
 const JwtModule = require('../../modules/jwt.module')
@@ -125,6 +125,27 @@ module.exports = class OrchestratorController {
     const response = await servicesController.putToConnectedService(res, AUTH_MS, 'change-password', body, null, true)
     if (!response.data) return res.sendStatus(400)
     return res.json({ success: response.data === 'true' })
+  }
+
+  async trainAI(req, res) {
+    const { ip, measure } = req.body
+    const body = {
+      username: req.user.username,
+      ip,
+      measure
+    }
+    await servicesController.postToConnectedService(res, AI_MS, 'train', body)
+  }
+
+  async predictAI(req, res) {
+    const { ip, measure, recent_values } = req.body
+    const body = {
+      username: req.user.username,
+      ip,
+      measure,
+      recent_values
+    }
+    await servicesController.postToConnectedService(res, AI_MS, 'predict', body)
   }
 
 }
