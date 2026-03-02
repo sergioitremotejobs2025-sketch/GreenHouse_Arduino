@@ -1,4 +1,4 @@
-FROM node:16.3-alpine
+FROM node:20-alpine
 
 WORKDIR /measure-ms
 

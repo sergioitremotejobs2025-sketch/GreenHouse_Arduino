@@ -76,3 +76,17 @@
   - **GitOps Application**: Configuring a root `Application` manifest that monitors the `manifests-k8s/prod` path in the repository. Enabled **Prune** and **Self-Heal** policies to ensure the cluster state matches the git source of truth automatically.
   - **UI Access**: Patched the `argocd-server` to `NodePort` for local dashboard access.
 
+## Phase 7: AI Integration & Infrastructure Stability
+- **AI Microservice (`ai-ms`) Integration**:
+  - **LSTM Forecasting**: Implemented a complete AI forecasting pipeline using **TensorFlow/Keras** for univariate time-series prediction (humidity, light, temperature).
+  - **Backend Stability**: Resolved critical `ModuleNotFoundError` issues by refactoring absolute package imports to relative/local imports and optimizing the `PYTHONPATH` within the Docker configuration.
+  - **Persistence**: Integrated `ai-ms` with MongoDB for model tracking and historical data retrieval.
+  - **Containerization**: Optimized the `Dockerfile` for faster builds and corrected the entry point to handle the virtual package structure accurately.
+- **Microservice Resiliency**:
+  - **Node.js Upgrades**: Bumped `measure-ms` from Node 16 to **Node 20**, resolving the `Object.hasOwn` compatibility errors and improving runtime performance.
+  - **RabbitMQ Reliability**: Hardened the message broker by switching to the `management` image and adjusting Kubernetes liveness/readiness `initialDelaySeconds` to **120s**. This prevents premature pod restarts during high-load cluster initialization.
+  - **Resource Management**: Performed a cluster-wide cleanup of hanging `publisher-ms` cronjobs (14+ orphaned jobs) to reclaim CPU and memory for the AI training workloads.
+- **Local Developer Experience (DX)**:
+  - **Smart Pull Policies**: Implemented `Scripts/fix_env.sh` to globally update all manifests to `imagePullPolicy: IfNotPresent`. This ensures that local builds loaded into Minikube are used immediately, bypassing external registry latency.
+  - **Angular Frontend Polish**: Successfully integrated the `AiPredictorComponent` into the dashboard, enabling users to trigger real-time model training and see 1-step ahead forecasts directly in the UI.
+  - **Automated Rebuilds**: Optimized `Scripts/rebuild_angular.sh` to handle production-grade builds and direct Minikube image injection, reducing the UI iteration cycle.

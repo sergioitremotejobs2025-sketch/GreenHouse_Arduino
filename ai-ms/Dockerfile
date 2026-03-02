@@ -12,8 +12,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+WORKDIR /app/src
 ENV PORT=5000
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/src
 EXPOSE 5000
 
-CMD ["python", "src/main.py"]
+CMD ["python", "main.py"]

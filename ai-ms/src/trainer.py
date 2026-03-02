@@ -1,9 +1,9 @@
 import os
 import numpy as np
 from datetime import datetime
-from src.database.mongo_client import get_db
-from src.data_processor import DataProcessor
-from src.models.lstm_model import create_lstm_model
+from database.mongo_client import get_db
+from data_processor import DataProcessor
+from models.lstm_model import create_lstm_model
 
 class Trainer:
     def __init__(self, username, ip, measure):

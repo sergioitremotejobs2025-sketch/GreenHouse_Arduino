@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, jsonify
-from src.trainer import Trainer
-from src.data_processor import DataProcessor
+from trainer import Trainer
+from data_processor import DataProcessor
 from tensorflow.keras.models import load_model
 import numpy as np
 
