@@ -64,6 +64,16 @@ spec:
             configMapKeyRef:
               key: MICROCONTROLLERS_MS_SERVICE_PORT
               name: env-configmap
+        - name: AI_MS_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: AI_MS_HOSTNAME
+              name: env-configmap
+        - name: AI_MS_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: AI_MS_SERVICE_PORT
+              name: env-configmap
         - name: RABBITMQ_HOSTNAME
           valueFrom:
             configMapKeyRef:
@@ -106,8 +116,8 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: sergioitremotejobs2025/orchestrator-ms
-        imagePullPolicy: IfNotPresent
+        image: sergioitremotejobs2025/orchestrator-ms:latest
+        imagePullPolicy: Always
         name: orchestrator-ms
         ports:
         - containerPort: 80

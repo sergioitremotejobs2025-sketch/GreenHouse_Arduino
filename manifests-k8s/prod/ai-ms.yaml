@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: ai-ms
-        image: ai-ms:latest
-        imagePullPolicy: Never
+        image: sergioitremotejobs2025/ai-ms:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         env:
