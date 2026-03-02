@@ -25,13 +25,13 @@ spec:
         - name: MONGO_USERNAME
           valueFrom:
             secretKeyRef:
-              name: database-secrets
-              key: MONGO_USERNAME
+              name: secrets
+              key: MONGO_INITDB_ROOT_USERNAME
         - name: MONGO_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: database-secrets
-              key: MONGO_PASSWORD
+              name: secrets
+              key: MONGO_INITDB_ROOT_PASSWORD
         - name: MONGO_DB
           value: "iot"
         resources:
