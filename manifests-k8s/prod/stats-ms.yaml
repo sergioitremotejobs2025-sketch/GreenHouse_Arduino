@@ -97,7 +97,7 @@ spec:
         - name: METRICS_PORT
           value: '80'
         image: sergioitremotejobs2025/stats-ms
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: stats-ms
         ports:
         - containerPort: 80

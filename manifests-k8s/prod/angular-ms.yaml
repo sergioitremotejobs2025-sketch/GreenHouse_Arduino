@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - image: sergioitremotejobs2025/angular-ms:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: angular-ms
         ports:
         - containerPort: 80

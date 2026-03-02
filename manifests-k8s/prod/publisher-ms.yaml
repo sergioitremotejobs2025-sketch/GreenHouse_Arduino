@@ -56,6 +56,6 @@ spec:
                   name: env-configmap
             name: publisher-ms
             image: sergioitremotejobs2025/publisher-ms
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
           restartPolicy: OnFailure
   schedule: '*/1 * * * *'

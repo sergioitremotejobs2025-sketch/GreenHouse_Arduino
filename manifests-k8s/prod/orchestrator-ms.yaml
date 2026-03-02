@@ -117,7 +117,7 @@ spec:
         - name: PORT
           value: '80'
         image: sergioitremotejobs2025/orchestrator-ms:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: orchestrator-ms
         ports:
         - containerPort: 80
