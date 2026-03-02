@@ -22,7 +22,7 @@ module.exports = class Mysql {
     this.db.connect(error => {
       if (error) {
         console.log('Error when connecting to db:', error)
-        setTimeout(handleDisconnect, 2000)
+        setTimeout(() => this.connect(), 2000)
       }
     })
 

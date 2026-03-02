@@ -15,9 +15,7 @@ module.exports = class MongoDB {
   connect() {
     const url = `mongodb://${USERNAME}:${PASSWORD}@${MONGO}`
     const options = {
-      dbName: DB_NAME,
-      useNewUrlParser: true,
-      useUnifiedTopology: true
+      dbName: DB_NAME
     }
 
     mongoose.connect(url, options).catch(error => console.log(error))

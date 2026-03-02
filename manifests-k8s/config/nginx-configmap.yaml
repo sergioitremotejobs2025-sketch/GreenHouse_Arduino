@@ -48,4 +48,8 @@ data:
       location = /refresh {
         proxy_pass http://orchestrator-ms/refresh;
       }
+
+      location /ai {
+        proxy_pass http://orchestrator-ms/ai;
+      }
     }

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ai-ms
-        image: sergioitremotejobs2025/ai-ms:latest
+        image: ai-ms:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

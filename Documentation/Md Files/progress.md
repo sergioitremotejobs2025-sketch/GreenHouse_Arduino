@@ -90,3 +90,20 @@
   - **Smart Pull Policies**: Implemented `Scripts/fix_env.sh` to globally update all manifests to `imagePullPolicy: IfNotPresent`. This ensures that local builds loaded into Minikube are used immediately, bypassing external registry latency.
   - **Angular Frontend Polish**: Successfully integrated the `AiPredictorComponent` into the dashboard, enabling users to trigger real-time model training and see 1-step ahead forecasts directly in the UI.
   - **Automated Rebuilds**: Optimized `Scripts/rebuild_angular.sh` to handle production-grade builds and direct Minikube image injection, reducing the UI iteration cycle.
+
+## Phase 8: Microservice Error Resolution & Cluster Stability
+- **`microcontrollers-ms` Connection & Logic**:
+  - Fixed `ReferenceError` by replacing undefined `handleDisconnect` with `this.connect()`.
+  - Resolved `ER_ACCESS_DENIED_ERROR` by syncing MySQL root password in `initdb.sql` with `secrets.yaml` and recreating the database volume.
+  - Upgraded to **Node.js 20-alpine** across all services to support modern JS features like `Object.hasOwn`.
+- **`measure-ms` Compatibility**:
+  - Updated `mongoose` connection logic to remove deprecated `useNewUrlParser` and `useUnifiedTopology` (unsupported in Mongoose 9+).
+  - Resolved 500 errors in `PictureScheduler` by stabilizing the `microcontrollers-ms` dependency.
+- **`auth-ms` (Go) Unmarshaling**:
+  - Added JSON tags to `model.User` and `model.Credential` structs to correctly map incoming camelCase JSON fields (e.g., `refreshToken`) from Javascript callers.
+- **`publisher-ms` Lifecycle**:
+  - Refactored `publisher-ms` (CronJob) to correctly exit with `process.exit(0)` after completion, preventing resource-exhaustion from "zombie" pods.
+  - Hardened `QueueModule` to ensure AMQP connections are gracefully closed and buffered messages are flushed before process exit.
+- **Infrastructure & Storage**:
+  - Fixed `PersistentVolumeClaim` (PVC) pending issues by changing `storageClassName` from `microk8s-hostpath` to **`standard`** (Minikube compatible).
+  - Successfully registered all 6 fake IoT devices using `Scripts/register_fake_iot.sh`, enabling full E2E data flow to the dashboard.

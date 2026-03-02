@@ -9,7 +9,11 @@ class Queue {
     this.connection = null
     this.channel = null
     this.offlinePubQueue = []
-    this.connect()
+    this.connectedPromise = this.connect()
+  }
+
+  async isReady() {
+    return this.connectedPromise
   }
 
   async connect(retryCount = 0) {
@@ -41,16 +45,28 @@ class Queue {
         const msg = this.offlinePubQueue.shift()
         await this.publish(msg)
       }
+      return true
     } catch (error) {
       console.error('[AMQP] connection failed:', error.message)
-      this.reconnect(retryCount)
+      return this.reconnect(retryCount)
     }
   }
 
   reconnect(retryCount = 0) {
     const delay = Math.min(1000 * Math.pow(2, retryCount), 30000)
     console.log(`[AMQP] retrying connection in ${delay}ms...`)
-    setTimeout(() => this.connect(retryCount + 1), delay)
+    return new Promise(resolve => {
+      setTimeout(() => resolve(this.connect(retryCount + 1)), delay)
+    })
+  }
+
+  async close() {
+    // Wait for queue to be empty
+    while (this.offlinePubQueue.length > 0) {
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+    if (this.channel) await this.channel.close()
+    if (this.connection) await this.connection.close()
   }
 
   async publish(message) {

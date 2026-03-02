@@ -7,21 +7,27 @@ const measures = ['humidity', 'light', 'temperature']
 
 const publishMeasure = async measure => {
   const queue = new QueueModule(QUEUES_MEASURES[measure])
-  const micros = await getMicrocontrollers(measure)
-  console.log(`[${measure}] Found ${micros.length} microcontrollers`)
+  try {
+    const micros = await getMicrocontrollers(measure)
+    console.log(`[${measure}] Found ${micros.length} microcontrollers`)
 
-  return await Promise.all(
-    micros.map(async micro => {
-      console.log(`[${measure}] Requesting http://${micro.ip}/${micro.measure}...`)
-      const response = await requestMeasure(micro)
-      if (response) {
-        console.log(`[${measure}] Got response from ${micro.ip}, publishing...`)
-        await queue.publish(response)
-      } else {
-        console.log(`[${measure}] Failed to get response from ${micro.ip}`)
-      }
-    })
-  )
+    await Promise.all(
+      micros.map(async micro => {
+        console.log(`[${measure}] Requesting http://${micro.ip}/${micro.measure}...`)
+        const response = await requestMeasure(micro)
+        if (response) {
+          console.log(`[${measure}] Got response from ${micro.ip}, publishing...`)
+          await queue.publish(response)
+        } else {
+          console.log(`[${measure}] Failed to get response from ${micro.ip}`)
+        }
+      })
+    )
+  } catch (error) {
+    console.error(`[${measure}] error:`, error.message)
+  } finally {
+    await queue.close()
+  }
 }
 
 const main = async () => {

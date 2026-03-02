@@ -28,8 +28,8 @@ INSERT INTO iot.microcontrollers VALUES (
   'Grove - Temperature'
 );
 
-CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
+CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'f001de9f90e1eae14f8eff7782c2f811';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
 
-CREATE USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
+CREATE USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'f001de9f90e1eae14f8eff7782c2f811';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';

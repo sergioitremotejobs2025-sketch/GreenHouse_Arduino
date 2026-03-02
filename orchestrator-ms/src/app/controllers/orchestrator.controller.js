@@ -15,7 +15,7 @@ const doAuth = async (req, res, path) => {
   body.refreshToken = jwt.generateRefreshToken()
 
   const response = await servicesController.postToConnectedService(res, AUTH_MS, path, body, null, true)
-  if (!response.data) return res.sendStatus(401)
+  if (String(response.data) !== 'true') return res.sendStatus(401)
 
   const accessToken = jwt.generateToken({ username: body.username })
   return res.json({ accessToken, refreshToken: body.refreshToken })
