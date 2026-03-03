@@ -4,12 +4,13 @@
   "description": "You may check the web application at: https://iot-microservices.eu-gb.mybluemix.net.",
   "main": "test_api.js",
   "scripts": {
-    "test": "npm run test:microcontrollers && npm run test:orchestrator && npm run test:measure && npm run test:publisher && npm run test:stats",
+    "test": "npm run test:microcontrollers && npm run test:orchestrator && npm run test:measure && npm run test:publisher && npm run test:stats && npm run test:ai",
     "test:microcontrollers": "cd microcontrollers-ms && npm test",
     "test:orchestrator": "cd orchestrator-ms && npm test",
     "test:measure": "cd measure-ms && npm test",
     "test:publisher": "cd publisher-ms && npm test",
     "test:stats": "cd stats-ms && pytest",
+    "test:ai": "cd ai-ms && export PYTHONPATH=src && pytest",
     "test:integration": "cd integration-tests && npm test",
     "prepare": "husky"
   },

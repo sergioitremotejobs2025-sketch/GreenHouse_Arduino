@@ -1,6 +1,6 @@
 # Day 2 Timeline: AI Service Bootstrapping (AI-Assisted)
 
-This timeline estimates the effort required to complete the **Day 2: AI Service Bootstrapping** tasks using AI assistance. Total estimated duration: **~60 Minutes**.
+This timeline estimates the effort required to complete the **Day 2: AI Service Bootstrapping** tasks and achieve **100% coverage** using AI assistance. Total estimated duration: **~90 Minutes**.
 
 ---
 
@@ -27,12 +27,19 @@ This timeline estimates the effort required to complete the **Day 2: AI Service 
     - Write tests for the training loop and model persistence (`joblib`).
     - Verify error handling when the database returns no data for a specific microcontroller.
 
-### 00:45 - 01:00 | Flask API Coverage & Reporting
-*   **Action**: End-to-end unit tests for the AI service endpoints.
+### 00:45 - 01:10 | API Negative Testing & Error Handling
+*   **Action**: Covering all failure paths in the Flask application.
 *   **AI Task**:
-    - Use `pytest` Flask client to test `/train` and `/predict` POST routes.
-    - Ensure 85%+ coverage threshold is met for the entire `ai-ms`.
-    - Update `CURRENT_COVERAGE.md` with new metrics.
+    - Write tests for 400 (missing params), 404 (missing models), and 500 (trainer/prediction error) status codes.
+    - Implement a health check test for `/health`.
+    - Verify that exceptions are caught and returned as JSON errors.
+
+### 01:10 - 01:30 | Logic Refinement & 100% Coverage Verification
+*   **Action**: Closing the gaps in `get_db`, `lstm_model`, and `DataProcessor` branches.
+*   **AI Task**:
+    - Test `get_db` using `monkeypatch` to override environment variables.
+    - Verify the model architecture using `keras` mocks.
+    - Achieve 100% total coverage and update all reporting artifacts.
 
 ---
 
