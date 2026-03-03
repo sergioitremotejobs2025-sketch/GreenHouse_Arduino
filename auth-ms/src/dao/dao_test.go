@@ -10,14 +10,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func TestMysqlRepository_Exists(t *testing.T) {
+func setupMock(t *testing.T) (*sql.DB, sqlmock.Sqlmock, *MysqlRepository) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Fatalf("failed to open sqlmock: %v", err)
 	}
-	defer db.Close()
+	return db, mock, &MysqlRepository{DB: db}
+}
 
-	repo := &MysqlRepository{DB: db}
+func TestMysqlRepository_Exists(t *testing.T) {
+	db, mock, repo := setupMock(t)
+	defer db.Close()
 	user := model.User{Username: "alice", Password: "pwd"}
 
 	// Success case
@@ -56,13 +59,8 @@ func TestNewMysqlRepository(t *testing.T) {
 }
 
 func TestMysqlRepository_Insert(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("error %s", err)
-	}
+	db, mock, repo := setupMock(t)
 	defer db.Close()
-
-	repo := &MysqlRepository{DB: db}
 	user := model.User{Username: "bob", Password: "p", RefreshToken: "r"}
 
 	// Success
@@ -86,13 +84,8 @@ func TestMysqlRepository_Insert(t *testing.T) {
 }
 
 func TestMysqlRepository_Update(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("error %s", err)
-	}
+	db, mock, repo := setupMock(t)
 	defer db.Close()
-
-	repo := &MysqlRepository{DB: db}
 	creds := model.Credential{Username: "alice", RefreshToken: "old", NewRefreshToken: "new"}
 
 	// Success
@@ -116,13 +109,8 @@ func TestMysqlRepository_Update(t *testing.T) {
 }
 
 func TestMysqlRepository_UpdatePassword(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("error %s", err)
-	}
+	db, mock, repo := setupMock(t)
 	defer db.Close()
-
-	repo := &MysqlRepository{DB: db}
 
 	// Success
 	mock.ExpectPrepare("UPDATE iot.users SET password").
@@ -158,13 +146,8 @@ func TestMysqlRepository_GetDB(t *testing.T) {
 }
 
 func TestMysqlRepository_PrepareFail(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("e: %v", err)
-	}
+	db, mock, repo := setupMock(t)
 	defer db.Close()
-
-	repo := &MysqlRepository{DB: db}
 
 	// Exists
 	mock.ExpectPrepare("SELECT").WillReturnError(fmt.Errorf("prepare fail"))

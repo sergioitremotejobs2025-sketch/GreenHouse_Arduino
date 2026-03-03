@@ -24,8 +24,8 @@ Reach perfect coverage across all modules.
 - [x] **Main Coverage**: Create a `main_test.go` to exercise the `main()` entry point safely. (Refactored to `Run()`)
 
 ### 4. Advanced TDD: Input Validation & Security
-- [ ] **Password Strength**: Use TDD to implement a `ValidatePassword` helper (e.g., minimum 8 chars) and integrate it into the registration flow.
-- [ ] **Mock Enhancement**: Refactor `sqlmock` usage to use a cleaner setup/teardown pattern if needed.
+- [x] **Password Strength**: Use TDD to implement a `ValidatePassword` helper (e.g., minimum 8 chars) and integrate it into the registration flow.
+- [x] **Mock Enhancement**: Refactor `sqlmock` usage to use a cleaner setup/teardown pattern if needed.
 
 ---
 

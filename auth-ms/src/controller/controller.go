@@ -2,6 +2,7 @@ package controller
 
 import (
 	"auth-ms/dao"
+	"auth-ms/helper"
 	"auth-ms/model"
 
 	"encoding/json"
@@ -71,7 +72,7 @@ func (h *Handlers) Register(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST /register")
 
 	user, err := getBodyContent(r)
-	if err != nil || user.Username == "" || user.Password == "" {
+	if err != nil || user.Username == "" || user.Password == "" || !helper.ValidatePassword(user.Password) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
@@ -111,7 +112,7 @@ func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	log.Println("PUT /change-password")
 
 	user, err := getBodyContent(r)
-	if err != nil || user.Username == "" || user.Password == "" {
+	if err != nil || user.Username == "" || user.Password == "" || !helper.ValidatePassword(user.Password) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}

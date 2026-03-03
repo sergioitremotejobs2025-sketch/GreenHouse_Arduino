@@ -45,12 +45,12 @@ func newTestHandlers(repo *mockRepository) *Handlers {
 func TestLogin_Success(t *testing.T) {
 	mock := &mockRepository{
 		existsResult: true,
-		existsUser:   model.User{Username: "alice", Password: "secret", RefreshToken: "old"},
+		existsUser:   model.User{Username: "alice", Password: "Password123", RefreshToken: "old"},
 		updateRows:   1,
 	}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "alice", Password: "secret", RefreshToken: "new"})
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "Password123", RefreshToken: "new"})
 	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -72,7 +72,7 @@ func TestLogin_UserNotFound(t *testing.T) {
 	mock := &mockRepository{existsResult: false}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "nobody", Password: "wrong"})
+	body, _ := json.Marshal(model.User{Username: "nobody", Password: "Password123"})
 	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -89,12 +89,12 @@ func TestLogin_UserNotFound(t *testing.T) {
 func TestLogin_UpdateFails(t *testing.T) {
 	mock := &mockRepository{
 		existsResult: true,
-		existsUser:   model.User{Username: "alice", Password: "secret"},
+		existsUser:   model.User{Username: "alice", Password: "Password123"},
 		updateRows:   0, // update returns 0 rows
 	}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "alice", Password: "secret"})
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "Password123"})
 	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -111,7 +111,7 @@ func TestRegister_Success(t *testing.T) {
 	mock := &mockRepository{insertResult: true}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "bob", Password: "pass123", RefreshToken: "tok"})
+	body, _ := json.Marshal(model.User{Username: "bob", Password: "Password123", RefreshToken: "tok"})
 	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -126,7 +126,7 @@ func TestRegister_DuplicateUser(t *testing.T) {
 	mock := &mockRepository{insertResult: false}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "existing", Password: "pass"})
+	body, _ := json.Marshal(model.User{Username: "existing", Password: "Password123"})
 	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -193,7 +193,7 @@ func TestChangePassword_Success(t *testing.T) {
 	mock := &mockRepository{updatePass: true}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "alice", Password: "new-password"})
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "Password123"})
 	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -208,7 +208,7 @@ func TestChangePassword_RepoFail(t *testing.T) {
 	mock := &mockRepository{updatePass: false}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "alice", Password: "new"})
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "Password123"})
 	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -223,7 +223,7 @@ func TestChangePassword_InvalidInput(t *testing.T) {
 	mock := &mockRepository{updatePass: true}
 	h := newTestHandlers(mock)
 
-	body, _ := json.Marshal(model.User{Username: "", Password: "new"})
+	body, _ := json.Marshal(model.User{Username: "", Password: "Password123"})
 	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 
@@ -327,5 +327,20 @@ func TestRegister_EmptyFields(t *testing.T) {
 
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("expected 400 for empty fields, got %d", w.Code)
+	}
+}
+
+func TestRegister_WeakPassword(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "weak"}) // too short, no upper, no digit
+	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.Register(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for weak password, got %d", w.Code)
 	}
 }
