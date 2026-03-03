@@ -29,3 +29,4 @@ router.get('/pictures', picturesController.getMeasure)
 router.get('/pictures/history', picturesController.getMeasures)
 
 module.exports = router
+
