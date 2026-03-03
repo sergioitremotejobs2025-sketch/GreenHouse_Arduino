@@ -126,6 +126,24 @@ describe('Humidity endpoints', () => {
     expect(res.statusCode).toBe(400)
     Dao.prototype.findHumidity = originalFindHumidity
   }, 100000)
+
+  it('should save a new humidity measure', async () => {
+    const res = await request(app)
+      .post('/humidity')
+      .send({
+        ip: '192.168.1.50',
+        username: 'Rocky',
+        humidity: 450
+      })
+    expect(res.statusCode).toBe(201)
+    expect(res.body.ip).toBe('192.168.1.50')
+  })
+
+  it('should return humidity with limit', async () => {
+    const res = await request(app).get('/humidities?username=Rocky&limit=5&ip=192.168.1.50')
+    expect(res.statusCode).toBe(200)
+    expect(res.body.length).toBeLessThanOrEqual(5)
+  })
 })
 
 describe('Light endpoints', () => {
@@ -275,6 +293,11 @@ describe('Light endpoints', () => {
     expect(res.body.measure).toEqual('light')
     expect(res.body.username).toEqual('Rocky')
   }, 100000)
+
+  it('should return light with limit', async () => {
+    const res = await request(app).get('/lights?username=Rocky&limit=5&ip=192.168.1.50')
+    expect(res.statusCode).toBe(200)
+  })
 })
 
 describe('Temperature endpoints', () => {
@@ -378,6 +401,22 @@ describe('Temperature endpoints', () => {
       expect.arrayContaining([])
     )
   }, 100000)
+
+  it('should save a new temperature measure', async () => {
+    const res = await request(app)
+      .post('/temperature')
+      .send({
+        ip: '192.168.1.50',
+        username: 'Rocky',
+        temperature: 250
+      })
+    expect(res.statusCode).toBe(201)
+  })
+
+  it('should return temperature with limit', async () => {
+    const res = await request(app).get('/temperatures?username=Rocky&limit=5&ip=192.168.1.50')
+    expect(res.statusCode).toBe(200)
+  })
 })
 
 describe('Pictures endpoints', () => {

@@ -10,15 +10,24 @@ const makeModel = (name) => {
   }
 
   MockModel.find = (doc, keys) => {
-    if (doc.ip && doc.username && doc.init_timestamp && doc.end_timestamp &&
-      doc.init_timestamp['$gte'] && doc.end_timestamp['$lte']) {
-
-      if (name === 'Humidity') return Promise.resolve([humidities[0]])
-      if (name === 'Light') return Promise.resolve([lights[0]])
-      if (name === 'Temperature') return Promise.resolve([temperatures[0]])
-      if (name === 'Picture') return Promise.resolve([pictures[0]])
+    let result = []
+    if (doc.ip && doc.username) {
+      if (name === 'Humidity') result = [humidities[0]]
+      if (name === 'Light') result = [lights[0]]
+      if (name === 'Temperature') result = [temperatures[0]]
+      if (name === 'Picture') result = [pictures[0]]
     }
-    return Promise.resolve([])
+
+    const query = {
+      sort: () => query,
+      limit: () => query,
+      then: (resolve) => resolve(result),
+      catch: (reject) => { /* no-op */ }
+    }
+
+    // Add thenable behavior to make it awaitable
+    // But wait, it should actually return a Promise if await is called.
+    return query
   }
 
   MockModel.prototype.save = function () {

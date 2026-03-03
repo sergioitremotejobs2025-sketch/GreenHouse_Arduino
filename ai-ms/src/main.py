@@ -38,12 +38,13 @@ def train_model():
         return jsonify({"error": "Missing parameters"}), 400
         
     trainer = Trainer(username, ip, measure)
-    success = trainer.train()
+    success, message = trainer.train()
     
     if success:
-        return jsonify({"message": "Training completed"}), 200
+        return jsonify({"message": message}), 200
     else:
-        return jsonify({"error": "Training failed or insufficient data"}), 500
+        status_code = 400 if "Insufficient data" in message else 500
+        return jsonify({"error": message}), status_code
 
 @app.route('/predict', methods=['POST'])
 @require_internal_key

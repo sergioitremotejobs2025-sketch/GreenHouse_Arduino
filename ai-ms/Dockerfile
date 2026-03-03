@@ -15,6 +15,7 @@ COPY . .
 WORKDIR /app/src
 ENV PORT=5000
 ENV PYTHONPATH=/app/src
+ENV PYTHONUNBUFFERED=1
 EXPOSE 5000
 
 CMD ["python", "main.py"]

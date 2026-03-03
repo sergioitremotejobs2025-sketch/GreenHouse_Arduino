@@ -41,19 +41,30 @@ module.exports = class MeasureModel {
   }
 
   findMeasures = async query => {
-    let { end_date, end_timestamp, init_date, init_timestamp, ip, username } = query
+    let { end_date, end_timestamp, init_date, init_timestamp, ip, username, limit } = query
 
-    if (!init_timestamp) init_timestamp = timeStringToTimestamp(init_date)
-    if (!end_timestamp) end_timestamp = timeStringToTimestamp(end_date)
+    const filter = { ip, username }
+
+    if (init_date || init_timestamp) {
+      if (!init_timestamp) init_timestamp = timeStringToTimestamp(init_date)
+      filter.init_timestamp = { '$gte': init_timestamp }
+    }
+
+    if (end_date || end_timestamp) {
+      if (!end_timestamp) end_timestamp = timeStringToTimestamp(end_date)
+      filter.end_timestamp = { '$lte': end_timestamp }
+    }
+
     const method = 'find' + capitalizeFirstLetter(this.measure)
-    return await this.dao[method](
-      {
-        ip,
-        username,
-        init_timestamp: { '$gte': init_timestamp },
-        end_timestamp: { '$lte': end_timestamp }
-      }
-    )
+    // If limit is provided, we want to sort by latest first to get the MOST recent ones
+    if (limit) {
+      // We need to modify the DAO to support limit and sort, or handle it here if DAO just passes it.
+      // Current DAO findX methods just return Humidity.find(query, ...)
+      // Let's assume we can modify the DAO or use the returned promise.
+      return await this.dao[method](filter, parseInt(limit))
+    }
+
+    return await this.dao[method](filter)
   }
 
   saveMeasure = async doc => {

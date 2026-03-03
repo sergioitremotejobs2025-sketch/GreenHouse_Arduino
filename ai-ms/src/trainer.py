@@ -37,12 +37,13 @@ class Trainer:
     def train(self):
         data = self.fetch_history()
         if not data or len(data) < 20:
-            print(f"Not enough data to train for {self.username} - {self.ip}")
-            return False
+            msg = f"Insufficient data for {self.username} - {self.ip} (got {len(data)}, need 20)"
+            print(msg)
+            return False, msg
 
-        X, y, _ = self.processor.prepare_data(data)
+        X, y, scaler = self.processor.prepare_data(data)
         if X is None:
-            return False
+            return False, "Data processing failed"
 
         # Reshape for LSTM: (samples, time_steps, features)
         X = np.reshape(X, (X.shape[0], X.shape[1], 1))
@@ -55,4 +56,4 @@ class Trainer:
         os.makedirs("models", exist_ok=True)
         model.save(model_path)
         print(f"Model saved to {model_path}")
-        return True
+        return True, "Training completed"

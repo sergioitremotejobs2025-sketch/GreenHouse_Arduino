@@ -1,15 +1,15 @@
 const axios = require('axios')
 const queryString = require('query-string')
 
-const { MEASURE_MS, AI_MS, MICROCONTROLLERS_MS } = require('../../config/services.config')
+const { MEASURE_MS, AI_MS, MICROCONTROLLERS_MS, DEFAULT_TIMEOUT, AI_TRAIN_TIMEOUT } = require('../../config/services.config')
 
 /**
- * Shared secret sent to measure-ms so that it can reject un-trusted callers.
- * Must match the INTERNAL_API_KEY env var set on the measure-ms pod/container.
+ * Shared secret sent to services so that they can reject un-trusted callers.
+ * Must match the INTERNAL_API_KEY env var set on the service pod/container.
  */
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || ''
 
-/** Build request headers, adding the internal key only for measure-ms calls. */
+/** Build request headers, adding the internal key only for specific calls. */
 const buildHeaders = (service) => {
   const needsAuth = [MEASURE_MS, AI_MS, MICROCONTROLLERS_MS].includes(service)
   return needsAuth && INTERNAL_API_KEY
@@ -19,7 +19,10 @@ const buildHeaders = (service) => {
 
 const methodToConnectedService = async (res, url, method, body = {}, status = 200, returnResponse = false, headers = {}) => {
   try {
-    const config = { headers }
+    const isAiTrain = url.includes(AI_MS) && url.includes('train')
+    const timeout = isAiTrain ? AI_TRAIN_TIMEOUT : DEFAULT_TIMEOUT
+
+    const config = { headers, timeout }
     const response = method === 'get'
       ? await axios.get(url, config)
       : method === 'delete'
@@ -30,7 +33,13 @@ const methodToConnectedService = async (res, url, method, body = {}, status = 20
     if (!response.data) return res.sendStatus(404)
     return res.status(status).json(response.data)
   } catch (error) {
-    return res.sendStatus(400)
+    if (error.code === 'ECONNABORTED') {
+      return res.status(504).json({ error: 'Gateway Timeout' })
+    }
+    if (error.response) {
+      return res.status(error.response.status).json(error.response.data)
+    }
+    return res.status(502).json({ error: 'Bad Gateway' })
   }
 }
 

@@ -18,7 +18,7 @@ describe('DashboardComponent', () => {
   let urlSubject: BehaviorSubject<UrlSegment[]>;
 
   beforeEach(async(() => {
-    const arduinoSpy = jasmine.createSpyObj('ArduinoService', ['getMicrocontrollers']);
+    const arduinoSpy = jasmine.createSpyObj('ArduinoService', ['getMicrocontrollers', 'getPreviousMeasures']);
     const authSpy = jasmine.createSpyObj('AuthService', ['removeTokens']);
     urlSubject = new BehaviorSubject<UrlSegment[]>([]);
 
@@ -49,6 +49,7 @@ describe('DashboardComponent', () => {
 
   it('should create', () => {
     arduinoService.getMicrocontrollers.and.returnValue(of([]));
+    arduinoService.getPreviousMeasures.and.returnValue(of([]));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -59,6 +60,7 @@ describe('DashboardComponent', () => {
       { ip: '2.2.2.2', measure: 'temperature', sensor: 'DHT11', username: 'alice' }
     ];
     arduinoService.getMicrocontrollers.and.returnValue(of(mockMicros as any));
+    arduinoService.getPreviousMeasures.and.returnValue(of([]));
 
     fixture.detectChanges();
     expect(component.microcontrollers.length).toBe(2);
@@ -76,6 +78,7 @@ describe('DashboardComponent', () => {
 
   it('should call removeTokens on error', () => {
     arduinoService.getMicrocontrollers.and.returnValue(throwError('Error'));
+    arduinoService.getPreviousMeasures.and.returnValue(of([]));
     fixture.detectChanges();
     expect(authService.removeTokens).toHaveBeenCalled();
   });

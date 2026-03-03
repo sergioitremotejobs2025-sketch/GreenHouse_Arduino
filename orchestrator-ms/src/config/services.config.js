@@ -22,6 +22,8 @@ module.exports = {
     humidity: process.env.QUEUE_HUMIDITY_NAME || 'humidities',
     light: process.env.QUEUE_LIGHT_NAME || 'lights',
     temperature: process.env.QUEUE_TEMPERATURE_NAME || 'temperatures'
-  }
+  },
+  DEFAULT_TIMEOUT: 10000, // 10s
+  AI_TRAIN_TIMEOUT: 60000 // 60s
 }
 

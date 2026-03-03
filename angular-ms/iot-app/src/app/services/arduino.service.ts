@@ -101,19 +101,21 @@ export class ArduinoService {
     ip: string,
     measure: string,
     group: string,
-    init_date: string,
-    end_date: string
+    init_date?: string,
+    end_date?: string,
+    limit?: number
   ): Observable<MeasureStats[]> {
+    const params: any = {
+      path: group,
+      ip
+    }
+    if (init_date) params.init_date = init_date
+    if (end_date) params.end_date = end_date
+    if (limit) params.limit = limit
+
     return this.http.get<MeasureStats[]>(
       `${environment.ORCHESTRATOR_MS}/${measure}`,
-      {
-        params: {
-          path: group,
-          ip,
-          init_date,
-          end_date
-        }
-      }
+      { params }
     )
   }
 

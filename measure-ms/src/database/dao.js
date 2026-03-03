@@ -24,20 +24,28 @@ module.exports = class MongoDB {
     this.db.on('error', error => console.log(error))
   }
 
-  async findHumidity(humidity) {
-    return await Humidity.find(humidity, { _id: 0, __v: 0 })
+  async findHumidity(humidity, limit) {
+    let query = Humidity.find(humidity, { _id: 0, __v: 0 })
+    if (limit) query = query.sort({ timestamp: -1 }).limit(limit)
+    return await query
   }
 
-  async findLight(light) {
-    return await Light.find(light, { _id: 0, __v: 0 })
+  async findLight(light, limit) {
+    let query = Light.find(light, { _id: 0, __v: 0 })
+    if (limit) query = query.sort({ timestamp: -1 }).limit(limit)
+    return await query
   }
 
-  async findTemperature(temperature) {
-    return await Temperature.find(temperature, { _id: 0, __v: 0 })
+  async findTemperature(temperature, limit) {
+    let query = Temperature.find(temperature, { _id: 0, __v: 0 })
+    if (limit) query = query.sort({ timestamp: -1 }).limit(limit)
+    return await query
   }
 
-  async findPictures(query) {
-    return await PictureModel.find(query, { _id: 0, __v: 0 })
+  async findPictures(query, limit) {
+    let q = PictureModel.find(query, { _id: 0, __v: 0 })
+    if (limit) q = q.sort({ timestamp: -1 }).limit(limit)
+    return await q
   }
 
   async savePicture(doc) {

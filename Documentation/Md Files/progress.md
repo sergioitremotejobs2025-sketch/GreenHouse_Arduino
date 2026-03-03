@@ -120,7 +120,15 @@
   - Achieved "Green Phase" for integration testing. Standardized error propagation from downstream services through the Orchestrator gateway.
   - Added a `test:e2e` script to the root `package.json` for automated verification.
 
-## Phase 10: Production Hardening & Frontend Connectivity (Day 5 Roadmap - In Progress)
-- **In-Memory Data Buffering**: Implementing the last-20-points buffer in the Angular dashboard to support instant AI predictions.
-- **Service Timeout Resilience**: Implementing TDD for handling slow training cycles (30s+) and gateway timeouts in `orchestrator-ms`.
-- **Unit Test Isolation**: Refactoring `measure-ms` and `microcontrollers-ms` suites to remove live database requirements.
+## Phase 10: Production Hardening & Frontend Connectivity (Day 5 Roadmap)
+- **Frontend AI Integration**:
+  - **History-Seeded Buffering**: Implemented proactive history retrieval in `DashboardComponent` to populate the AI `recentValuesMap` with 20 points immediately on load.
+  - **Fluent History API**: Enhanced `measure-ms` DAO/Model to support optional `limit` and `sort` parameters, enabling efficient "last N" record fetching.
+  - **Socket.IO Sync**: Verified the real-time buffer correctly appends new measurements to the seeded historical data, maintaining a sliding window of 20 points.
+- **Microservice Hardening**:
+  - **Gateway Timeout Resilience**: Implemented explicit per-service timeouts in `orchestrator-ms` (10s default, 60s for AI training) with automated `504 Gateway Timeout` and `502 Bad Gateway` mapping.
+  - **AI Resource Guarding**: Added server-side checks in `ai-ms` to prevent training on datasets with fewer than 20 points, returning descriptive 400 errors.
+  - **Unit Test Isolation**: Achieved 100% database-independent unit testing in `measure-ms` and `microcontrollers-ms` by implementing advanced Mongoose/MySQL mocks.
+  - **Coverage Expansion**: Increased `measure-ms` coverage to **95.8%** by adding missing unit tests for POST endpoints and history-limit branch logic.
+- **Production Readiness**:
+  - **Observability**: Enabled `PYTHONUNBUFFERED=1` in the `ai-ms` Dockerfile and compose manifests to ensure real-time log availability for AI training monitoring.

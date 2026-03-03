@@ -41,9 +41,28 @@ export class DashboardComponent implements OnInit {
                   return micro.measure === this.measure
                 })
               }
+
+              this.microcontrollers.forEach(micro => {
+                if (micro.measure !== 'pictures') {
+                  this.seedRecentValues(micro)
+                }
+              })
             },
             () => this.authService.removeTokens()
           )
+      })
+  }
+
+  seedRecentValues(micro: Microcontroller) {
+    // Get last 20 records. pluralize the measure for the history path
+    const plural = micro.measure === 'light' ? 'lights' : micro.measure === 'temperature' ? 'temperatures' : 'humidities'
+    this.arduinoService.getPreviousMeasures(micro.ip, micro.measure, plural, undefined, undefined, 20)
+      .subscribe((history: any[]) => {
+        const key = `${micro.ip}_${micro.measure}`
+        // History is returned newest-first due to sort({timestamp:-1}). 
+        // LSTM expects chronological oldest -> newest.
+        const values = history.reverse().map(h => h.real_value)
+        this.recentValuesMap.set(key, values)
       })
   }
 
