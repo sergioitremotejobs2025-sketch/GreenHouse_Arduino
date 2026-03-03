@@ -4,6 +4,8 @@ const request = require('supertest')
 const app = require('../src/app/app')
 const { MAX_EXPIRATION_TIME, TOKEN_EXPIRATION_TIME, TOKEN_SECRET } = require('../src/config/jwt.config')
 
+jest.mock('axios')
+
 let accessToken
 let refreshToken
 const username = 'Rocky'

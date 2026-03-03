@@ -17,7 +17,8 @@ jest.mock('../src/modules/request.module', () => ({
 const mockPublish = jest.fn();
 jest.mock('../src/modules/queue.module', () => {
     return jest.fn().mockImplementation(() => ({
-        publish: mockPublish
+        publish: mockPublish,
+        close: jest.fn()
     }));
 });
 

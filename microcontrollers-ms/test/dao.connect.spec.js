@@ -36,7 +36,8 @@ describe('Dao connection error branches', () => {
 
         jest.advanceTimersByTime(2000); // Wait for setTimeout
 
-        expect(global.handleDisconnect).toHaveBeenCalled();
+        // After 2s, connect() should be called again
+        expect(mockConnection.connect).toHaveBeenCalledTimes(2);
         consoleSpy.mockRestore();
         jest.useRealTimers();
     });

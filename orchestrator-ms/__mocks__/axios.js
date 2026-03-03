@@ -2,7 +2,7 @@ const {
   AUTH_MS,
   MEASURE_MS,
   MICROCONTROLLERS_MS
-} = require('../../src/config/services.config')
+} = require('../src/config/services.config')
 
 module.exports = {
   delete: (url = '', body = {}) => {
@@ -12,23 +12,23 @@ module.exports = {
   },
   get: (url = '') => {
     if (url.includes(`${MICROCONTROLLERS_MS}`)) {
-      return Promise.resolve({ data: require('../microcontrollers.json') })
+      return Promise.resolve({ data: require('../test/microcontrollers.json') })
     } else if (url.includes(`${MEASURE_MS}`)) {
       if (url.includes('pictures')) {
-        return Promise.resolve({ data: require('../pictures.json') || [] })
+        return Promise.resolve({ data: require('../test/pictures.json') || [] })
       }
       return Promise.resolve({
-        data: url.includes('temperatures') ? require('../temperature-stats.json') : require('../temperature.json')
+        data: url.includes('temperatures') ? require('../test/temperature-stats.json') : require('../test/temperature.json')
       })
     }
   },
   post: (url = '', body = {}) => {
     if (url.includes(`${AUTH_MS}/login`)) {
-      return Promise.resolve({ data: body.username === 'Rocky' && body.password && body.refreshToken })
+      return Promise.resolve({ data: !!(body.username === 'Rocky' && body.password && body.refreshToken) })
     } else if (url.includes(`${AUTH_MS}/register`)) {
-      return Promise.resolve({ data: body.username !== 'Rocky' && body.password && body.refreshToken })
+      return Promise.resolve({ data: !!(body.username !== 'Rocky' && body.password && body.refreshToken) })
     } else if (url.includes(`${AUTH_MS}/refresh`)) {
-      return Promise.resolve({ data: body.username === 'Rocky' && body.newRefreshToken && body.refreshToken })
+      return Promise.resolve({ data: !!(body.username === 'Rocky' && body.newRefreshToken && body.refreshToken) })
     } else if (url.includes(`${MICROCONTROLLERS_MS}`)) {
       return Promise.resolve({ data: body })
     } else if (url.includes(`${MEASURE_MS}`)) {
