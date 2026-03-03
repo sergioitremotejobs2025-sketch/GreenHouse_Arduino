@@ -12,7 +12,7 @@ This document summarizes the current state of test coverage across the IoT Micro
 | **publisher-ms** | Node.js | Jest | ✅ PASS | 98.08% | Fixed missing `close()` in `app.branch.spec.js` mock. |
 | **stats-ms** | Python | Pytest | ✅ PASS | 98.44% | No issues. |
 | **ai-ms** | Python | Pytest | ✅ PASS | 96.00% | Established TDD with `pytest` and `mongomock`. (Logic: 100%) |
-| **auth-ms** | Go | N/A | ❌ NONE | 0% | No tests implemented yet. |
+| **auth-ms** | Go | Go Test | ✅ PASS | 98.50% | Logic: 100%. Refactored for testability and fixed JSON/Empty field robustness. |
 | **integration-tests** | Node.js | Jest | ❌ FAIL | N/A | `AggregateError` - likely requires services to be running. |
 
 ---

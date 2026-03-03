@@ -9,8 +9,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func main() {
+func Run() error {
 	port := ":" + helper.GetEnv("PORT", "5000")
 	log.Println("Starting GO server on port " + port)
-	routes.App(port)
+	return routes.App(port)
+}
+
+func main() {
+	log.Fatal(Run())
 }

@@ -182,8 +182,8 @@ func TestRefresh_EmptyBody(t *testing.T) {
 
 	h.Refresh(w, req)
 
-	if w.Body.String() != "false" {
-		t.Errorf("expected 'false' for empty body, got %q", w.Body.String())
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for empty body, got %d", w.Code)
 	}
 }
 
@@ -254,8 +254,8 @@ func TestLogin_ReadError(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/login", &errorReader{})
 	w := httptest.NewRecorder()
 	h.Login(w, req)
-	if w.Body.String() != "false" {
-		t.Errorf("expected false on read error")
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 on read error, got %d", w.Code)
 	}
 }
 
@@ -265,7 +265,67 @@ func TestRefresh_ReadError(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/refresh", &errorReader{})
 	w := httptest.NewRecorder()
 	h.Refresh(w, req)
-	if w.Body.String() != "false" {
-		t.Errorf("expected false on read error")
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 on read error, got %d", w.Code)
+	}
+}
+
+// ── Robustness tests (TDD Phase 1: Red) ──────────────────────────────────────
+
+func TestLogin_InvalidJSON(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer([]byte(`{"username": "alice", "password":`))) // Malformed JSON
+	w := httptest.NewRecorder()
+
+	h.Login(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for malformed JSON, got %d", w.Code)
+	}
+}
+
+func TestRegister_InvalidJSON(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer([]byte(`{invalid}`)))
+	w := httptest.NewRecorder()
+
+	h.Register(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for malformed JSON, got %d", w.Code)
+	}
+}
+
+func TestLogin_EmptyFields(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "", Password: ""})
+	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.Login(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for empty fields, got %d", w.Code)
+	}
+}
+
+func TestRegister_EmptyFields(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: ""})
+	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.Register(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for empty fields, got %d", w.Code)
 	}
 }

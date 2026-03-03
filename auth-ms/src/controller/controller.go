@@ -22,24 +22,33 @@ func NewHandlers(repo dao.Repository) *Handlers {
 }
 
 // getBodyContent parses application/json body into a model.User struct.
-func getBodyContent(r *http.Request) model.User {
+func getBodyContent(r *http.Request) (model.User, error) {
 	var user model.User
 	reqBody, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
 		log.Println("Error reading request body:", err.Error())
-		return user
+		return user, err
 	}
 
-	json.Unmarshal(reqBody, &user)
-	return user
+	err = json.Unmarshal(reqBody, &user)
+	if err != nil {
+		log.Println("Error unmarshaling JSON:", err.Error())
+		return user, err
+	}
+	return user, nil
 }
 
 // Login handles POST /login.
 func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST /login")
 
-	user := getBodyContent(r)
+	user, err := getBodyContent(r)
+	if err != nil || user.Username == "" || user.Password == "" {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
 	existsUser, dbUser := h.Repo.Exists(user)
 	loginCorrect := false
 
@@ -61,7 +70,11 @@ func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) Register(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST /register")
 
-	user := getBodyContent(r)
+	user, err := getBodyContent(r)
+	if err != nil || user.Username == "" || user.Password == "" {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
 	success := h.Repo.Insert(user)
 
 	fmt.Fprintf(w, fmt.Sprintf("%t", success))
@@ -76,11 +89,16 @@ func (h *Handlers) Refresh(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error reading request body:", err.Error())
-		fmt.Fprintf(w, "false")
+		http.Error(w, "Error reading body", http.StatusBadRequest)
 		return
 	}
 
-	json.Unmarshal(reqBody, &credentials)
+	err = json.Unmarshal(reqBody, &credentials)
+	if err != nil || credentials.Username == "" {
+		log.Println("Error unmarshaling refresh JSON or empty username")
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
 
 	rows := h.Repo.Update(credentials)
 	success := rows == 1
@@ -92,8 +110,8 @@ func (h *Handlers) Refresh(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	log.Println("PUT /change-password")
 
-	user := getBodyContent(r)
-	if user.Username == "" || user.Password == "" {
+	user, err := getBodyContent(r)
+	if err != nil || user.Username == "" || user.Password == "" {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}

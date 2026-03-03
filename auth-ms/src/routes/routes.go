@@ -11,9 +11,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// GetRouter initializes and returns a router for auth-ms using the MySQL-backed repository.
+// GetRouter returns a new router with the real production repository.
+// Deprecated: use SetupRouter with a specific repository instead.
 func GetRouter() *mux.Router {
-	repo := dao.NewMysqlRepository()
+	return SetupRouter(dao.NewMysqlRepository())
+}
+
+// SetupRouter initializes and returns a router with the given repository.
+func SetupRouter(repo dao.Repository) *mux.Router {
 	handlers := controller.NewHandlers(repo)
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -41,8 +46,8 @@ func GetRouter() *mux.Router {
 }
 
 // App starts the server on the specified port.
-func App(port string) {
+func App(port string) error {
 	router := GetRouter()
 	log.Println("auth-ms listening on " + port)
-	log.Fatal(http.ListenAndServe(port, router))
+	return http.ListenAndServe(port, router)
 }
