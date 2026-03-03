@@ -29,7 +29,7 @@ def test_api_key_valid(client, monkeypatch):
 @patch('main.Trainer')
 def test_train_endpoint(mock_trainer_class, client):
     mock_trainer = MagicMock()
-    mock_trainer.train.return_value = True
+    mock_trainer.train.return_value = (True, "Training completed")
     mock_trainer_class.return_value = mock_trainer
     
     payload = {
@@ -82,7 +82,7 @@ def test_train_missing_params(mock_trainer, client):
 @patch('main.Trainer')
 def test_train_failure(mock_trainer_class, client):
     mock_trainer = MagicMock()
-    mock_trainer.train.return_value = False
+    mock_trainer.train.return_value = (False, "Training failed")
     mock_trainer_class.return_value = mock_trainer
     res = client.post('/train', json={"username": "u", "ip": "i", "measure": "m"})
     assert res.status_code == 500

@@ -20,6 +20,7 @@ router.post('/humidity', humidityController.postMeasure)
 router.get('/light', lightController.getMeasure)
 router.get('/lights', lightController.getMeasures)
 router.post('/light', lightController.postLight)
+router.post('/light/measure', lightController.postMeasure)
 
 router.get('/temperature', temperatureController.getMeasure)
 router.get('/temperatures', temperatureController.getMeasures)

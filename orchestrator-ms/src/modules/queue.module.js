@@ -28,21 +28,39 @@ class QueueManager {
             console.log('[AMQP] connected to RabbitMQ for live streaming')
             this.channel = await this.connection.createChannel()
 
+            // DLQ Configuration
+            const dlx = 'dlx'
+            const dlq = 'dead-messages'
+            await this.channel.assertExchange(dlx, 'fanout', { durable: true })
+            await this.channel.assertQueue(dlq, { durable: true })
+            await this.channel.bindQueue(dlq, dlx, '')
+
             for (const queueName of this.queues) {
-                await this.channel.assertQueue(queueName, { durable: true })
+                await this.channel.assertQueue(queueName, {
+                    durable: true,
+                    arguments: {
+                        'x-dead-letter-exchange': dlx
+                    }
+                })
                 this.channel.consume(queueName, (msg) => {
                     if (msg !== null) {
-                        const data = JSON.parse(msg.content.toString())
-                        const measureType = queueName === 'humidities' ? 'humidity' :
-                            queueName === 'lights' ? 'light' : 'temperature'
+                        try {
+                            const data = JSON.parse(msg.content.toString())
+                            const measureType = queueName === 'humidities' ? 'humidity' :
+                                queueName === 'lights' ? 'light' : 'temperature'
 
-                        console.log(`[AMQP] Received ${measureType} update, emitting via WebSocket`)
-                        this.io.emit('measure_update', {
-                            measure: measureType,
-                            data: data
-                        })
+                            console.log(`[AMQP] Received ${measureType} update, emitting via WebSocket`)
+                            this.io.emit('measure_update', {
+                                measure: measureType,
+                                data: data
+                            })
 
-                        this.channel.ack(msg)
+                            this.channel.ack(msg)
+                        } catch (err) {
+                            console.error(`[AMQP] Failed to process message from ${queueName}:`, err.message)
+                            // Nack without requeue moves to DLX
+                            this.channel.nack(msg, false, false)
+                        }
                     }
                 })
             }

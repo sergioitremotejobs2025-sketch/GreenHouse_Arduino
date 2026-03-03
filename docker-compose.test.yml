@@ -195,6 +195,7 @@ services:
     environment:
       - ORCHESTRATOR_URL=http://orchestrator-ms:80
       - MEASURE_MS_URL=http://measure-ms:80
+      - RABBIT_URL=amqp://user:password@rabbitmq:5672
     depends_on:
       orchestrator-ms:
         condition: service_started

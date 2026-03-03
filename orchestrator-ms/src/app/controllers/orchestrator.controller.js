@@ -128,11 +128,12 @@ module.exports = class OrchestratorController {
   }
 
   async trainAI(req, res) {
-    const { ip, measure } = req.body
+    const { ip, measure, limit } = req.body
     const body = {
       username: req.user.username,
       ip,
-      measure
+      measure,
+      limit: limit || 1000
     }
     await servicesController.postToConnectedService(res, AI_MS, 'train', body)
   }
@@ -146,6 +147,16 @@ module.exports = class OrchestratorController {
       recent_values
     }
     await servicesController.postToConnectedService(res, AI_MS, 'predict', body)
+  }
+
+  async evaluateAI(req, res) {
+    const { ip, measure } = req.body
+    const body = {
+      username: req.user.username,
+      ip,
+      measure
+    }
+    await servicesController.postToConnectedService(res, AI_MS, 'evaluate', body)
   }
 
 }

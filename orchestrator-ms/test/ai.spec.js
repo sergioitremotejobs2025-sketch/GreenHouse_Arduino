@@ -69,7 +69,7 @@ describe('AI Orchestration endpoints', () => {
             )
         })
 
-        it('should return 400 if AI-MS fails (mocked)', async () => {
+        it('should return 502 if AI-MS is unreachable (mocked)', async () => {
             jest.spyOn(axios, 'post').mockRejectedValue(new Error('ECONNREFUSED'))
 
             const res = await request(app)
@@ -77,7 +77,27 @@ describe('AI Orchestration endpoints', () => {
                 .set('Authorization', `Bearer ${accessToken}`)
                 .send({ ip: '192.168.1.10', measure: 'temperature', recent_values: [1] })
 
-            expect(res.statusCode).toEqual(400)
+            expect(res.statusCode).toEqual(502)
+        })
+    })
+
+    describe('POST /ai/evaluate', () => {
+        it('should delegate evaluation request to AI-MS', async () => {
+            const mockResult = { data: { mae: 0.5, sample_count: 100 } }
+            jest.spyOn(axios, 'post').mockResolvedValue(mockResult)
+
+            const res = await request(app)
+                .post('/ai/evaluate')
+                .set('Authorization', `Bearer ${accessToken}`)
+                .send({ ip: '192.168.1.10', measure: 'temperature' })
+
+            expect(res.statusCode).toEqual(200)
+            expect(res.body).toEqual(mockResult.data)
+            expect(axios.post).toHaveBeenCalledWith(
+                expect.stringContaining('/evaluate'),
+                expect.objectContaining({ username, ip: '192.168.1.10', measure: 'temperature' }),
+                expect.any(Object)
+            )
         })
     })
 

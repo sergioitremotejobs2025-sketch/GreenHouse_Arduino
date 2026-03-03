@@ -66,6 +66,11 @@ func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, fmt.Sprintf("%t", loginCorrect))
 }
 
+// validatePassword checks if the password meets security requirements.
+func validatePassword(password string) bool {
+	return len(password) >= 8
+}
+
 // Register handles POST /register.
 func (h *Handlers) Register(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST /register")
@@ -75,6 +80,12 @@ func (h *Handlers) Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
+
+	if !validatePassword(user.Password) {
+		http.Error(w, "Weak password", http.StatusBadRequest)
+		return
+	}
+
 	success := h.Repo.Insert(user)
 
 	fmt.Fprintf(w, fmt.Sprintf("%t", success))
@@ -113,6 +124,11 @@ func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	user, err := getBodyContent(r)
 	if err != nil || user.Username == "" || user.Password == "" {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	if !validatePassword(user.Password) {
+		http.Error(w, "Weak password", http.StatusBadRequest)
 		return
 	}
 

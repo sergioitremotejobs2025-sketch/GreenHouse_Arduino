@@ -5,6 +5,8 @@ export function MustMatch(controlName: string, matchingControlName: string) {
     const control = formGroup.controls[controlName]
     const matchingControl = formGroup.controls[matchingControlName]
 
+    if (!control || !matchingControl) return
+
     if (matchingControl.errors && !matchingControl.errors.mustMatch) return
 
     if (control.value !== matchingControl.value) {

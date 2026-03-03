@@ -47,9 +47,14 @@ module.exports = class MeasureController {
         try {
           const response = await axios.post(`http://${ip}/light/${status}`, {}, { timeout: PING_TIMEOUT })
           return res.status(200).json(this.measureModel.getMessage(response.data, micros[0]))
-        } catch (error) { }
+        } catch (error) {
+          const status = error.message.includes('Invalid measurement') ? 422 : 400
+          return res.status(status).json({ error: error.message })
+        }
       }
+      return res.status(404).json({ error: 'MCU not found' })
     }
+    return res.status(400).json({ error: 'Invalid operation' })
   }
 
   postMeasure = async (req, res) => {
@@ -64,7 +69,8 @@ module.exports = class MeasureController {
       await this.measureModel.saveMeasure(message)
       res.status(201).json(message)
     } catch (error) {
-      res.status(400).json({ error: error.message })
+      const status = error.message.includes('Invalid measurement') ? 422 : 400
+      res.status(status).json({ error: error.message })
     }
   }
 

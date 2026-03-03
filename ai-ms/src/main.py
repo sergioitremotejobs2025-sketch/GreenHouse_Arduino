@@ -33,11 +33,12 @@ def train_model():
     username = data.get('username')
     ip = data.get('ip')
     measure = data.get('measure')
+    limit = int(data.get('limit', 1000))
     
     if not all([username, ip, measure]):
         return jsonify({"error": "Missing parameters"}), 400
         
-    trainer = Trainer(username, ip, measure)
+    trainer = Trainer(username, ip, measure, limit=limit)
     success, message = trainer.train()
     
     if success:
@@ -81,6 +82,46 @@ def predict():
         prediction = processor.inverse_transform(prediction_scaled)
         
         return jsonify({"prediction": float(prediction)}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/evaluate', methods=['POST'])
+@require_internal_key
+def evaluate():
+    data = request.json
+    username = data.get('username')
+    ip = data.get('ip')
+    measure = data.get('measure')
+    
+    if not all([username, ip, measure]):
+        return jsonify({"error": "Missing parameters"}), 400
+        
+    model_path = f"models/{username}_{ip}_{measure}.h5"
+    if not os.path.exists(model_path):
+        return jsonify({"error": "Model not found"}), 404
+        
+    try:
+        trainer = Trainer(username, ip, measure, limit=100)
+        history = trainer.fetch_history()
+        
+        if len(history) < 30:
+            return jsonify({"error": "Insufficient data for evaluation"}), 400
+            
+        model = load_model(model_path)
+        processor = DataProcessor()
+        X, y, _ = processor.prepare_data(history)
+        X = np.reshape(X, (X.shape[0], X.shape[1], 1))
+        
+        predictions_scaled = model.predict(X)
+        predictions = processor.inverse_transform(predictions_scaled)
+        actuals = processor.inverse_transform(y.reshape(-1, 1))
+        
+        mae = np.mean(np.abs(predictions - actuals))
+        
+        return jsonify({
+            "mae": float(mae),
+            "sample_count": len(actuals)
+        }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

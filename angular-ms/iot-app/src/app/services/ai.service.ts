@@ -11,8 +11,8 @@ export class AiService {
 
     constructor(private http: HttpClient) { }
 
-    trainModel(ip: string, measure: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/ai/train`, { ip, measure });
+    trainModel(ip: string, measure: string, limit?: number): Observable<any> {
+        return this.http.post(`${this.apiUrl}/ai/train`, { ip, measure, limit });
     }
 
     predict(ip: string, measure: string, recentValues: number[]): Observable<{ prediction: number }> {
@@ -21,5 +21,9 @@ export class AiService {
             measure,
             recent_values: recentValues
         });
+    }
+
+    evaluate(ip: string, measure: string): Observable<{ mae: number, sample_count: number }> {
+        return this.http.post<{ mae: number, sample_count: number }>(`${this.apiUrl}/ai/evaluate`, { ip, measure });
     }
 }

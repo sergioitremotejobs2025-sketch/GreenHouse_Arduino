@@ -6,14 +6,15 @@ from data_processor import DataProcessor
 from models.lstm_model import create_lstm_model
 
 class Trainer:
-    def __init__(self, username, ip, measure):
+    def __init__(self, username, ip, measure, limit=1000):
         self.username = username
         self.ip = ip
         self.measure = measure
+        self.limit = limit
         self.db = get_db()
         self.processor = DataProcessor()
 
-    def fetch_history(self, limit=1000):
+    def fetch_history(self):
         # Fetch data from collection (try singular then plural)
         collection = self.db[self.measure]
         if collection.count_documents({"username": self.username, "ip": self.ip}) == 0:
@@ -23,15 +24,17 @@ class Trainer:
 
         cursor = collection.find(
             {"username": self.username, "ip": self.ip}
-        ).sort("timestamp", 1).limit(limit)
+        ).sort("timestamp", -1).limit(self.limit)
         
         values = []
         for doc in cursor:
             if 'real_values' in doc and isinstance(doc['real_values'], list):
-                values.extend(doc['real_values'])
+                values.extend(reversed(doc['real_values']))
             elif 'real_value' in doc:
                 values.append(doc['real_value'])
-                
+        
+        # Reverse to get chronological order
+        values.reverse()
         return values
 
     def train(self):

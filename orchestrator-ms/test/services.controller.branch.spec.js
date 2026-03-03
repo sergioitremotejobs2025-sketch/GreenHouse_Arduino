@@ -21,10 +21,11 @@ describe('ServicesController Branches', () => {
         jest.clearAllMocks();
     });
 
-    test('should return 400 when axios throws', async () => {
+    test('should return 502 when axios throws', async () => {
         axios.get.mockRejectedValueOnce(new Error('Network Error'));
         await controller.getToConnectedService(mockRes, 'fake-service', 'path');
-        expect(mockRes.sendStatus).toHaveBeenCalledWith(400);
+        expect(mockRes.status).toHaveBeenCalledWith(502);
+        expect(mockRes.json).toHaveBeenCalledWith({ error: 'Bad Gateway' });
     });
 
     test('should return 404 when response.data is null', async () => {

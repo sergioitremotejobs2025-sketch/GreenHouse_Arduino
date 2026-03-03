@@ -127,6 +127,42 @@ describe('Humidity endpoints', () => {
     Dao.prototype.findHumidity = originalFindHumidity
   }, 100000)
 
+  it('should return 422 for invalid humidity measure (negative)', async () => {
+    const res = await request(app)
+      .post('/humidity')
+      .send({
+        ip: '192.168.1.50',
+        username: 'Rocky',
+        humidity: -10
+      })
+    expect(res.statusCode).toBe(422)
+    expect(res.body.error).toContain('Invalid measurement')
+  })
+
+  it('should return 422 for invalid temperature measure (too high)', async () => {
+    const res = await request(app)
+      .post('/temperature')
+      .send({
+        ip: '192.168.1.50',
+        username: 'Rocky',
+        temperature: 2000
+      })
+    expect(res.statusCode).toBe(422)
+    expect(res.body.error).toContain('Invalid measurement')
+  })
+
+  it('should return 422 for invalid light measure (negative)', async () => {
+    const res = await request(app)
+      .post('/light/measure')
+      .send({
+        ip: '192.168.1.50',
+        username: 'Rocky',
+        light: -1
+      })
+    expect(res.statusCode).toBe(422)
+    expect(res.body.error).toContain('Invalid measurement')
+  })
+
   it('should save a new humidity measure', async () => {
     const res = await request(app)
       .post('/humidity')

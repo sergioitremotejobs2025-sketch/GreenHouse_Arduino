@@ -3,8 +3,9 @@ import { MustMatch } from './must-match.helper';
 
 describe('MustMatch Helper', () => {
     it('should return nothing if controls do not exist', () => {
-        // We expect it to throw if we pass invalid control names, 
-        // but the implementation doesn't check. So we only test valid controls.
+        const formGroup = new FormGroup({});
+        const validator = MustMatch('password', 'confirmPassword');
+        expect(() => validator(formGroup)).not.toThrow();
     });
 
     it('should set error if values do not match', () => {

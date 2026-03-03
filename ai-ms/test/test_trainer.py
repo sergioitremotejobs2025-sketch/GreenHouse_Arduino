@@ -6,11 +6,10 @@ import numpy as np
 def test_trainer_not_enough_data(mock_mongo):
     # Setup mock data in mongo (less than 20 records)
     collection = mock_mongo['temperatures']
-    collection.insert_one({"username": "test_user", "ip": "1.1.1.1", "value": 25.0, "timestamp": 1})
+    collection.insert_one({"username": "test_user", "ip": "1.1.1.1", "real_value": 25.0, "timestamp": 1})
     
     trainer = Trainer("test_user", "1.1.1.1", "temperatures")
-    result = trainer.train()
-    
+    result, _ = trainer.train()
     assert result is False
 
 @patch('trainer.create_lstm_model')
@@ -22,7 +21,7 @@ def test_trainer_success(mock_makedirs, mock_create_model, mock_mongo):
         collection.insert_one({
             "username": "test_user", 
             "ip": "1.1.1.1", 
-            "value": float(i), 
+            "real_value": float(i), 
             "timestamp": i
         })
     
@@ -31,8 +30,7 @@ def test_trainer_success(mock_makedirs, mock_create_model, mock_mongo):
     mock_create_model.return_value = mock_model
     
     trainer = Trainer("test_user", "1.1.1.1", "temperatures")
-    result = trainer.train()
-    
+    result, _ = trainer.train()
     assert result is True
     assert mock_create_model.called
     assert mock_model.fit.called
@@ -45,4 +43,5 @@ def test_trainer_processor_returns_none(mock_mongo):
     # Fill with enough data to pass the first check
     trainer.fetch_history = MagicMock(return_value=[1.0]*30)
     
-    assert trainer.train() is False
+    result, _ = trainer.train()
+    assert result is False

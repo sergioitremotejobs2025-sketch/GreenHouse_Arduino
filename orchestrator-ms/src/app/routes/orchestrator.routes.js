@@ -265,6 +265,7 @@ router.post('/ai/train', jwtMiddleware, orchestratorController.trainAI)
  *         description: Success
  */
 router.post('/ai/predict', jwtMiddleware, orchestratorController.predictAI)
+router.post('/ai/evaluate', jwtMiddleware, orchestratorController.evaluateAI)
 
 router.use((error, req, res, next) => {
   if (error.name === 'UnauthorizedError') {

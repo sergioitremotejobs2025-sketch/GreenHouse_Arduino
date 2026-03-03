@@ -14,7 +14,28 @@ module.exports = class MeasureModel {
     this.dao.connect()
   }
 
+  validate = (data, micro) => {
+    const value = data[micro.measure]
+    if (value === undefined || value === null) {
+      throw new Error(`Missing measurement value for ${micro.measure}`)
+    }
+
+    // Boundary Checks
+    switch (micro.measure) {
+      case 'humidity':
+        if (value < 0 || value > 1023) throw new Error(`Invalid measurement: Humidity value ${value} out of bounds (0-1023)`)
+        break
+      case 'temperature':
+        if (value < 0 || value > 1023) throw new Error(`Invalid measurement: Temperature value ${value} out of bounds (0-1023)`)
+        break
+      case 'light':
+        if (value < 0 || value > 1023) throw new Error(`Invalid measurement: Light value ${value} out of bounds (0-1023)`)
+        break
+    }
+  }
+
   getMessage = (data, micro) => {
+    this.validate(data, micro)
     const date = new Date()
     const message = {
       date: date.toUTCString(),

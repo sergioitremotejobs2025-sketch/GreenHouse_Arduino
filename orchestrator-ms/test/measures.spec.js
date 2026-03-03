@@ -96,7 +96,7 @@ describe('Measure endpoints', () => {
     const originalPost = axios.post
     axios.post = jest.fn().mockRejectedValue(new Error('ECONNREFUSED'))
     const res = await request(app).post('/light').send({ value: 1 }).set('Authorization', `Bearer ${accessToken}`)
-    expect(res.statusCode).toEqual(400)
+    expect(res.statusCode).toEqual(502)
     axios.post = originalPost // restore
   }, 10000)
 })
