@@ -45,10 +45,26 @@ module.exports = class MeasureController {
 
       if (micros.length === 1) {
         try {
-          const response = await axios.post(`http://${ip}/light/${status}`, { }, { timeout: PING_TIMEOUT })
+          const response = await axios.post(`http://${ip}/light/${status}`, {}, { timeout: PING_TIMEOUT })
           return res.status(200).json(this.measureModel.getMessage(response.data, micros[0]))
         } catch (error) { }
       }
+    }
+  }
+
+  postMeasure = async (req, res) => {
+    try {
+      const { username, ip, ...data } = req.body
+      const micro = (await this.microsModule.getMicrocontrollers())
+        .find(m => m.username === username && m.ip === ip)
+
+      if (!micro) return res.status(404).json({ error: 'MCU not found' })
+
+      const message = this.measureModel.getMessage(data, micro)
+      await this.measureModel.saveMeasure(message)
+      res.status(201).json(message)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
     }
   }
 

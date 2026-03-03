@@ -1,7 +1,7 @@
 const axios = require('axios')
 const queryString = require('query-string')
 
-const { MEASURE_MS } = require('../../config/services.config')
+const { MEASURE_MS, AI_MS, MICROCONTROLLERS_MS } = require('../../config/services.config')
 
 /**
  * Shared secret sent to measure-ms so that it can reject un-trusted callers.
@@ -10,10 +10,12 @@ const { MEASURE_MS } = require('../../config/services.config')
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || ''
 
 /** Build request headers, adding the internal key only for measure-ms calls. */
-const buildHeaders = (service) =>
-  service === MEASURE_MS && INTERNAL_API_KEY
+const buildHeaders = (service) => {
+  const needsAuth = [MEASURE_MS, AI_MS, MICROCONTROLLERS_MS].includes(service)
+  return needsAuth && INTERNAL_API_KEY
     ? { 'x-internal-api-key': INTERNAL_API_KEY }
     : {}
+}
 
 const methodToConnectedService = async (res, url, method, body = {}, status = 200, returnResponse = false, headers = {}) => {
   try {

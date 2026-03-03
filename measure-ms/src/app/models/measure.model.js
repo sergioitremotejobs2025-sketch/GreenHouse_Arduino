@@ -45,7 +45,6 @@ module.exports = class MeasureModel {
 
     if (!init_timestamp) init_timestamp = timeStringToTimestamp(init_date)
     if (!end_timestamp) end_timestamp = timeStringToTimestamp(end_date)
-
     const method = 'find' + capitalizeFirstLetter(this.measure)
     return await this.dao[method](
       {
@@ -55,6 +54,11 @@ module.exports = class MeasureModel {
         end_timestamp: { '$lte': end_timestamp }
       }
     )
+  }
+
+  saveMeasure = async doc => {
+    const method = 'save' + capitalizeFirstLetter(this.measure)
+    return await this.dao[method](doc)
   }
 
 }

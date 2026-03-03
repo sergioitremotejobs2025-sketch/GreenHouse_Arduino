@@ -14,6 +14,18 @@ def test_predict_invalid_input(client):
     res = client.post('/predict', json={})
     assert res.status_code == 400
 
+def test_api_key_required(client, monkeypatch):
+    # Should require internal API key
+    monkeypatch.setenv('INTERNAL_API_KEY', 'testkey')
+    res = client.post('/predict', json={})
+    assert res.status_code == 401
+
+def test_api_key_valid(client, monkeypatch):
+    monkeypatch.setenv('INTERNAL_API_KEY', 'testkey')
+    res = client.post('/predict', json={}, headers={'x-internal-api-key': 'testkey'})
+    # It should pass authentication and then fail for missing body (400)
+    assert res.status_code == 400
+
 @patch('main.Trainer')
 def test_train_endpoint(mock_trainer_class, client):
     mock_trainer = MagicMock()

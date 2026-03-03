@@ -96,6 +96,8 @@ router.get('/pictures', jwtMiddleware, orchestratorController.getMeasureService)
  *         description: Unauthorized
  */
 router.post('/light', jwtMiddleware, orchestratorController.postMeasureService)
+router.post('/temperature', jwtMiddleware, orchestratorController.postMeasureService)
+router.post('/humidity', jwtMiddleware, orchestratorController.postMeasureService)
 
 /**
  * @swagger

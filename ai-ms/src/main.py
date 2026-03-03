@@ -5,13 +5,29 @@ from data_processor import DataProcessor
 from tensorflow.keras.models import load_model
 import numpy as np
 
+from functools import wraps
+
 app = Flask(__name__)
+
+def require_internal_key(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        expected_key = os.getenv('INTERNAL_API_KEY')
+        if not expected_key:
+            return f(*args, **kwargs) # Skip if not set in environment (dev mode)
+        
+        request_key = request.headers.get('x-internal-api-key')
+        if request_key != expected_key:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "healthy"}), 200
 
 @app.route('/train', methods=['POST'])
+@require_internal_key
 def train_model():
     data = request.json
     username = data.get('username')
@@ -30,6 +46,7 @@ def train_model():
         return jsonify({"error": "Training failed or insufficient data"}), 500
 
 @app.route('/predict', methods=['POST'])
+@require_internal_key
 def predict():
     data = request.json
     username = data.get('username')

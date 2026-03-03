@@ -2,6 +2,31 @@ const request = require('supertest')
 const app = require('../src/app/app')
 
 
+describe('Internal API Key Security', () => {
+  it('should reject requests without INTERNAL_API_KEY', async () => {
+    // We assume the key is set in environment for this test phase
+    const originalKey = process.env.INTERNAL_API_KEY
+    process.env.INTERNAL_API_KEY = 'testkey'
+    try {
+      const res = await request(app).get('/')
+      expect(res.statusCode).toBe(401)
+    } finally {
+      process.env.INTERNAL_API_KEY = originalKey || ''
+    }
+  })
+
+  it('should accept requests with valid INTERNAL_API_KEY', async () => {
+    const originalKey = process.env.INTERNAL_API_KEY
+    process.env.INTERNAL_API_KEY = 'testkey'
+    try {
+      const res = await request(app).get('/').set('x-internal-api-key', 'testkey')
+      expect(res.statusCode).toBe(200)
+    } finally {
+      process.env.INTERNAL_API_KEY = originalKey || ''
+    }
+  })
+})
+
 describe('Microcontrollers endpoints from microservices', () => {
   it('should return list of measure microcontrollers', async () => {
     const res = await request(app).get('/temperature')

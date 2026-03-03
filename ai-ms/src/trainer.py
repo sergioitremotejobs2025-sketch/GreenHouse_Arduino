@@ -14,14 +14,25 @@ class Trainer:
         self.processor = DataProcessor()
 
     def fetch_history(self, limit=1000):
-        # Fetch data from collection named after the measure (e.g., temperatures)
+        # Fetch data from collection (try singular then plural)
         collection = self.db[self.measure]
+        if collection.count_documents({"username": self.username, "ip": self.ip}) == 0:
+            plural = self.measure + 's'
+            if plural in self.db.list_collection_names():
+                collection = self.db[plural]
+
         cursor = collection.find(
-            {"username": self.username, "ip": self.ip},
-            {"value": 1, "timestamp": 1}
+            {"username": self.username, "ip": self.ip}
         ).sort("timestamp", 1).limit(limit)
         
-        return [doc['value'] for doc in cursor]
+        values = []
+        for doc in cursor:
+            if 'real_values' in doc and isinstance(doc['real_values'], list):
+                values.extend(doc['real_values'])
+            elif 'real_value' in doc:
+                values.append(doc['real_value'])
+                
+        return values
 
     def train(self):
         data = self.fetch_history()

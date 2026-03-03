@@ -107,3 +107,20 @@
 - **Infrastructure & Storage**:
   - Fixed `PersistentVolumeClaim` (PVC) pending issues by changing `storageClassName` from `microk8s-hostpath` to **`standard`** (Minikube compatible).
   - Successfully registered all 6 fake IoT devices using `Scripts/register_fake_iot.sh`, enabling full E2E data flow to the dashboard.
+
+## Phase 9: Advanced TDD & AI Golden Path (Day 4 Roadmap)
+- **E2E Golden Path Completion**:
+  - Implemented the full "Auth -> MCU -> Seed -> Train -> Predict" integration cycle in `integration-tests/e2e.spec.js`.
+  - Created a robust seeding mechanism in `measure-ms` allowing ad-hoc measurement injection for testing.
+  - Refactored `ai-ms` trainer to use a flexible plurality logic (handling both `temperature` and `temperatures` collections) for better resilience.
+- **Microservice Security Standardization**:
+  - Enforced `INTERNAL_API_KEY` validation across `ai-ms`, `measure-ms`, and `microcontrollers-ms`, preventing unauthenticated inter-service calls.
+  - Synchronized JWT secret handling in `orchestrator-ms` with environment variables to ensure container-host consistency.
+- **TDD Roadmap Progress**:
+  - Achieved "Green Phase" for integration testing. Standardized error propagation from downstream services through the Orchestrator gateway.
+  - Added a `test:e2e` script to the root `package.json` for automated verification.
+
+## Phase 10: Production Hardening & Frontend Connectivity (Day 5 Roadmap - In Progress)
+- **In-Memory Data Buffering**: Implementing the last-20-points buffer in the Angular dashboard to support instant AI predictions.
+- **Service Timeout Resilience**: Implementing TDD for handling slow training cycles (30s+) and gateway timeouts in `orchestrator-ms`.
+- **Unit Test Isolation**: Refactoring `measure-ms` and `microcontrollers-ms` suites to remove live database requirements.

@@ -45,4 +45,19 @@ module.exports = class MongoDB {
     return await record.save()
   }
 
+  async saveHumidity(doc) {
+    const record = new Humidity(doc)
+    return await record.save()
+  }
+
+  async saveLight(doc) {
+    const record = new Light(doc)
+    return await record.save()
+  }
+
+  async saveTemperature(doc) {
+    const record = new Temperature(doc)
+    return await record.save()
+  }
+
 }

@@ -15,6 +15,7 @@ const picturesController = new MeasureController('pictures')
 
 router.get('/humidity', humidityController.getMeasure)
 router.get('/humidities', humidityController.getMeasures)
+router.post('/humidity', humidityController.postMeasure)
 
 router.get('/light', lightController.getMeasure)
 router.get('/lights', lightController.getMeasures)
@@ -22,6 +23,7 @@ router.post('/light', lightController.postLight)
 
 router.get('/temperature', temperatureController.getMeasure)
 router.get('/temperatures', temperatureController.getMeasures)
+router.post('/temperature', temperatureController.postMeasure)
 
 router.get('/pictures', picturesController.getMeasure)
 router.get('/pictures/history', picturesController.getMeasures)

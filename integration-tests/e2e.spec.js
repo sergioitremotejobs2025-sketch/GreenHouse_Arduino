@@ -1,27 +1,38 @@
 const request = require('supertest');
-const axios = require('axios');
-
+const { login, registerMCU, publishData, trainAI } = require('./utils');
 const ORCHESTRATOR_URL = process.env.ORCHESTRATOR_URL || 'http://localhost:3000';
+
+jest.setTimeout(120000); // 2 minutes for full E2E run
 
 describe('End-to-End API Integration Tests', () => {
     let authToken = '';
     const testUser = {
-        username: 'e2e_user',
-        password: 'e2e_password'
+        username: 'green_user',
+        password: 'Password123!' // Using a strong password for auth-ms
     };
 
     beforeAll(async () => {
-        // Optional setup before E2E start: Wait for Orchestrator to become healthy
-        // since in Docker compose it might take a few seconds
-        // You can skip this if your test orchestrator handles waits.
+        console.log('Waiting for Orchestrator to be ready...');
+        let ready = false;
+        let attempts = 0;
+        while (!ready && attempts < 30) {
+            try {
+                // Try to reach a public endpoint or just root
+                const res = await request(ORCHESTRATOR_URL).get('/');
+                // Orchestrator might return 404 for root but at least it responds
+                ready = true;
+                console.log('Orchestrator responded! Starting tests...');
+            } catch (err) {
+                attempts++;
+                await new Promise(r => setTimeout(r, 2000));
+            }
+        }
     });
 
     it('should register a new user successfully', async () => {
         const res = await request(ORCHESTRATOR_URL)
             .post('/register')
             .send(testUser);
-
-        // It might be 201 Created or 200 OK depending on implementation
         expect([200, 201]).toContain(res.status);
     });
 
@@ -31,41 +42,58 @@ describe('End-to-End API Integration Tests', () => {
             .send(testUser);
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('token');
+        expect(res.body).toHaveProperty('accessToken');
         expect(res.body).toHaveProperty('refreshToken');
 
-        authToken = res.body.token; // Save for subsequent requests
+        authToken = res.body.accessToken;
     });
 
-    it('should be able to interact with Microcontrollers MS (CREATE)', async () => {
-        const mcuData = {
-            ip: `192.168.1.${Math.floor(Math.random() * 255)}`,
+    it('should perform the full Golden Path: Seed -> Train -> Predict', async () => {
+        // 1. MCU Registration
+        const mcu = {
+            ip: '10.0.0.99',
             measure: 'temperature',
-            sensor: 'DHT11'
+            sensor: 'LM35'
+        };
+        await registerMCU(ORCHESTRATOR_URL, authToken, mcu);
+
+        // 2. Data Seeding (Need 20+ points for ai-ms trainer)
+        console.log('Seeding 25 data points...');
+        for (let i = 0; i < 25; i++) {
+            await publishData(ORCHESTRATOR_URL, authToken, 'temperature', {
+                ip: mcu.ip,
+                temperature: 20 + Math.random() * 5
+            });
+        }
+
+        // 3. AI Training
+        console.log('Triggering AI Training...');
+        const trainRes = await trainAI(ORCHESTRATOR_URL, authToken, {
+            ip: mcu.ip,
+            measure: 'temperature'
+        });
+        expect(trainRes.status).toBe(200);
+
+        // 4. AI Prediction
+        console.log('Testing AI Prediction...');
+        const predictReq = {
+            ip: mcu.ip,
+            measure: 'temperature',
+            recent_values: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
         };
 
         const res = await request(ORCHESTRATOR_URL)
-            .post('/microcontrollers')
+            .post('/ai/predict')
             .set('Authorization', `Bearer ${authToken}`)
-            .send(mcuData);
-
-        expect(res.status).toBe(201);
-    });
-
-    it('should be able to interact with Microcontrollers MS (GET)', async () => {
-        const res = await request(ORCHESTRATOR_URL)
-            .get('/microcontrollers')
-            .set('Authorization', `Bearer ${authToken}`);
+            .send(predictReq);
 
         expect(res.status).toBe(200);
-        expect(Array.isArray(res.body)).toBeTruthy();
-        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body).toHaveProperty('prediction');
+        // AI-MS predict returns a float, Orchestrator returns what AI-MS returns
     });
 
-    it('should block unauthenticated access to protected routes', async () => {
-        const res = await request(ORCHESTRATOR_URL)
-            .get('/microcontrollers');
-
+    it('should block unauthenticated access', async () => {
+        const res = await request(ORCHESTRATOR_URL).get('/microcontrollers');
         expect(res.status).toBe(401);
     });
 });

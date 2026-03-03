@@ -1,6 +1,7 @@
 const axios = require('axios')
 
 const { B_TERMISTOR, MICROCONTROLLERS_MS } = require('../app/constants/constants')
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY
 
 module.exports = class MicrocontrollersModule {
 
@@ -20,7 +21,8 @@ module.exports = class MicrocontrollersModule {
   }
 
   getMicrocontrollers = async () => {
-    const response = await axios.get(`http://${MICROCONTROLLERS_MS}/${this.measure}`)
+    const headers = INTERNAL_API_KEY ? { 'x-internal-api-key': INTERNAL_API_KEY } : {}
+    const response = await axios.get(`http://${MICROCONTROLLERS_MS}/${this.measure}`, { headers })
     return response.data
   }
 
