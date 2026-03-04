@@ -410,8 +410,43 @@ graph LR
     end
 ```
 
-#### 16.1.2 Fog Computing Nodes
-Introducing an intermediate layer between the Arduinos and the Cloud. These "Fog Nodes" (dedicated onsite Raspberry Pi clusters) will handle real-time feedback loops locally.
+#### 16.1.2 Fog Computing Nodes: The Intermediate Intelligence Layer
+The **Fog Layer** serves as the "Local Site Brain," providing coordination and resilience for entire physical locations (e.g., a greenhouse site or factory floor).
+
+**The Hierarchy of Intelligence:**
+*   **The Edge (Wasm Gateway)**: Micro-reflexes and pruning for small sensor clusters (Low-power, microsecond response).
+*   **The Fog (Site Cluster)**: Site-wide coordination and survival logic (Medium-power, local database, offline resilience).
+*   **The Cloud (K8s Cluster)**: Global analytics, identity management, and persistent history (High-power, cross-site patterns).
+
+**Key Responsibilities of Fog Nodes:**
+*   **Site Survival (Autonomous Ops)**: If the internet link fails, the Fog Node ensures the greenhouse remains operational, maintaining automation cycles and water control loops locally.
+*   **Cross-Gateway Coordination**: While a Wasm Gateway only sees its own sensors, the Fog Node aggregates data from **all** onsite gateways to perform site-wide logic (e.g., closing all windows if any sensor detects high wind).
+*   **Micro-AI Inference**: These nodes run dedicated TensorFlow Lite or ONNX models to detect complex anomalies locally (e.g., structural failure signatures) that require more compute than an Edge Gateway but more urgency than the Cloud.
+
+**System Topology including Fog:**
+```mermaid
+graph TD
+    subgraph "The Field (Sensors)"
+        S[Arduinos/ESPs]
+    end
+
+    subgraph "The Edge (Wasm Gateways)"
+        W[Micro-Reflexes / Pruning]
+    end
+
+    subgraph "The Fog Layer (Local Site Cluster)"
+        F[Fog Node: Local DB & AI]
+        F -->|Site-Wide Control| A[Local Actuators/Valves]
+    end
+
+    subgraph "The Cloud (Central K8s)"
+        C[Global Analytics / Registry]
+    end
+
+    S --> W
+    W --> F
+    F -->|Aggregated Sync| C
+```
 
 ### 16.2 Zero-Trust Security & Sovereignty
 As the system scales, the "Castle-and-Moat" security model is no longer sufficient.
