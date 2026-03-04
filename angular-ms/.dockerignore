@@ -1,3 +1,14 @@
 **/node_modules
-**/dist
+iot-app/node_modules/
+iot-app/dist/
+iot-app/.angular/
+iot-app/coverage/
+iot-app/.vscode/
+iot-app/*.log
+iot-app/*.txt
 .git
+.angular
+coverage
+.vscode
+*.log
+*.txt
