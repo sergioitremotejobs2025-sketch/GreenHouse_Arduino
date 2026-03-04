@@ -12,16 +12,17 @@
 5.  **[Chapter 4: Measure-MS — Ingesting the Real World](#chapter-4)**
 6.  **[Chapter 5: Microcontrollers-MS — The Device Registry](#chapter-5)**
 7.  **[Chapter 6: Stats-MS — Intelligence from Chaos](#chapter-6)**
-8.  **[Chapter 7: Publisher-MS & RabbitMQ — Seamless Message Flows](#chapter-7)**
-9.  **[Chapter 8: Angular-MS — The Human Interface](#chapter-8)**
-10. **[Chapter 9: The Persistence Layer — Polyglot Databases](#chapter-9)**
-11. **[Chapter 10: Kubernetes: The Industrial Orchestrator](#chapter-10)**
-12. **[Chapter 11: Observability: Metrics, Logs, and Tracing](#chapter-11)**
-13. **[Chapter 12: Engineering Excellence: TDD & CI/CD](#chapter-12)**
-14. **[Chapter 13: The Simulation Layer: Fake Arduino IoT](#chapter-13)**
-15. **[Chapter 14: Troubleshooting & Post-Mortems](#chapter-14)**
-16. **[Chapter 15: Strategic Roadmap & Future Improvements](#chapter-15)**
-17. **[Conclusion: The Horizon of IoT](#conclusion)**
+8.  **[Chapter 7: AI-MS — The Predictive Intelligence](#chapter-7)**
+9.  **[Chapter 8: Publisher-MS & RabbitMQ — Seamless Message Flows](#chapter-8)**
+10. **[Chapter 9: Angular-MS — The Human Interface](#chapter-9)**
+11. **[Chapter 10: The Persistence Layer — Polyglot Databases](#chapter-10)**
+12. **[Chapter 11: Kubernetes: The Industrial Orchestrator](#chapter-11)**
+13. **[Chapter 12: Observability: Metrics, Logs, and Tracing](#chapter-12)**
+14. **[Chapter 13: Engineering Excellence: TDD & CI/CD](#chapter-13)**
+15. **[Chapter 14: The Simulation Layer: Fake Arduino IoT](#chapter-14)**
+16. **[Chapter 15: Troubleshooting & Post-Mortems](#chapter-15)**
+17. **[Chapter 16: Strategic Roadmap & Future Improvements](#chapter-16)**
+18. **[Conclusion: The Horizon of IoT](#conclusion)**
 
 ---
 
@@ -62,10 +63,12 @@ graph TD
     B -->|REST| C[Auth-MS]
     B -->|REST| D[Measure-MS]
     B -->|REST| E[Microcontrollers-MS]
+    B -->|REST| K[AI-MS]
     D -->|Internal| F[Publisher-MS]
     F -->|AMQP| G[RabbitMQ]
     G -->|AMQP| H[Stats-MS]
     H -->|Query| I[(MongoDB)]
+    K -->|Query| I
     D -->|Query| I
     C -->|Query| J[(MySQL)]
     E -->|Query| J
@@ -208,7 +211,30 @@ The service calculates:
 ---
 
 <a name="chapter-7"></a>
-## ✉️ Chapter 7: Publisher-MS & RabbitMQ — Seamless Message Flows
+## 🧠 Chapter 7: AI-MS — The Predictive Intelligence
+
+The `ai-ms` represents the **Cognitive Layer** of the ecosystem, transitioning the project from reactive monitoring to proactive forecasting.
+
+### 7.1 Deep Learning for Time-Series
+Written in **Python** and powered by **TensorFlow 2.15**, this service implements **LSTM (Long Short-Term Memory)** neural networks to predict future sensor readings based on historical patterns.
+
+#### 7.1.1 The Temporal Advantage
+Unlike standard analytics, LSTMs maintain a "Cell State" (a long-term memory). This allows the system to understand that a temperature of 25°C at 6:00 AM (warming up) is fundamentally different from 25°C at 6:00 PM (cooling down), enabling precise frost or heatwave predictions hours in advance.
+
+### 7.2 The Training & Inference Lifecycle
+*   **Data Ingestion**: Pulls historical windows from MongoDB via a specialized ETL (Extract, Transform, Load) pipeline.
+*   **Feature Scaling**: Implements **Min-Max Normalization** to ensure all sensor types (Humidity %, Temperature °C) exist on the same mathematical scale (0 to 1).
+*   **Weights Persistence**: Serializes trained models in the `.h5` format, allowing for instant reload without re-training.
+
+### 7.3 Integration with the Gateway
+The `ai-ms` is isolated behind the Orchestrator. It exposes:
+*   `/api/v1/ai/train`: Triggers an asynchronous training job for a specific device.
+*   `/api/v1/ai/predict`: Returns a sequence of predicted values based on the latest telemetry buffer.
+
+---
+
+<a name="chapter-8"></a>
+## ✉️ Chapter 8: Publisher-MS & RabbitMQ — Seamless Message Flows
 
 The `publisher-ms` acts as an event-driven bridge using the **AMQP Protocol**.
 
@@ -227,8 +253,8 @@ A lightweight Node.js worker listens for "data ingested" events.
 
 ---
 
-<a name="chapter-8"></a>
-## 🎨 Chapter 8: Angular-MS — The Human Interface
+<a name="chapter-9"></a>
+## 🎨 Chapter 9: Angular-MS — The Human Interface
 
 The UI is a high-performance, reactive **Angular 15** application.
 
@@ -248,8 +274,8 @@ Every HTTP call is caught by the **TokenInterceptor**.
 
 ---
 
-<a name="chapter-9"></a>
-## 🗄️ Chapter 9: The Persistence Layer — Polyglot Databases
+<a name="chapter-10"></a>
+## 🗄️ Chapter 10: The Persistence Layer — Polyglot Databases
 
 ### 9.1 MySQL: Relational Integrity
 Handles data requiring **Strict Relation** (Users, Device Registry).
@@ -263,8 +289,8 @@ Handles high-frequency readings.
 
 ---
 
-<a name="chapter-10"></a>
-## ☸️ Chapter 10: Kubernetes: The Industrial Orchestrator
+<a name="chapter-11"></a>
+## ☸️ Chapter 11: Kubernetes: The Industrial Orchestrator
 
 ### 10.1 Declarative Infrastructure
 Every service is defined by a manifest using **Rolling Update** strategies.
@@ -277,8 +303,8 @@ Every service is defined by a manifest using **Rolling Update** strategies.
 
 ---
 
-<a name="chapter-11"></a>
-## 🕵️ Chapter 11: Observability: Metrics, Logs, and Tracing
+<a name="chapter-12"></a>
+## 🕵️ Chapter 12: Observability: Metrics, Logs, and Tracing
 
 ### 11.1 Prometheus & Grafana
 We track the "Four Golden Signals": Latency, Traffic, Errors, and Saturation.
@@ -289,8 +315,8 @@ Logs are aggregated via Promtail. We correlate events across services using a `r
 
 ---
 
-<a name="chapter-12"></a>
-## 🏗️ Chapter 12: Engineering Excellence: TDD & CI/CD
+<a name="chapter-13"></a>
+## 🏗️ Chapter 13: Engineering Excellence: TDD & CI/CD
 
 ### 12.1 The Testing Pyramid
 *   **Unit Tests**: Go (sqlmock) and Python (unittest.mock).
@@ -302,8 +328,8 @@ GitHub Actions run linters, security scanners (NPM audit/Snyk), and build multi-
 
 ---
 
-<a name="chapter-13"></a>
-## 🤖 Chapter 13: The Simulation Layer: Fake Arduino IoT
+<a name="chapter-14"></a>
+## 🤖 Chapter 14: The Simulation Layer: Fake Arduino IoT
 
 How do you develop a massive IoT system without 1,000 physical Arduinos?
 
@@ -314,73 +340,69 @@ The `fake-arduino-iot` services simulate real-world physics.
 
 ---
 
-<a name="chapter-14"></a>
-## 🛠️ Chapter 14: Troubleshooting & Post-Mortems
+<a name="chapter-15"></a>
+## 🛠️ Chapter 15: Troubleshooting & Post-Mortems
 
-### 14.1 Technical War Stories
+### 15.1 Technical War Stories
 
-#### 14.1.1 The Infinite Auth Loop
+#### 15.1.1 The Infinite Auth Loop
 **Incident**: Users logged out every 10 seconds.
 **Discovery**: 30-second clock skew between two nodes.
 **Resolution**: Implemented skew tolerance and NTP synchronization.
 
-#### 14.1.2 The "RabbitMQ Poison Pill"
+#### 15.1.2 The "RabbitMQ Poison Pill"
 **Incident**: `stats-ms` stuck in high CPU consumption.
 **Discovery**: Malformed data re-queued infinitely.
 **Resolution**: Implemented **Dead Letter Exchanges (DLX)** for isolation.
 
-#### 14.1.3 The "OOM-Killed Python"
+#### 15.1.3 The "OOM-Killed Python"
 **Incident**: Pods crashing on large history requests.
 **Discovery**: Loading 30 days of raw documents into RAM.
 **Resolution**: Moved logic to **MongoDB Aggregation Pipelines**, reducing RAM usage by 99.9%.
 
-#### 14.1.4 The "Node.js Time Machine"
+#### 15.1.4 The "Node.js Time Machine"
 **Incident**: Deployment failure on `Object.hasOwn`.
 **Discovery**: Local Node 20 vs Container Node 16 version drift.
 **Resolution**: Standardized on `node:lts-iron` (Node 20).
 
+#### 15.1.5 The AI Training Blockade
+**Incident**: Gateway timeouts when clicking "Train Model."
+**Discovery**: Training is a CPU-intensive, synchronous block in Flask.
+**Resolution**: Offloaded training to a background thread and implemented a status polling endpoint, preventing Gateway socket exhaustion.
+
 ---
 
-<a name="chapter-15"></a>
-## 🚀 Chapter 15: Strategic Roadmap & Future Improvements
+<a name="chapter-16"></a>
+## 🚀 Chapter 16: Strategic Roadmap & Future Improvements
 
-The IoT Microservices project is not a destination but a continuous journey of engineering evolution. This chapter outlines the high-level roadmap for the next phase of development, focusing on intelligence, efficiency, and global resilience.
+The IoT Microservices project is not a destination but a continuous journey of engineering evolution. This chapter outlines the high-level roadmap for the next phase of development.
 
-### 15.1 Cognitive Evolution: From Reactive to Proactive
-Currently, our system reports what *has happened*. The next phase is to predict what *will happen*.
-
-#### 15.1.1 Predictive Maintenance (AI/ML)
-We will integrate **TensorFlow Serving** pods within our Kubernetes cluster. By training **LSTM (Long Short-Term Memory)** neural networks on historical sensor data from MongoDB, the system will identify "Pre-Failure Signatures." For example, a 0.5% increase in vibration patterns over 48 hours could trigger a proactive maintenance alert before a physical hardware failure occurrs.
-
-#### 15.1.2 Anomaly Detection 2.0
-Moving beyond simple variance analysis in `stats-ms`, we will implement **Isolation Forests** to detect complex multi-sensor anomalies (e.g., a humidity drop correlated with a temperature rise that doesn't match the current weather API data, suggesting a structural leak).
-
-### 15.2 The Edge Revolution: Distributed Processing
+### 16.1 The Edge Revolution: Distributed Processing
 To handle 100x more devices, we must stop sending all raw data to the central cloud.
 
-#### 15.2.1 WebAssembly (Wasm) at the Gateway
-We will deploy lightweight **Wasm** runtimes on local IoT gateways. These workers will perform "First-Pass Sanitization" and local aggregation. Instead of sending 60 individual 1-second readings, the gateway will send a single 1-minute summary document, reducing cloud bandwidth costs by 95%.
+#### 16.1.1 WebAssembly (Wasm) at the Gateway
+We will deploy lightweight **Wasm** runtimes on local IoT gateways. These workers will perform "First-Pass Sanitization" and local aggregation.
 
-#### 15.2.2 Fog Computing Nodes
-Introducing an intermediate layer between the Arduinos and the Cloud. These "Fog Nodes" (dedicated onsite Raspberry Pi clusters) will handle real-time feedback loops (e.g., closing a valve) locally, ensuring safety even if the internet connection to the central Kubernetes cluster is severed.
+#### 16.1.2 Fog Computing Nodes
+Introducing an intermediate layer between the Arduinos and the Cloud. These "Fog Nodes" (dedicated onsite Raspberry Pi clusters) will handle real-time feedback loops locally.
 
-### 15.3 Zero-Trust Security & Sovereignty
+### 16.2 Zero-Trust Security & Sovereignty
 As the system scales, the "Castle-and-Moat" security model is no longer sufficient.
 
-#### 15.3.1 Full Service Mesh (mTLS)
-We will implement **Istio** or **Linkerd**. This will enforce **Mutual TLS (mTLS)** for every single pod-to-pod interaction. Every microservice will have its own cryptographically verified identity, and the network will transition to a "Verify Everything, Trust Nothing" posture.
+#### 16.2.1 Full Service Mesh (mTLS)
+We will implement **Istio** or **Linkerd**. This will enforce **Mutual TLS (mTLS)** for every single pod-to-pod interaction.
 
-#### 15.3.2 Data Sovereignty & Multi-Tenancy
-To comply with global regulations (GDPR, CCPA), we will implement **Encrypted Sharding**. User data will be physically localized in the MongoDB cluster based on the user's geographic region, ensuring that data never leaves its legal jurisdiction while still being manageable from a single global dashboard.
+#### 16.2.2 Data Sovereignty & Multi-Tenancy
+To comply with global regulations (GDPR, CCPA), we will implement **Encrypted Sharding**. User data will be physically localized in the MongoDB cluster based on geographic region.
 
-### 15.4 Infrastructure 4.0: The Global Mesh
+### 16.3 Infrastructure 4.0: The Global Mesh
 The final stage is the transition from a single cluster to a **Federated Multi-Region Hive**.
 
-#### 15.4.1 Cross-Cluster Replication
-Using **Cilium ClusterMesh**, we will connect Kubernetes clusters in US, EU, and Asia. If an entire AWS region goes offline, the global `orchestrator-ms` will transparently failover telemetry ingestion to the nearest healthy cluster, ensuring 99.999% global availability.
+#### 16.3.1 Cross-Cluster Replication
+Using **Cilium ClusterMesh**, we will connect Kubernetes clusters in US, EU, and Asia.
 
-#### 15.4.2 Serverless Offloading (Knative)
-For high-burst analytical tasks (like generating year-end statistics), we will move from fixed `stats-ms` pods to **Knative Serverless functions**. These functions will spin up from zero to 1,000 instances in seconds to handle the burst, then dissolve, optimizing infrastructure costs to the cent.
+#### 16.3.2 Serverless Offloading (Knative)
+For high-burst analytical tasks, we will move from fixed `stats-ms` pods to **Knative Serverless functions**.
 
 ---
 
@@ -390,9 +412,9 @@ For high-burst analytical tasks (like generating year-end statistics), we will m
 The IoT Microservices project is a living ecosystem. By moving away from the "Big Ball of Mud" toward highly specialized reactors, we have built a **Resilient Backbone** for the future.
 
 ### The Road Ahead: 2026 and Beyond
-1.  **Proactive AI**: Transitioning from averages to Predictive Maintenance (LSTM Models).
-2.  **Edge Offloading**: WebAssembly workers at the gateway level.
-3.  **Global Mesh**: Cross-cluster federation for international fleets.
+1.  **Distributed Intelligence**: WebAssembly workers at the gateway level.
+2.  **Global Mesh**: Cross-cluster federation for international fleets.
+3.  **Autonomous Response**: Closing feedback loops at the Edge via Fog nodes.
 
 ---
 *End of Volume I: The Engineering Manual.*
