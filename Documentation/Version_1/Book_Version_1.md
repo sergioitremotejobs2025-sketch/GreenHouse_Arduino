@@ -21,8 +21,9 @@
 14. **[Chapter 13: Engineering Excellence: TDD & CI/CD](#chapter-13)**
 15. **[Chapter 14: The Simulation Layer: Fake Arduino IoT](#chapter-14)**
 16. **[Chapter 15: Troubleshooting & Post-Mortems](#chapter-15)**
-17. **[Chapter 16: Strategic Roadmap & Future Improvements](#chapter-16)**
-18. **[Conclusion: The Horizon of IoT](#conclusion)**
+17. **[Chapter 16: Technical Roadmap & Future Improvements](#chapter-16)**
+18. **[Chapter 17: Strategic Roadmap — The Execution Plan](#chapter-17)**
+19. **[Conclusion: The Horizon of IoT](#conclusion)**
 
 ---
 
@@ -696,7 +697,7 @@ The `fake-arduino-iot` services simulate real-world physics.
 ---
 
 <a id="chapter-16"></a>
-## 🚀 Chapter 16: Strategic Roadmap & Future Improvements
+## 🚀 Chapter 16: Technical Roadmap & Future Improvements
 
 The IoT Microservices project is not a destination but a continuous journey of engineering evolution. This chapter outlines the high-level roadmap for the next phase of development.
 
@@ -854,6 +855,49 @@ graph TD
     end
     S1 -.->|Burst Task| K
     S2 -.->|Burst Task| K
+```
+
+---
+
+<a id="chapter-17"></a>
+## 🗺️ Chapter 17: Strategic Roadmap — The Execution Plan
+
+While the technical roadmap outlines **what** we will build, this chapter defines **when** and **how** we will execute these transitions to ensure zero downtime and maximum reliability.
+
+### 17.1 Phase 1: The Observability & Security Hardening (Current Quarter)
+The priority is to stabilize the existing cluster and prepare for the transition to a Zero-Trust environment.
+
+*   **Metric Unification**: Consolidate disparate Prometheus exporters into a unified scraping service to reduce resource overhead.
+*   **mTLS Pilot**: Implement mutual TLS specifically for the `auth-ms` and `orchestrator-ms` path to harden identity services.
+*   **CI/CD Maturity**: Automate performance regression tests in the Jenkins/GitHub Actions pipeline to detect latency spikes before deployment.
+
+### 17.2 Phase 2: Edge Intelligence & Fog Deployment (Next 6 Months)
+Focus shifts to the physical "Edge," reducing cloud ingestion costs and improving local reflexes.
+
+*   **Wasm Ingestion Prototypes**: Deploy the first WebAssembly "Data Pruners" to select pilot greenhouse sites.
+*   **Fog Node Integration**: Establish the first "Site Brains" to manage local database persistence (MongoDB Edge) and site-wide automation loops.
+*   **Device Registry V2**: Upgrade `microcontrollers-ms` to handle device-to-gateway pairing and local discovery protocols.
+
+### 17.3 Phase 3: Global Mesh & Infinite Scale (Next Year)
+The final phase achieves global federation and serverless efficiency.
+
+*   **Cross-Cluster Mesh**: Connect the EU and US clusters via Cilium ClusterMesh, enabling global identity sharing and failover.
+*   **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` to Knative, allowing the system to scale to zero during idle hours.
+*   **Sovereign Sharding**: Implement jurisdiction-aware routing to ensure data residency compliance in real-time.
+
+```mermaid
+gantt
+    title IoT Microservices Strategic Execution
+    dateFormat  YYYY-MM-DD
+    section Phase 1: Hardening
+    Observability Consolidation :2026-03-01, 60d
+    mTLS Implementation        :2026-04-15, 30d
+    section Phase 2: Edge
+    Wasm Pilot Deployment      :2026-06-01, 90d
+    Fog Node Integration       :2026-08-01, 60d
+    section Phase 3: Global Mesh
+    Cross-Region Federation    :2026-12-01, 60d
+    Serverless Offloading      :2027-02-01, 90d
 ```
 
 ---
