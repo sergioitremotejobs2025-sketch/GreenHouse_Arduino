@@ -381,7 +381,34 @@ The IoT Microservices project is not a destination but a continuous journey of e
 To handle 100x more devices, we must stop sending all raw data to the central cloud.
 
 #### 16.1.1 WebAssembly (Wasm) at the Gateway
-We will deploy lightweight **Wasm** runtimes on local IoT gateways. These workers will perform "First-Pass Sanitization" and local aggregation.
+We will transition from a "Cloud-Only" ingestion model to a **Distributed Edge** architecture by deploying lightweight **Wasm** runtimes (using Wasmtime or Wasmer) on local IoT gateways (e.g., Raspberry Pi nodes).
+
+**The Strategic Motivation:**
+As the device fleet grows to thousands of sensors, the "Data Funnel" problem leads to high bandwidth costs and increased latency. By running Wasm "Workers" physically near the sensors, we achieve:
+
+*   **Intelligent Data Pruning**: Wasm modules aggregate hundreds of raw signals (e.g., 60 individual 1-second readings) into a single 1-minute summary document, reducing cloud ingress traffic by up to 98%.
+*   **Near-Zero Latency Reflexes**: Critical logic (like triggering an emergency shutdown if temperature exceeds a safety threshold) is executed locally in microseconds, independent of internet connectivity to the main Kubernetes cluster.
+*   **Hardened Sandboxing**: Unlike raw scripts, Wasm provides memory-isolated execution. If a module crashes, it cannot compromise the gateway's host OS, ensuring system-level stability at the edge.
+*   **Polyglot Efficiency**: Logic can be written in high-performance languages like Rust or Go, compiled to tiny `.wasm` binaries (< 100KB), and pushed over-the-air to the fleet instantly.
+
+**Conceptual Edge Workflow:**
+```mermaid
+graph LR
+    subgraph "The Edge (On-Site)"
+        S[Sensors/Arduinos] -->|Raw Data| G[Local Gateway]
+        subgraph "Wasm Runtime"
+            W1[Filter Module]
+            W2[Anomaly Module]
+        end
+        G --> W1
+        G --> W2
+    end
+    
+    subgraph "The Cloud (Kubernetes)"
+        W1 -->|Aggregated Data| M[Measure-MS]
+        W2 -->|Critical Alerts| O[Orchestrator-MS]
+    end
+```
 
 #### 16.1.2 Fog Computing Nodes
 Introducing an intermediate layer between the Arduinos and the Cloud. These "Fog Nodes" (dedicated onsite Raspberry Pi clusters) will handle real-time feedback loops locally.
