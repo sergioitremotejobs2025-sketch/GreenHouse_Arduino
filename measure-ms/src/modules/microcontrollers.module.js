@@ -17,8 +17,11 @@ module.exports = class MicrocontrollersModule {
       case 'Grove - Temperature':
       case 'Fake Grove - Temperature':
         return Number((1 / (Math.log(1023 / digital - 1) / B_TERMISTOR + 1 / 298.15) - 273.15).toFixed(1))
+      default:
+        return Number(digital)
     }
   }
+
 
   getMicrocontrollers = async () => {
     const headers = INTERNAL_API_KEY ? { 'x-internal-api-key': INTERNAL_API_KEY } : {}

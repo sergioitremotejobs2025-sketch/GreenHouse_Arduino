@@ -29,8 +29,10 @@ class DataProcessor:
         """
         Transforms raw input data for prediction.
         """
-        values = np.array(input_data).reshape(-1, 1)
+        recent_data = input_data[-self.look_back:] # Ensure we have exactly look_back elements
+        values = np.array(recent_data).reshape(-1, 1)
         return self.scaler.transform(values).reshape(1, self.look_back, 1)
+
 
     def inverse_transform(self, prediction):
         """

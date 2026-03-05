@@ -60,18 +60,25 @@ module.exports = class MeasureController {
   postMeasure = async (req, res) => {
     try {
       const { username, ip, ...data } = req.body
+      console.log(`[measure-ms] Received postMeasure for ${username}@${ip}:`, data)
       const micro = (await this.microsModule.getMicrocontrollers())
         .find(m => m.username === username && m.ip === ip)
 
-      if (!micro) return res.status(404).json({ error: 'MCU not found' })
+      if (!micro) {
+        console.error(`[measure-ms] MCU not found for ${username}@${ip}`)
+        return res.status(404).json({ error: 'MCU not found' })
+      }
 
       const message = this.measureModel.getMessage(data, micro)
+      console.log(`[measure-ms] Generated message:`, message)
       await this.measureModel.saveMeasure(message)
       res.status(201).json(message)
     } catch (error) {
+      console.error(`[measure-ms] Error in postMeasure:`, error.message)
       const status = error.message.includes('Invalid measurement') ? 422 : 400
       res.status(status).json({ error: error.message })
     }
   }
+
 
 }

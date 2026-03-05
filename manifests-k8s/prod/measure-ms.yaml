@@ -86,8 +86,10 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/measure-ms:latest
-        imagePullPolicy: IfNotPresent
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/measure-ms:v2
+
+        imagePullPolicy: Always
+
         name: measure-ms
         ports:
         - containerPort: 80

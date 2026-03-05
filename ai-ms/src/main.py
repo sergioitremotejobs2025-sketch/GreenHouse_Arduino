@@ -64,7 +64,8 @@ def predict():
         return jsonify({"error": "Model not found. Train first."}), 404
         
     try:
-        model = load_model(model_path)
+        model = load_model(model_path, compile=False)
+
         processor = DataProcessor()
         
         # We need to re-fit the scaler optimally we'd save the scaler state too
@@ -83,7 +84,11 @@ def predict():
         
         return jsonify({"prediction": float(prediction)}), 200
     except Exception as e:
+        print(f"[ai-ms] PREDICT ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/evaluate', methods=['POST'])
 @require_internal_key
@@ -107,7 +112,8 @@ def evaluate():
         if len(history) < 30:
             return jsonify({"error": "Insufficient data for evaluation"}), 400
             
-        model = load_model(model_path)
+        model = load_model(model_path, compile=False)
+
         processor = DataProcessor()
         X, y, _ = processor.prepare_data(history)
         X = np.reshape(X, (X.shape[0], X.shape[1], 1))

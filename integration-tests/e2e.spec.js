@@ -55,8 +55,9 @@ describe('End-to-End API Integration Tests', () => {
         const mcu = {
             ip: uniqueIp,
             measure: 'temperature',
-            sensor: 'LM35'
+            sensor: 'Fake Grove - Temperature'
         };
+
         const mcuRes = await registerMCU(ORCHESTRATOR_URL, authToken, mcu);
         expect(mcuRes.status).toBe(201);
 

@@ -1,4 +1,6 @@
 import os
+
+
 import numpy as np
 from datetime import datetime
 from database.mongo_client import get_db
@@ -16,22 +18,39 @@ class Trainer:
 
     def fetch_history(self):
         # Fetch data from collection (try singular then plural)
-        collection = self.db[self.measure]
+        target_coll = self.measure
+        collection = self.db[target_coll]
+        print(f"[ai-ms] Checking singular collection '{target_coll}' for {self.username} @ {self.ip}")
+        
         if collection.count_documents({"username": self.username, "ip": self.ip}) == 0:
-            plural = self.measure + 's'
-            if plural in self.db.list_collection_names():
-                collection = self.db[plural]
+            # Handle Mongoose pluralization rules
+            if self.measure.endswith('y'):
+                plural = self.measure[:-1] + 'ies'
+            else:
+                plural = self.measure + 's'
 
+            print(f"[ai-ms] No data in singular, re-checking with plural '{plural}'")
+            if plural in self.db.list_collection_names():
+                target_coll = plural
+                collection = self.db[target_coll]
+            else:
+                print(f"[ai-ms] Plural collection '{plural}' not found in {self.db.list_collection_names()}")
+
+        print(f"[ai-ms] Using collection '{target_coll}'")
         cursor = collection.find(
             {"username": self.username, "ip": self.ip}
         ).sort("timestamp", -1).limit(self.limit)
-        
+
         values = []
+
         for doc in cursor:
-            if 'real_values' in doc and isinstance(doc['real_values'], list):
+            # Check for bulk stats (non-empty list)
+            if 'real_values' in doc and isinstance(doc['real_values'], list) and len(doc['real_values']) > 0:
                 values.extend(reversed(doc['real_values']))
+            # Check for individual points
             elif 'real_value' in doc:
                 values.append(doc['real_value'])
+
         
         # Reverse to get chronological order
         values.reverse()
