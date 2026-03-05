@@ -586,6 +586,15 @@ Every service is defined by a manifest using **Rolling Update** strategies.
 *   **Ingress**: NGINX handles SSL termination and path-based routing.
 *   **Secrets**: Mounted as environment variables via `secretKeyRef`, keeping credentials out of Git.
 
+### 11.3 Google Cloud (GKE Autopilot) Migration
+In March 2026, the project successfully transitioned from local Minikube development to **Google Kubernetes Engine (GKE) Autopilot** in the `europe-west1` (Belgium) region.
+
+#### 11.3.1 Managed Node Governance
+By leveraging Autopilot, we eliminated the overhead of node management. GKE automatically provisions, scales, and hardens the underlying VM nodes, allowing us to focus entirely on workload logic.
+
+#### 11.3.2 Resource Right-Sizing
+A critical lesson from the migration was the importance of **explicit resource requests**. Initial deployments without requests defaulted to 2vCPU/2GiB per pod, leading to a projected cost of ~$328/month. By right-sizing pods (e.g., `stats-ms` to 250m CPU and `fake-arduino` to 256Mi RAM), we reduced the projected cost to **$177/month**, a 46% efficiency gain.
+
 ---
 
 <a id="chapter-12"></a>
@@ -693,6 +702,16 @@ The `fake-arduino-iot` services simulate real-world physics.
 **Incident**: Gateway timeouts when clicking "Train Model."
 **Discovery**: Training is a CPU-intensive, synchronous block in Flask.
 **Resolution**: Offloaded training to a background thread and implemented a status polling endpoint, preventing Gateway socket exhaustion.
+
+#### 15.1.6 The Keras 3 Deserialization Paradox
+**Incident**: `ai-ms` returned 500 errors during prediction after a successful training. 
+**Discovery**: The transition to TensorFlow 2.15+ (Keras 3) introduced a rigid serialization check for HDF5 models. Loading the `.h5` model with default settings failed due to legacy metric structures.
+**Resolution**: Modified `load_model` with `compile=False`. This allowed the weights to load into the LSTM architecture for inference while bypassing the broken compilation step.
+
+#### 15.1.7 The Prediction Shape Mismatch
+**Incident**: Predict requests crashed with "ValueError: Input 0 of layer 'lstm' is incompatible."
+**Discovery**: The model was trained with a `look_back` of 10, but the prediction request sent the full 20-point historical window.
+**Resolution**: Implemented automatic window slicing in the `DataProcessor.transform_input` method, ensuring the LSTM only receives the most recent N points required by its architecture.
 
 ---
 
