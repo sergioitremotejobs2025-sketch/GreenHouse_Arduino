@@ -61,7 +61,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: sergioitremotejobs2025/microcontrollers-ms
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/microcontrollers-ms:latest
         imagePullPolicy: IfNotPresent
         name: microcontrollers-ms
         ports:

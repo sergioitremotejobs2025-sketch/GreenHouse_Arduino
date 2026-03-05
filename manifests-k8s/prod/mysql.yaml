@@ -35,7 +35,7 @@ spec:
             secretKeyRef:
               key: MYSQL_ROOT_PASSWORD
               name: secrets
-        image: sergioitremotejobs2025/mysql-iot
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/mysql-iot:latest
         imagePullPolicy: IfNotPresent
         name: mysql
         ports:

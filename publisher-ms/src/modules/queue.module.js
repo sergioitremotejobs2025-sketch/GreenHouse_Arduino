@@ -31,7 +31,21 @@ class Queue {
 
       console.log('[AMQP] connected')
       this.channel = await this.connection.createConfirmChannel()
-      await this.channel.assertQueue(this.queueName, { durable: true })
+
+      // DLQ Configuration to match other services
+      const dlx = 'dlx'
+      const dlq = 'dead-messages'
+      await this.channel.assertExchange(dlx, 'fanout', { durable: true })
+      await this.channel.assertQueue(dlq, { durable: true })
+      await this.channel.bindQueue(dlq, dlx, '')
+
+      await this.channel.assertQueue(this.queueName, {
+        durable: true,
+        arguments: {
+          'x-dead-letter-exchange': dlx
+        }
+      })
+
 
       this.channel.on('error', (err) => {
         console.error('[AMQP] channel error', err.message)

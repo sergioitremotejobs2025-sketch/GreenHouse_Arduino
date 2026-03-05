@@ -52,15 +52,15 @@ func (r *MysqlRepository) Exists(user model.User) (bool, model.User) {
 	// If it's a mock, we don't want to close it prematurely if we use it for multiple calls.
 	// But the original code was defer db.Close() after calling connect().
 
-	pStmt, _ := db.Prepare("SELECT * FROM iot.users WHERE username = ? AND password = ?")
-	if pStmt != nil {
-		defer pStmt.Close()
-	} else {
+	pStmt, err := db.Prepare("SELECT * FROM iot.users WHERE username = ? AND password = ?")
+	if err != nil {
+		log.Println("SQL Prepare error (Exists):", err.Error())
 		return false, model.User{}
 	}
+	defer pStmt.Close()
 
 	var dbUser model.User
-	err := pStmt.QueryRow(user.Username, user.Password).Scan(&dbUser.Username, &dbUser.Password, &dbUser.RefreshToken)
+	err = pStmt.QueryRow(user.Username, user.Password).Scan(&dbUser.Username, &dbUser.Password, &dbUser.RefreshToken)
 	existUser := user.Username == dbUser.Username && user.Password == dbUser.Password
 	if err != nil {
 		existUser = false
@@ -73,14 +73,14 @@ func (r *MysqlRepository) Exists(user model.User) (bool, model.User) {
 // Insert adds new user credentials in the DB.
 func (r *MysqlRepository) Insert(user model.User) bool {
 	db := r.getDB()
-	pStmt, _ := db.Prepare("INSERT INTO iot.users VALUES (?, ?, ?)")
-	if pStmt != nil {
-		defer pStmt.Close()
-	} else {
+	pStmt, err := db.Prepare("INSERT INTO iot.users VALUES (?, ?, ?)")
+	if err != nil {
+		log.Println("SQL Prepare error (Insert):", err.Error())
 		return false
 	}
+	defer pStmt.Close()
 
-	_, err := pStmt.Exec(user.Username, user.Password, user.RefreshToken)
+	_, err = pStmt.Exec(user.Username, user.Password, user.RefreshToken)
 	if err != nil {
 		log.Println("The user inserted is already registered")
 		return false
@@ -91,12 +91,12 @@ func (r *MysqlRepository) Insert(user model.User) bool {
 // Update updates user credentials in the DB.
 func (r *MysqlRepository) Update(credentials model.Credential) int64 {
 	db := r.getDB()
-	pStmt, _ := db.Prepare("UPDATE iot.users SET refresh_token = ? WHERE refresh_token = ? AND username = ?")
-	if pStmt != nil {
-		defer pStmt.Close()
-	} else {
+	pStmt, err := db.Prepare("UPDATE iot.users SET refresh_token = ? WHERE refresh_token = ? AND username = ?")
+	if err != nil {
+		log.Println("SQL Prepare error (Update):", err.Error())
 		return 0
 	}
+	defer pStmt.Close()
 
 	result, err := pStmt.Exec(credentials.NewRefreshToken, credentials.RefreshToken, credentials.Username)
 	if err != nil {

@@ -55,7 +55,14 @@ spec:
                   key: RABBITMQ_SERVICE_PORT
                   name: env-configmap
             name: publisher-ms
-            image: sergioitremotejobs2025/publisher-ms
+            image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/publisher-ms:latest
             imagePullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 200m
+                memory: 512Mi
           restartPolicy: OnFailure
   schedule: '*/1 * * * *'

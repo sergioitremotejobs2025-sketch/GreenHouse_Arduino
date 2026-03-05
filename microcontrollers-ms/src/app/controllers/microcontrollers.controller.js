@@ -35,7 +35,7 @@ module.exports = class OrchestratorController {
 
     if (!isValidMicrocontroller(microcontroller)) return res.sendStatus(400)
 
-    cache.del([ `/?username=${microcontroller.username}`, `/${microcontroller.measure}` ])
+    cache.del([`/?username=${microcontroller.username}`, `/${microcontroller.measure}`])
 
     try {
       const changes = await dao.insertMicrocontroller(microcontroller)
@@ -43,8 +43,10 @@ module.exports = class OrchestratorController {
 
       return res.status(201).json(microcontroller)
     } catch (error) {
+      console.error('Error in postMicrocontrollers:', error)
       return res.sendStatus(400)
     }
+
   }
 
   async putMicrocontrollers(req, res) {
@@ -53,7 +55,7 @@ module.exports = class OrchestratorController {
 
     if (!isValidMicrocontroller(micro) || !old_ip) return res.sendStatus(400)
 
-    cache.del([ `/?username=${micro.username}`, `/${micro.measure}` ])
+    cache.del([`/?username=${micro.username}`, `/${micro.measure}`])
 
     try {
       const changes = await dao.updateMicrocontroller(updatedMicrocontroller)
@@ -72,7 +74,7 @@ module.exports = class OrchestratorController {
       const changes = await dao.deleteMicrocontroller(microcontroller)
       if (!changes) return res.sendStatus(404)
 
-      cache.del([ `/?username=${microcontroller.username}`, `/${microcontroller.measure}` ])
+      cache.del([`/?username=${microcontroller.username}`, `/${microcontroller.measure}`])
 
       return res.sendStatus(200)
     } catch (error) {

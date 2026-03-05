@@ -1,6 +1,8 @@
 const { model, Schema } = require('mongoose')
 
 const temperatureSchema = new Schema({
+  date: String,
+  digital_value: Number,
   end_date: Date,
   end_timestamp: Number,
   init_date: Date,
@@ -11,10 +13,12 @@ const temperatureSchema = new Schema({
   measure: String,
   min_value: Number,
   n_samples: Number,
+  real_value: Number,
   real_values: Array,
   sensor: String,
   std_deviation: Number,
   time_span: Number,
+  timestamp: Number,
   username: String
 })
 

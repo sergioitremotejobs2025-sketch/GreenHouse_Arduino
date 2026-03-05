@@ -26,10 +26,17 @@ spec:
     spec:
       containers:
       - name: fake-arduino-iot-pictures
-        image: fake-arduino-iot-pictures:latest
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/fake-arduino-iot-pictures:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3005
         env:
         - name: PORT
           value: "3005"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi

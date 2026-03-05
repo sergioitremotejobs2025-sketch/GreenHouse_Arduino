@@ -49,7 +49,8 @@ module.exports = class OrchestratorController {
     let { path, ...body } = req.body
     if (!path) path = req.route.path.substring(1)
     body.username = req.user.username
-    await servicesController.postToConnectedService(res, MEASURE_MS, path, body)
+    await servicesController.postToConnectedService(res, MEASURE_MS, path, body, 201)
+
   }
 
   async login(req, res) {

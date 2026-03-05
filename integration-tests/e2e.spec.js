@@ -7,9 +7,10 @@ jest.setTimeout(120000); // 2 minutes for full E2E run
 describe('End-to-End API Integration Tests', () => {
     let authToken = '';
     const testUser = {
-        username: 'green_user',
+        username: 'user_' + Date.now(),
         password: 'Password123!' // Using a strong password for auth-ms
     };
+
 
     beforeAll(async () => {
         console.log('Waiting for Orchestrator to be ready...');
@@ -50,20 +51,25 @@ describe('End-to-End API Integration Tests', () => {
 
     it('should perform the full Golden Path: Seed -> Train -> Predict', async () => {
         // 1. MCU Registration
+        const uniqueIp = `10.0.0.${Math.floor(Math.random() * 254) + 1}`;
         const mcu = {
-            ip: '10.0.0.99',
+            ip: uniqueIp,
             measure: 'temperature',
             sensor: 'LM35'
         };
-        await registerMCU(ORCHESTRATOR_URL, authToken, mcu);
+        const mcuRes = await registerMCU(ORCHESTRATOR_URL, authToken, mcu);
+        expect(mcuRes.status).toBe(201);
+
 
         // 2. Data Seeding (Need 20+ points for ai-ms trainer)
         console.log('Seeding 25 data points...');
         for (let i = 0; i < 25; i++) {
-            await publishData(ORCHESTRATOR_URL, authToken, 'temperature', {
+            const pubRes = await publishData(ORCHESTRATOR_URL, authToken, 'temperature', {
                 ip: mcu.ip,
                 temperature: 20 + Math.random() * 5
             });
+            expect([200, 201]).toContain(pubRes.status);
+
         }
 
         // 3. AI Training

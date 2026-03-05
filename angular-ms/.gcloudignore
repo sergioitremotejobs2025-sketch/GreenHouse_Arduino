@@ -1,0 +1,9 @@
+.gcloudignore
+.git
+.gitignore
+iot-app/node_modules/
+iot-app/dist/
+iot-app/.angular/
+*.md
+coverage/
+e2e/

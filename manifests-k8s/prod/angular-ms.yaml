@@ -31,7 +31,7 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: sergioitremotejobs2025/angular-ms:latest
+      - image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/angular-ms:latest
         imagePullPolicy: IfNotPresent
         name: angular-ms
         ports:

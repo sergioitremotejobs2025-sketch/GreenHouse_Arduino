@@ -2,17 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /
   name: angular-ingress
+  namespace: default
 spec:
-  tls:
-  - hosts:
-    - iot-microservices.com
-    secretName: angular-tls
-
+  ingressClassName: nginx
   rules:
-  - host: iot-microservices.com
-    http:
+  - http:
       paths:
       - backend:
           service:
@@ -21,4 +17,5 @@ spec:
               number: 80
         path: /
         pathType: Prefix
+
 

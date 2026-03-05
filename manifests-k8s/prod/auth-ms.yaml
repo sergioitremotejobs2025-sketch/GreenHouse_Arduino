@@ -61,7 +61,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: sergioitremotejobs2025/auth-ms
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/auth-ms:latest
         imagePullPolicy: IfNotPresent
         name: auth-ms
         ports:

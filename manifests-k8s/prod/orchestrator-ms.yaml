@@ -116,7 +116,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: sergioitremotejobs2025/orchestrator-ms:latest
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/orchestrator-ms:latest
         imagePullPolicy: IfNotPresent
         name: orchestrator-ms
         ports:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ai-ms
-        image: ai-ms:latest
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/ai-ms:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
