@@ -360,3 +360,32 @@ func TestChangePassword_WeakPassword(t *testing.T) {
 	}
 }
 
+func TestRegister_Weak7CharPassword(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "Passwo1"}) // exactly 7 characters
+	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.Register(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for 7 character password, got %d", w.Code)
+	}
+}
+
+func TestRegister_Strong8CharPassword(t *testing.T) {
+	mock := &mockRepository{insertResult: true}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "Passwor1"}) // exactly 8 characters
+	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.Register(w, req)
+
+	if w.Code == http.StatusBadRequest {
+		t.Errorf("expected 200 for exactly 8 character password, got %d", w.Code)
+	}
+}

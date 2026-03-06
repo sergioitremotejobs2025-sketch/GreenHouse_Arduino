@@ -39,7 +39,7 @@ This document outlines the specific tasks and architectural changes required to 
 - [x] **Mutation Testing**:
     - [x] Run **StrykerJS** on all Node/Angular services to ensure tests fail when logic is mutated. (Done for orchestrator-ms, measure-ms, microcontrollers-ms)
     - [x] Run **Mutmut** on Python services (ai-ms, stats-ms).
-    - [ ] Run **Go-mutesting** on auth-ms. (Paused: tool panics with Go 1.25)
+    - [x] Run **gremlins** (mutation testing) on auth-ms. (Switched from Go-mutesting to gremlins due to Go 1.25 panics; achieved 100% mutator coverage).
 
 - [ ] **Contract Testing (Pact)**:
     - [x] Implement Consumer-Driven Contract (CDC) tests between Orchestrator and Auth-MS.
