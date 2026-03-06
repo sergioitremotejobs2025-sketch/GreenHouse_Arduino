@@ -44,7 +44,7 @@ This document outlines the specific tasks and architectural changes required to 
 - [ ] **Contract Testing (Pact)**:
     - [x] Implement Consumer-Driven Contract (CDC) tests between Orchestrator and Auth-MS.
     - [x] Expand CDC tests to Measure-MS and Microcontrollers-MS.
-    - [ ] Optional: Add CDC for AI-MS and Stats-MS.
+    - [x] Optional: Add CDC for AI-MS and Stats-MS. (AI-MS consumer test completed. Stats-MS requires Message Pact for AMQP which is excluded for now)
 - [ ] **Fuzz Testing**:
     - [x] Introduce fuzzing for the API gateway to test input resilience against malformed payloads.
 
