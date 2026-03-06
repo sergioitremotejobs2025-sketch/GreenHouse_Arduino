@@ -651,13 +651,23 @@ graph LR
     Deploy -->|Success| Live[Production Cluster]
 ```
 
-### 13.1 The Testing Pyramid
+### 13.1 The Testing Pyramid & 100% Enforcement
 *   **Unit Tests**: Go (sqlmock) and Python (unittest.mock).
 *   **Integration Tests**: Using `Supertest` to verify internal API contracts.
 *   **End-to-End**: **Cypress** verifies the full stack by simulating a browser user.
 
-### 13.2 Automated Pipelines
-GitHub Actions run linters, security scanners (NPM audit/Snyk), and build multi-arch Alpine-based Docker images on every push.
+### 13.2 The "Strict 100%" Coverage Mandate
+In March 2026, the project underwent a "Global Threshold Calibration" to enforce a **Hard 100% Coverage Rule**. 
+
+*   **Node.js Enforcement**: Every `package.json` now contains a `jest.coverageThreshold` block requiring 100% for lines, branches, functions, and statements.
+*   **Python Enforcement**: Services utilize `pytest --cov-fail-under=100` to reject partial coverage.
+*   **Go Enforcement**: The `auth-ms` utilizes `go test -cover` with a custom script to ensure zero uncovered blocks.
+
+### 13.3 Automated CI/CD Hard Blocks
+The GitHub Actions pipeline has been upgraded from "Monitoring" to "Enforcement". 
+1.  **Rejection on Push**: Any pull request that drops coverage by even 0.1% or fails to meet the 100% threshold is automatically rejected.
+2.  **No-Merge Policy**: The main branch is protected; coverage must be proven via CI artifacts before a merge is authorized.
+3.  **Local Git Hooks**: Developers utilize **Husky** and **lint-staged** to run tests locally before the commit is even allowed to leave the workstation.
 
 ---
 
@@ -883,21 +893,28 @@ graph TD
 
 While the technical roadmap outlines **what** we will build, this chapter defines **when** and **how** we will execute these transitions to ensure zero downtime and maximum reliability.
 
-### 17.1 Phase 1: The Observability & Security Hardening (Current Quarter)
-The priority is to stabilize the existing cluster and prepare for the transition to a Zero-Trust environment.
+### 17.1 Phase 1: Strict Enforcement & Baseline Prep (Completed)
+The core infrastructure has been hardened with a "Zero-Tolerance" approach to tests.
 
-*   **Metric Unification**: Consolidate disparate Prometheus exporters into a unified scraping service to reduce resource overhead.
+*   **TDD Hard Block**: Successfully implemented across all 10+ microservices, ensuring 100% branch and line coverage as a prerequisite for CI/CD.
+*   **Metric Unification**: Consolidation of Prometheus exporters to reduce resource overhead.
+*   **GKE Migration**: Transitioned from Minikube to GKE Autopilot, achieving a 46% cost reduction via resource right-sizing ($177/mo).
+
+### 17.2 Phase 2: Closing the Unit Gaps & Observability (In Progress)
+The priority shifts to stabilizing the "Last Mile" of coverage and preparing for the Zero-Trust transition.
+
 *   **mTLS Pilot**: Implement mutual TLS specifically for the `auth-ms` and `orchestrator-ms` path to harden identity services.
-*   **CI/CD Maturity**: Automate performance regression tests in the Jenkins/GitHub Actions pipeline to detect latency spikes before deployment.
+*   **Advanced Observability**: Integrate Grafana Loki and Prometheus metrics into a unified SRE dashboard.
+*   **CI/CD Maturity**: Automate performance regression tests to detect latency spikes before deployment.
 
-### 17.2 Phase 2: Edge Intelligence & Fog Deployment (Next 6 Months)
+### 17.3 Phase 3: Edge Intelligence & Fog Deployment (Next 6 Months)
 Focus shifts to the physical "Edge," reducing cloud ingestion costs and improving local reflexes.
 
 *   **Wasm Ingestion Prototypes**: Deploy the first WebAssembly "Data Pruners" to select pilot greenhouse sites.
 *   **Fog Node Integration**: Establish the first "Site Brains" to manage local database persistence (MongoDB Edge) and site-wide automation loops.
 *   **Device Registry V2**: Upgrade `microcontrollers-ms` to handle device-to-gateway pairing and local discovery protocols.
 
-### 17.3 Phase 3: Global Mesh & Infinite Scale (Next Year)
+### 17.4 Phase 4: Global Mesh & Infinite Scale (Next Year)
 The final phase achieves global federation and serverless efficiency.
 
 *   **Cross-Cluster Mesh**: Connect the EU and US clusters via Cilium ClusterMesh, enabling global identity sharing and failover.
@@ -908,15 +925,18 @@ The final phase achieves global federation and serverless efficiency.
 gantt
     title IoT Microservices Strategic Execution
     dateFormat  YYYY-MM-DD
-    section Phase 1: Hardening
-    Observability Consolidation :2026-03-01, 60d
-    mTLS Implementation        :2026-04-15, 30d
-    section Phase 2: Edge
-    Wasm Pilot Deployment      :2026-06-01, 90d
-    Fog Node Integration       :2026-08-01, 60d
-    section Phase 3: Global Mesh
-    Cross-Region Federation    :2026-12-01, 60d
-    Serverless Offloading      :2027-02-01, 90d
+    section Phase 1: Enforcement
+    TDD Hard Block (100% Coverage) :done, a1, 2026-03-01, 10d
+    GKE Migration (Cost Optimization) :done, a2, 2026-03-05, 5d
+    section Phase 2: Observability
+    mTLS & Security Hardening      :active, b1, 2026-03-15, 30d
+    Metric Unification             :b2, 2026-04-01, 30d
+    section Phase 3: Edge
+    Wasm Pilot Deployment          :c1, 2026-06-01, 90d
+    Fog Node Integration           :c2, 2026-08-01, 60d
+    section Phase 4: Global Mesh
+    Cross-Region Federation        :d1, 2026-12-01, 60d
+    Serverless Offloading          :d2, 2027-02-01, 90d
 ```
 
 ---
@@ -933,4 +953,4 @@ The IoT Microservices project is a living ecosystem. By moving away from the "Bi
 
 ---
 *End of Volume I: The Engineering Manual.*
-*Revised March 2026.*
+*Revised March 2026 (Post-100% TDD Enforcement).*
