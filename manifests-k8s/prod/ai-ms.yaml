@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ai-ms
-        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/ai-ms:v7
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/ai-ms:latest
 
 
 

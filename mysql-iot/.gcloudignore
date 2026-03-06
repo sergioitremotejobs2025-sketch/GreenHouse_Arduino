@@ -3,6 +3,9 @@
 .gitignore
 node_modules/
 **/node_modules/
+.angular/
+**/dist/
+**/coverage/
 __pycache__/
 *.pyc
 **/*.md

@@ -86,7 +86,7 @@ spec:
               name: secrets
         - name: PORT
           value: '80'
-        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/measure-ms:v2
+        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/measure-ms:latest
 
         imagePullPolicy: Always
 
