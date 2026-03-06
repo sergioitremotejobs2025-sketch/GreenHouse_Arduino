@@ -45,3 +45,53 @@ def test_trainer_processor_returns_none(mock_mongo):
     
     result, _ = trainer.train()
     assert result is False
+
+def test_fetch_history_singular_to_plural(mock_mongo):
+    # Test checking 'humidity', finding nothing, falling back to 'humidities'
+    # Mock the list_collection_names to return the plural collection
+    mock_mongo.list_collection_names = MagicMock(return_value=['humidities'])
+    plural_coll = mock_mongo['humidities']
+    plural_coll.insert_one({"username": "u1", "ip": "1.1.1.1", "real_value": 42.0, "timestamp": 1})
+    
+    trainer = Trainer("u1", "1.1.1.1", "humidity")
+    trainer.db = mock_mongo
+    data = trainer.fetch_history()
+    assert len(data) == 1
+    assert data[0] == 42.0
+
+def test_fetch_history_plural_not_found(mock_mongo):
+    # Test fallback to plural but plural doesn't exist
+    mock_mongo.list_collection_names = MagicMock(return_value=[])
+    
+    trainer = Trainer("u1", "1.1.1.1", "humidity")
+    trainer.db = mock_mongo
+    data = trainer.fetch_history()
+    assert len(data) == 0
+
+def test_fetch_history_singular_to_plural_non_y(mock_mongo):
+    # Test checking 'temperature', falling back to 'temperatures'
+    mock_mongo.list_collection_names = MagicMock(return_value=['temperatures'])
+    plural_coll = mock_mongo['temperatures']
+    plural_coll.insert_one({"username": "u1", "ip": "1.1.1.1", "real_value": 25.0, "timestamp": 1})
+    
+    trainer = Trainer("u1", "1.1.1.1", "temperature")
+    trainer.db = mock_mongo
+    data = trainer.fetch_history()
+    assert len(data) == 1
+    assert data[0] == 25.0
+
+def test_fetch_history_bulk_stats(mock_mongo):
+    # Test extraction from real_values array 
+    coll = mock_mongo['temperatures']
+    # Insert document with real_values
+    coll.insert_one({"username": "u1", "ip": "1.1.1.1", "real_values": [25.0, 26.0], "timestamp": 1})
+    
+    trainer = Trainer("u1", "1.1.1.1", "temperatures")
+    trainer.db = mock_mongo
+    data = trainer.fetch_history()
+    assert len(data) == 2
+    # Ensure they were extracted correctly (handling the reverse logic)
+    # The logic in fetch_history is:
+    # values.extend(reversed(doc['real_values'])) -> values=[26.0, 25.0]
+    # Then values.reverse() at the end -> values=[25.0, 26.0]
+    assert data == [25.0, 26.0]

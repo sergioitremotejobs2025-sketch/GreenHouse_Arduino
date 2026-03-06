@@ -28,6 +28,9 @@ jobs:
 
   test-python:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [stats-ms, ai-ms]
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -36,11 +39,11 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          cd stats-ms
+          cd ${{ matrix.service }}
           pip install -r requirements.txt
       - name: Test Python
         run: |
-          cd stats-ms
+          cd ${{ matrix.service }}
           pytest
 
   test-go:
@@ -53,14 +56,9 @@ jobs:
           go-version: '1.23.0'
       - name: Build & Test Go
         run: |
-          cd auth-ms/src
-          go test -v -coverprofile=coverage.out ./...
-          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
-          echo "Coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 85.0" | bc -l) )); then
-            echo "Coverage is below 85%"
-            exit 1
-          fi
+          cd auth-ms
+          chmod +x check_coverage.sh
+          ./check_coverage.sh
 
   test-angular:
     runs-on: ubuntu-latest

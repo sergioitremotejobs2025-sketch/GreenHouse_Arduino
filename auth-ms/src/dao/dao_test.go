@@ -4,6 +4,7 @@ import (
 	"auth-ms/model"
 	"database/sql"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -172,5 +173,17 @@ func TestMysqlRepository_PrepareFail(t *testing.T) {
 	mock.ExpectPrepare("UPDATE").WillReturnError(fmt.Errorf("fail"))
 	if repo.UpdatePassword("a", "b") {
 		t.Error("expected false")
+	}
+}
+
+func TestMysqlRepository_ConnectFail(t *testing.T) {
+	// Set an invalid location to force sql.Open to fail parsing DSN in mysql driver
+	os.Setenv("MYSQL_DATABASE_NAME", "iot?loc=InvalidLocation")
+	defer os.Unsetenv("MYSQL_DATABASE_NAME")
+
+	repo := &MysqlRepository{}
+	db := repo.getDB()
+	if db != nil {
+		t.Error("expected db to be nil on DSN parsing error")
 	}
 }

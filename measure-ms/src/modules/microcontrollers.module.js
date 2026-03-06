@@ -23,7 +23,7 @@ module.exports = class MicrocontrollersModule {
   }
 
 
-  getMicrocontrollers = async () => {
+  async getMicrocontrollers() {
     const headers = INTERNAL_API_KEY ? { 'x-internal-api-key': INTERNAL_API_KEY } : {}
     const response = await axios.get(`http://${MICROCONTROLLERS_MS}/${this.measure}`, { headers })
     return response.data

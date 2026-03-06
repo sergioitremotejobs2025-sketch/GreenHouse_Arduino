@@ -43,6 +43,9 @@ module.exports = class OrchestratorController {
       }
       return res.json(response.data);
     }
+    if (!res.headersSent) {
+      return res.sendStatus(404);
+    }
   }
 
   async postMeasureService(req, res) {

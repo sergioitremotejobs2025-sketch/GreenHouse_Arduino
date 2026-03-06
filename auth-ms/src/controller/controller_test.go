@@ -344,3 +344,19 @@ func TestRegister_WeakPassword(t *testing.T) {
 		t.Errorf("expected 400 for weak password, got %d", w.Code)
 	}
 }
+
+func TestChangePassword_WeakPassword(t *testing.T) {
+	mock := &mockRepository{}
+	h := newTestHandlers(mock)
+
+	body, _ := json.Marshal(model.User{Username: "alice", Password: "weak"})
+	req := httptest.NewRequest(http.MethodPut, "/change-password", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+
+	h.ChangePassword(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for weak password, got %d", w.Code)
+	}
+}
+

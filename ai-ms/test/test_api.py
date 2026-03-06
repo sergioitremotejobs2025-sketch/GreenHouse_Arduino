@@ -110,3 +110,63 @@ def test_start_app(mock_getenv, mock_run):
     assert mock_run.called
     assert mock_run.call_args[1]['port'] == 5001
 
+@patch('os.path.exists')
+def test_evaluate_missing_params(mock_exists, client):
+    res = client.post('/evaluate', json={"username": "u"})
+    assert res.status_code == 400
+
+@patch('os.path.exists')
+def test_evaluate_model_not_found(mock_exists, client):
+    mock_exists.return_value = False
+    res = client.post('/evaluate', json={"username": "u", "ip": "i", "measure": "m"})
+    assert res.status_code == 404
+
+@patch('os.path.exists')
+@patch('main.Trainer')
+def test_evaluate_insufficient_data(mock_trainer_class, mock_exists, client):
+    mock_exists.return_value = True
+    mock_trainer = MagicMock()
+    mock_trainer.fetch_history.return_value = [1] * 10 # Less than 30
+    mock_trainer_class.return_value = mock_trainer
+    
+    res = client.post('/evaluate', json={"username": "u", "ip": "i", "measure": "m"})
+    assert res.status_code == 400
+    assert "Insufficient data" in res.get_json()['error']
+
+@patch('os.path.exists')
+@patch('main.Trainer')
+@patch('main.load_model')
+@patch('main.DataProcessor')
+def test_evaluate_success(mock_processor_class, mock_load, mock_trainer_class, mock_exists, client):
+    mock_exists.return_value = True
+    
+    mock_trainer = MagicMock()
+    mock_trainer.fetch_history.return_value = [1.0] * 50
+    mock_trainer_class.return_value = mock_trainer
+    
+    mock_processor = MagicMock()
+    # Mock prepare_data to return X (50, 10), y (50,), scaler
+    mock_processor.prepare_data.return_value = (np.zeros((50, 10)), np.zeros(50), None)
+    mock_processor.inverse_transform.side_effect = lambda x: x # Identity function
+    mock_processor_class.return_value = mock_processor
+    
+    mock_model = MagicMock()
+    mock_model.predict.return_value = np.zeros((50, 1))
+    mock_load.return_value = mock_model
+    
+    res = client.post('/evaluate', json={"username": "u", "ip": "i", "measure": "m"})
+    assert res.status_code == 200
+    data = res.get_json()
+    assert "mae" in data
+    assert data["sample_count"] == 50
+
+@patch('os.path.exists')
+@patch('main.Trainer')
+def test_evaluate_exception(mock_trainer_class, mock_exists, client):
+    mock_exists.return_value = True
+    mock_trainer_class.side_effect = Exception("Eval error")
+    
+    res = client.post('/evaluate', json={"username": "u", "ip": "i", "measure": "m"})
+    assert res.status_code == 500
+    assert "Eval error" in res.get_json()['error']
+

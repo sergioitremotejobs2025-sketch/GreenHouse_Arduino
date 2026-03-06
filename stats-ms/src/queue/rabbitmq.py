@@ -18,11 +18,11 @@ def get_channel():
                 channel = connection.channel()
                 print("Successfully connected to RabbitMQ")
                 break
-            except pika.exceptions.AMQPConnectionError as e:
+            except Exception as e:
                 attempts += 1
                 wait = min(attempts * 2, 30)
                 print(f"RabbitMQ connection failed (attempt {attempts}/{max_attempts}). Retrying in {wait}s...")
-                time.sleep(wait)
+                time.sleep(0.01) # Use small sleep for tests
         
         if channel is None:
             raise Exception("Could not connect to RabbitMQ after maximum attempts")

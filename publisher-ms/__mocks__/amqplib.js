@@ -2,8 +2,9 @@ let sentCount = 0;
 
 const mockChannel = {
     assertQueue: jest.fn().mockResolvedValue({}),
+    assertExchange: jest.fn().mockResolvedValue({}),
+    bindQueue: jest.fn().mockResolvedValue({}),
     sendToQueue: jest.fn((q, c, o, cb) => {
-        sentCount++;
         if (cb) cb(null, true);
         return true;
     }),
@@ -17,8 +18,8 @@ const mockConnection = {
     close: jest.fn().mockResolvedValue({}),
 };
 
+// Instead of manually tracking, let's just use jest's built in tracking.
+// But we'll leave amqplib.js alone and export this properly.
 module.exports = {
-    connect: jest.fn().mockResolvedValue(mockConnection),
-    sent: () => sentCount,
-    resetSent: () => { sentCount = 0; }
+    connect: jest.fn().mockResolvedValue(mockConnection)
 };

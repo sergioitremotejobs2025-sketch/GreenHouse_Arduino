@@ -1,16 +1,27 @@
+jest.mock('../src/config/config', () => ({
+  PING_TIMEOUT: 1,
+  QUEUES_MEASURES: {
+    humidity: 'h',
+    light: 'l',
+    temperature: 't'
+  }
+}));
+jest.mock('amqplib');
+const amqplib = require('amqplib');
 const { main } = require('../src/app/app')
-const amqplib = require('./__mocks__/amqplib')
 
 describe('Publish measures to queue', () => {
   beforeEach(() => {
-    amqplib.resetSent()
+    jest.clearAllMocks();
   })
 
   it('should send three measures to queue', async () => {
-    expect(amqplib.sent()).toEqual(0)
     await main()
-    // Give some time for async queue connection/publish if needed
-    // But since we mock everything as resolved, it might be immediate
-    expect(amqplib.sent()).toEqual(3)
-  }, 100000)
+    // It should have called connect and then sent 3 things
+    const connection = await amqplib.connect();
+    const channel = await connection.createConfirmChannel();
+
+    // Check call count on mock explicitly
+    expect(channel.sendToQueue).toHaveBeenCalledTimes(3);
+  })
 })

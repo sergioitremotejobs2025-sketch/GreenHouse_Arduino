@@ -118,4 +118,13 @@ describe('PictureScheduler', () => {
     it('uses TEN_HOURS_MS as default interval', () => {
         expect(TEN_HOURS_MS).toBe(10 * 60 * 60 * 1000)
     })
+
+    it('logs error when microcontrollers module fails during capture', async () => {
+        microsModule.getMicrocontrollers.mockRejectedValueOnce(new Error('Module Failure'))
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { })
+
+        await scheduler.capture()
+        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('[PictureScheduler] capture error:'), 'Module Failure')
+        consoleSpy.mockRestore()
+    })
 })

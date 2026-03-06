@@ -5,10 +5,10 @@ This document outlines the specific tasks and architectural changes required to 
 ## 🔴 Phase 1: Strict Enforcement (Immediate)
 - [ ] **Global Threshold Calibration**: 
     - [ ] Update `package.json` in all Node.js services to set `coverageThreshold` to 100% for lines, branches, functions, and statements.
-    - [ ] Add `pytest --cov-fail-under=100` to Python services (`ai-ms`, `stats-ms`).
-    - [ ] Integrate `go test -cover -failfast` with a script to check for 100% output in `auth-ms`.
-- [ ] **CI/CD Hard Block**: 
-    - [ ] Configure GitHub Actions to reject any code push that results in coverage < 100%.
+    - [x] Add `pytest --cov-fail-under=100` to Python services (`ai-ms`, `stats-ms`).
+    - [x] Integrate `go test -cover -failfast` with a script to check for 100% output in `auth-ms`.
+- [x] **CI/CD Hard Block**: 
+    - [x] Configure GitHub Actions to reject any code push that results in coverage < 100%.
 
 ## 🟠 Phase 2: Closing the Unit Gaps (Per Service)
 
@@ -19,13 +19,13 @@ This document outlines the specific tasks and architectural changes required to 
 - [ ] **Edge Case Refactoring**: Any "untestable" lines should be refactored into pure functions or isolated modules for testing.
 
 ### 🐍 Python Services (`ai-ms`, `stats-ms`)
-- [ ] **Model Exception Mocking**: Add tests for Keras/TensorFlow model loading failures and training interruptions.
-- [ ] **Pika/RabbitMQ Resilience**: Mock heartbeat losses and reconnection logic in the consumer scripts.
+- [x] **Model Exception Mocking**: Add tests for Keras/TensorFlow model loading failures and training interruptions.
+- [x] **Pika/RabbitMQ Resilience**: Mock heartbeat losses and reconnection logic in the consumer scripts.
 - [ ] **Data Validation**: 100% coverage on input schema validation (Pydantic/Cerberus).
 
 ### 🐹 Go Service (`auth-ms`)
-- [ ] **SQL Error Injection**: Use `sqlmock` to simulate transient database connection failures and query syntax errors.
-- [ ] **Token Expiry Edge Cases**: Test exactly-at-expiry and exactly-after-expiry behaviors for JWTs.
+- [x] **SQL Error Injection**: Use `sqlmock` to simulate transient database connection failures and query syntax errors.
+- [x] **Token Expiry Edge Cases**: Test exactly-at-expiry and exactly-after-expiry behaviors for JWTs.
 
 ### 🅰️ Frontend (`angular-ms`)
 - [ ] **Component Lifecycle**: Test every lifecycle hook (`ngOnInit`, `ngOnDestroy`) for all components.

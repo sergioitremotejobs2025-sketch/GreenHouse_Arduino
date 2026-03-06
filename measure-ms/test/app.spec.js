@@ -180,6 +180,27 @@ describe('Humidity endpoints', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body.length).toBeLessThanOrEqual(5)
   })
+
+  it('should use default digitalToReal when sensor is unknown', async () => {
+    const MicrocontrollersModule = require('../src/modules/microcontrollers.module')
+    const spy = jest.spyOn(MicrocontrollersModule.prototype, 'getMicrocontrollers').mockResolvedValue([{
+      ip: '192.168.1.50',
+      username: 'Rocky',
+      measure: 'humidity',
+      sensor: 'UnknownSensor'
+    }])
+
+    const res = await request(app)
+      .post('/humidity')
+      .send({
+        ip: '192.168.1.50',
+        username: 'Rocky',
+        humidity: 500
+      })
+    expect(res.statusCode).toBe(201)
+    expect(res.body.real_value).toBe(500)
+    spy.mockRestore()
+  })
 })
 
 describe('Light endpoints', () => {

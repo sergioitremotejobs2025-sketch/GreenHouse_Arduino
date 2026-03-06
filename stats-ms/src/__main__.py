@@ -40,7 +40,7 @@ controllers = [
     Temperature(QUEUE_TEMPERATURE_NAME, 60)
 ]
 
-def run_metrics():
+def run_metrics(): # pragma: no cover
     port = int(os.environ.get('METRICS_PORT', 3000))
     app.run(host='0.0.0.0', port=port)
 
@@ -52,5 +52,5 @@ def main():
     for controller in controllers:
         Thread(target=Queue, args=(controller, )).start()
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     main()

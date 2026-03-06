@@ -9,6 +9,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var logFatal = log.Fatal
+
 func Run() error {
 	port := ":" + helper.GetEnv("PORT", "5000")
 	log.Println("Starting GO server on port " + port)
@@ -16,5 +18,5 @@ func Run() error {
 }
 
 func main() {
-	log.Fatal(Run())
+	logFatal(Run())
 }

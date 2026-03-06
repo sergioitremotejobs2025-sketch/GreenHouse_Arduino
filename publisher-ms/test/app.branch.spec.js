@@ -59,4 +59,14 @@ describe('publisher app branch coverage', () => {
         // mockPublish should not have been called for humidity
         expect(mockPublish).not.toHaveBeenCalled();
     });
+
+    test('publishMeasure handles errors and logs them (Line 27)', async () => {
+        getMicrocontrollers.mockRejectedValue(new Error('critical failure'));
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+
+        await main();
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('error:'), 'critical failure');
+        consoleErrorSpy.mockRestore();
+    });
 });

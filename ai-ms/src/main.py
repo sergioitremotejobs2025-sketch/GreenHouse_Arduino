@@ -135,5 +135,5 @@ def start_app():
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     start_app()

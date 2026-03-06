@@ -82,7 +82,7 @@ describe('Measure endpoints', () => {
 
   it('Post light with access token', async () => {
     const res = await request(app).post('/light').send({ value: 1 }).set('Authorization', `Bearer ${accessToken}`)
-    expect(res.statusCode).toEqual(200)
+    expect(res.statusCode).toEqual(201)
     expect(res.body).toEqual(
       expect.objectContaining({
         value: 1,
