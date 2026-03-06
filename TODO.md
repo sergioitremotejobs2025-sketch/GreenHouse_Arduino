@@ -42,7 +42,9 @@ This document outlines the specific tasks and architectural changes required to 
     - [ ] Run **Go-mutesting** on auth-ms. (Paused: tool panics with Go 1.25)
 
 - [ ] **Contract Testing (Pact)**:
-    - [ ] Implement Consumer-Driven Contract (CDC) tests to ensure microservices stay in sync across updates.
+    - [x] Implement Consumer-Driven Contract (CDC) tests between Orchestrator and Auth-MS.
+    - [x] Expand CDC tests to Measure-MS and Microcontrollers-MS.
+    - [ ] Optional: Add CDC for AI-MS and Stats-MS.
 - [ ] **Fuzz Testing**:
     - [ ] Introduce fuzzing for the API gateway to test input resilience against malformed payloads.
 

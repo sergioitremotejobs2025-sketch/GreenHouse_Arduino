@@ -11,6 +11,7 @@
   },
   "description": "Microcontrollers microservice",
   "devDependencies": {
+    "@pact-foundation/pact": "^16.2.0",
     "@stryker-mutator/core": "^9.6.0",
     "@stryker-mutator/jest-runner": "^9.6.0",
     "jest": "^30.2.0",

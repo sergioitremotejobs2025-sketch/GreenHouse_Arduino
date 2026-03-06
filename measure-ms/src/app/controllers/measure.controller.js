@@ -13,11 +13,15 @@ module.exports = class MeasureController {
   }
 
   getMeasure = async (req, res) => {
-    const { username } = req.query
-    let userMicros = await this.microsModule.getMicrocontrollers()
-    userMicros = userMicros.filter(micro => micro.username === username)
-    const responses = await Promise.all(userMicros.map(this.requestMeasure))
-    res.status(200).json(responses)
+    try {
+      const { username } = req.query
+      let userMicros = await this.microsModule.getMicrocontrollers()
+      userMicros = userMicros.filter(micro => micro.username === username)
+      const responses = await Promise.all(userMicros.map(this.requestMeasure))
+      res.status(200).json(responses)
+    } catch (e) {
+      res.status(500).send(e.message)
+    }
   }
 
   requestMeasure = async micro => {
