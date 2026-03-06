@@ -22,10 +22,10 @@ This document provides a realistic time estimate for implementing the tasks outl
 | Target Service | Estimated Time | Actual Time | Difference | Complexity |
 | :--- | :--- | :--- | :--- | :--- |
 | **Angular Frontend** | 12 Hours | 2 Hours | Saved 10 Hours | High (Branch coverage on complex UI logic/pipes). Reached 100% Branch Coverage. |
-| **Node.js Microservices** | 16 Hours | 2 Hours | Saved 14 Hours | Medium (Error path exhaustion & graceful shutdowns). Verified 100% Coverage. |
+| **Node.js Microservices** | 16 Hours | 10 Mins | Saved 15.8 Hours | Medium (Error path exhaustion & graceful shutdowns). Verified 100% Coverage. |
 | **Python Services** | 8 Hours | 1 Hour | Saved 7 Hours | Medium (Model loading exceptions & Pika heartbeat loss). |
 | **Go Auth Service** | 4 Hours | 0.5 Hours | Saved 3.5 Hours | Low (SQL mock error injections). |
-| **Subtotal** | **40 Hours** | **5.5 Hours** | **Saved 34.5 Hours** | |
+| **Subtotal** | **40 Hours** | **3.6 Hours** | **Saved 36.4 Hours** | |
 
 ### Phase 3: Advanced Verification (Quality Assurance)
 | Task | Estimated Time | Focus |
