@@ -46,12 +46,12 @@ This document outlines the specific tasks and architectural changes required to 
     - [x] Expand CDC tests to Measure-MS and Microcontrollers-MS.
     - [ ] Optional: Add CDC for AI-MS and Stats-MS.
 - [ ] **Fuzz Testing**:
-    - [ ] Introduce fuzzing for the API gateway to test input resilience against malformed payloads.
+    - [x] Introduce fuzzing for the API gateway to test input resilience against malformed payloads.
 
 ## 🔵 Phase 4: Observability & Documentation
 - [x] **Coverage Status Tracking**: 100% coverage achieved for ALL core microservices.
-- [ ] **Live Coverage Badges**: Add dynamic GitHub badges to `README.md` reflecting 100% status.
-- [ ] **Documentation Sync**: Ensure all tested endpoints are documented in the internal OpenAPI (Swagger) spec and vice-versa.
+- [x] **Live Coverage Badges**: Add dynamic GitHub badges to `README.md` reflecting 100% status.
+- [x] **Documentation Sync**: Ensure all tested endpoints are documented in the internal OpenAPI (Swagger) spec and vice-versa.
 
 ---
 *Target Completion Date: [Set Date Here]*

@@ -96,7 +96,55 @@ router.get('/pictures', jwtMiddleware, orchestratorController.getMeasureService)
  *         description: Unauthorized
  */
 router.post('/light', jwtMiddleware, orchestratorController.postMeasureService)
+
+/**
+ * @swagger
+ * /temperature:
+ *   post:
+ *     summary: Post temperature measure
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               value:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/temperature', jwtMiddleware, orchestratorController.postMeasureService)
+
+/**
+ * @swagger
+ * /humidity:
+ *   post:
+ *     summary: Post humidity measure
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               value:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/humidity', jwtMiddleware, orchestratorController.postMeasureService)
 
 /**
@@ -265,6 +313,18 @@ router.post('/ai/train', jwtMiddleware, orchestratorController.trainAI)
  *         description: Success
  */
 router.post('/ai/predict', jwtMiddleware, orchestratorController.predictAI)
+/**
+ * @swagger
+ * /ai/evaluate:
+ *   post:
+ *     summary: Evaluate AI model for a sensor
+ *     tags: [AI]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.post('/ai/evaluate', jwtMiddleware, orchestratorController.evaluateAI)
 
 router.use((error, req, res, next) => {
