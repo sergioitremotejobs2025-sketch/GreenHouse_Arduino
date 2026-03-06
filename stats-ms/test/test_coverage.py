@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from src.database.dao import Dao
-from src.queue.rabbitmq import get_channel
-from src.queue.queue import Queue
+from src.amqp.rabbitmq import get_channel
+from src.amqp.queue import Queue
 from src.__main__ import app, main
 import json
 
@@ -30,9 +30,9 @@ def test_dao(mock_client):
     mock_collection.update_one.assert_called_with(query, {'$set': update})
 
 # Test RabbitMQ/Queue
-@patch('src.queue.rabbitmq.pika.BlockingConnection')
+@patch('src.amqp.rabbitmq.pika.BlockingConnection')
 def test_rabbitmq_get_channel(mock_conn):
-    import src.queue.rabbitmq as rabbitmq
+    import src.amqp.rabbitmq as rabbitmq
     rabbitmq.channel = None # Reset global channel
     
     mock_channel = MagicMock()
@@ -47,7 +47,7 @@ def test_rabbitmq_get_channel(mock_conn):
     assert ch2 == mock_channel
     assert mock_conn.call_count == 1
 
-@patch('src.queue.queue.get_channel')
+@patch('src.amqp.queue.get_channel')
 def test_queue_processing(mock_get_channel):
     mock_channel = MagicMock()
     mock_get_channel.return_value = mock_channel

@@ -2,7 +2,7 @@ from src.config.config import QUEUE_HUMIDITY_NAME, QUEUE_LIGHT_NAME, QUEUE_TEMPE
 from src.measures.humidity import Humidity
 from src.measures.light import Light
 from src.measures.temperature import Temperature
-from src.queue.queue import Queue
+from src.amqp.queue import Queue
 from threading import Thread
 import os
 from flask import Flask, Response

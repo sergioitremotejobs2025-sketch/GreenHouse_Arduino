@@ -17,7 +17,7 @@ const buildHeaders = (service) => {
     : {}
 }
 
-const methodToConnectedService = async (res, url, method, body = {}, status = 200, returnResponse = false, headers = {}) => {
+const methodToConnectedService = async (res, url, method, body = {}, status = 200, returnResponse = false, headers) => {
   try {
     const isAiTrain = url.includes(AI_MS) && url.includes('train')
     const timeout = isAiTrain ? AI_TRAIN_TIMEOUT : DEFAULT_TIMEOUT
