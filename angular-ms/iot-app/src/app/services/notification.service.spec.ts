@@ -35,4 +35,22 @@ describe('NotificationService', () => {
         );
         expect(snackBarSpy.open).toHaveBeenCalled();
     });
+
+    it('should show "inferior" direction on alert when isAbove is false', () => {
+        const spy = spyOn(service, 'notify').and.callThrough();
+        service.notifyAlert('Temp', 20, 'C', 25, false);
+        expect(spy).toHaveBeenCalledWith(
+            'ALERTA: Temp (20C) es inferior al umbral de 25C',
+            'warning'
+        );
+    });
+
+    it('should use "success" type as default in notify', () => {
+        service.notify('Generic message');
+        expect(snackBarSpy.open).toHaveBeenCalledWith(
+            'Generic message',
+            'Cerrar',
+            jasmine.objectContaining({ panelClass: ['snackbar-success'] })
+        );
+    });
 });

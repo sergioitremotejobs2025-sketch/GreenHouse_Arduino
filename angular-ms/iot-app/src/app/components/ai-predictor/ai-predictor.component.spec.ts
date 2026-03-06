@@ -5,6 +5,10 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatModule } from 'src/app/modules/mat.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
 describe('AiPredictorComponent', () => {
     let component: AiPredictorComponent;
     let fixture: ComponentFixture<AiPredictorComponent>;
@@ -17,7 +21,7 @@ describe('AiPredictorComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [AiPredictorComponent],
-            imports: [FormsModule],
+            imports: [FormsModule, MatModule, NoopAnimationsModule],
             providers: [
                 { provide: AiService, useValue: mockAiService },
                 { provide: NotificationService, useValue: mockNotificationService }

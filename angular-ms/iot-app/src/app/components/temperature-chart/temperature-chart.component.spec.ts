@@ -94,4 +94,60 @@ describe('TemperatureChartComponent', () => {
     expect(component.chart.dataTable[0]).toBe(component.header); // the unshifted header
     expect(component.chart.component.draw).toHaveBeenCalled();
   });
+
+  it('should handle setInterval callback', fakeAsync(() => {
+    arduinoService.getCurrentMeasure.and.returnValue(Promise.resolve({ ip: '1.2.3.4', real_value: 22, date: new Date().toISOString() } as any));
+    fixture.detectChanges();
+    tick(); // first call
+
+    arduinoService.getCurrentMeasure.calls.reset();
+    tick(31000); // interval
+    expect(arduinoService.getCurrentMeasure).toHaveBeenCalled();
+
+    discardPeriodicTasks();
+  }));
+
+  it('should set inactivity to false if micro is inactive and measure comes in via handleMeasure(false)', fakeAsync(() => {
+    arduinoService.getCurrentMeasure.and.returnValue(Promise.resolve({ ip: '1.2.3.4', real_value: 22, date: new Date().toISOString() } as any));
+    fixture.detectChanges();
+    tick();
+
+    component.micro.isInactive = true;
+    component.handleMeasure({ ip: '1.2.3.4', real_value: 22, date: new Date().toISOString() } as any, false);
+
+    expect(component.micro.isInactive).toBeFalse();
+    discardPeriodicTasks();
+  }));
+
+  it('should notifyAlert on thresholdMin in handleMeasure', fakeAsync(() => {
+    arduinoService.getCurrentMeasure.and.returnValue(Promise.resolve({ ip: '1.2.3.4', real_value: 22, date: new Date().toISOString() } as any));
+    fixture.detectChanges();
+    tick();
+
+    component.handleMeasure({ ip: '1.2.3.4', real_value: 5, date: new Date().toISOString() } as any, false);
+
+    expect(notificationService.notifyAlert).toHaveBeenCalledWith('Temperatura', 5, '°C', 15, false);
+    discardPeriodicTasks();
+  }));
+
+  it('should return if micro or notificationService is not defined in checkThresholds', () => {
+    const tempMicro = component.micro;
+    component.micro = undefined;
+    expect(() => component.checkThresholds(25)).not.toThrow();
+
+    component.micro = tempMicro;
+    const tempNotification = (component as any).notificationService;
+    (component as any).notificationService = undefined;
+    expect(() => component.checkThresholds(25)).not.toThrow();
+
+    (component as any).notificationService = tempNotification;
+  });
+
+  it('should handle non-real_value in handleMeasure', () => {
+    // cover digital_value branch
+    const measure = { digital_value: 1 } as any;
+    spyOn(component, 'drawData');
+    component.handleMeasure(measure, false);
+    expect(component.drawData).toHaveBeenCalled();
+  });
 });

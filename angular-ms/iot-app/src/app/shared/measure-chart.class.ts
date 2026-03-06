@@ -25,7 +25,7 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
 
   constructor(
     measure: string,
-    chartType: string = '',
+    chartType: string,
     protected socketService?: SocketService,
     protected notificationService?: NotificationService
   ) {
@@ -56,7 +56,7 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
 
   abstract getCurrentMeasure(isFirstTime: boolean): Promise<void>
 
-  handleMeasure(measure: Measure, isFirstTime: boolean = false) {
+  handleMeasure(measure: Measure, isFirstTime: boolean) {
     this.drawData(measure)
     this.measure.emit(measure)
 

@@ -84,4 +84,35 @@ describe('AuthService', () => {
     expect(req.request.body).toEqual({ password: 'new_pass' });
     req.flush({ success: true });
   });
+
+  it('should handle login error', () => {
+    service.login('user', 'pass').subscribe(
+      () => { },
+      () => {
+        expect(service.isLoggedIn()).toBeFalse();
+        expect(localStorage.getItem('iot-ms-token')).toBeNull();
+      }
+    );
+
+    const req = httpMock.expectOne(`${environment.ORCHESTRATOR_MS}/login`);
+    req.flush('Error', { status: 401, statusText: 'Unauthorized' });
+  });
+
+  it('should handle refresh error', () => {
+    localStorage.setItem('iot-ms-refresh-token', 'bad_refresh');
+    service.refresh().subscribe(
+      () => { },
+      () => {
+        expect(localStorage.getItem('iot-ms-token')).toBeNull();
+      }
+    );
+
+    const req = httpMock.expectOne(`${environment.ORCHESTRATOR_MS}/refresh`);
+    req.flush('Error', { status: 401, statusText: 'Unauthorized' });
+  });
+
+  it('should return empty string if no token in getAccessUserFromToken', () => {
+    localStorage.removeItem('iot-ms-token');
+    expect(service.getAccessUserFromToken()).toBe('');
+  });
 });

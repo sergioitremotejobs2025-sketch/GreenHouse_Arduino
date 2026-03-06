@@ -90,4 +90,41 @@ describe('DashboardComponent', () => {
     component.changeActivity(updatedMicro);
     expect(component.microcontrollers[0].isInactive).toBe(true);
   });
+
+  it('should seed recent values with different measures', () => {
+    const mockMicros = [
+      { ip: '1.2.3.4', measure: 'light', sensor: 'LDR', username: 'u' },
+      { ip: '1.2.3.5', measure: 'temperature', sensor: 'DHT', username: 'u' },
+      { ip: '1.2.3.6', measure: 'humidity', sensor: 'DHT', username: 'u' }
+    ];
+    arduinoService.getMicrocontrollers.and.returnValue(of(mockMicros as any));
+    arduinoService.getPreviousMeasures.and.returnValue(of([{ real_value: 10 }] as any));
+
+    fixture.detectChanges();
+
+    expect(arduinoService.getPreviousMeasures).toHaveBeenCalledWith('1.2.3.4', 'light', 'lights', undefined, undefined, 20);
+    expect(component.getRecentValues(mockMicros[0] as any)).toEqual([10]);
+  });
+
+  it('should handle updateRecentValues and sliding window', () => {
+    const micro = { ip: 'i', measure: 'm' };
+    const key = 'i_m';
+
+    // Initial update
+    component.updateRecentValues(micro as any, { real_value: 5 });
+    expect(component.getRecentValues(micro as any)).toEqual([5]);
+
+    // Fill to > 20
+    for (let i = 0; i < 25; i++) {
+      component.updateRecentValues(micro as any, { real_value: i });
+    }
+    const values = component.getRecentValues(micro as any);
+    expect(values.length).toBe(20);
+    expect(values[19]).toBe(24);
+  });
+
+  it('should handle getRecentValues with missing key', () => {
+    const micro = { ip: 'missing', measure: 'none' };
+    expect(component.getRecentValues(micro as any)).toEqual([]);
+  });
 });

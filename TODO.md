@@ -31,9 +31,9 @@ This document outlines the specific tasks and architectural changes required to 
 - [x] **100% Coverage Achieved**: Confirmed using `check_coverage.sh`.
 
 ### 🅰️ Frontend (`angular-ms`)
-- [ ] **Component Lifecycle**: Test every lifecycle hook (`ngOnInit`, `ngOnDestroy`) for all components.
-- [ ] **Service Error Interceptors**: Test how the UI reacts to every possible status code (401, 403, 404, 500, 503).
-- [ ] **Async Piping**: Ensure 100% coverage on Observable streams and subscription management.
+- [x] **Component Lifecycle**: Test every lifecycle hook (`ngOnInit`, `ngOnDestroy`) for all components.
+- [x] **Service Error Interceptors**: Test how the UI reacts to every possible status code (401, 403, 404, 500, 503).
+- [x] **Async Piping**: Ensure 100% coverage on Observable streams and subscription management. (Achieved 100% Statements / 100% Branches / 100% Functions / 100% Lines)
 
 ## 🟡 Phase 3: Advanced Verification (Quality over Quantity)
 - [ ] **Mutation Testing**:

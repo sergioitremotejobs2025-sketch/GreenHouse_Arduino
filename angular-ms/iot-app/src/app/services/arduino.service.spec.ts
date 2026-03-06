@@ -134,4 +134,29 @@ describe('ArduinoService', () => {
     service.clearMicrocontrollers();
     expect(service.microcontrollers.length).toBe(0);
   });
+
+  it('should return cached microcontrollers if available', () => {
+    service.microcontrollers = [{ ip: '1.1.1.1', measure: 'humidity' } as any];
+    service.getMicrocontrollers().subscribe(micros => {
+      expect(micros.length).toBe(1);
+    });
+    httpMock.expectNone(`${environment.ORCHESTRATOR_MS}/microcontrollers`);
+  });
+
+  it('should handle limit parameter in getPreviousMeasures', () => {
+    service.getPreviousMeasures('1.2.3.4', 'temperature', 'day', null, null, 10).subscribe();
+    const req = httpMock.expectOne(request =>
+      request.url === `${environment.ORCHESTRATOR_MS}/temperature` &&
+      request.params.get('limit') === '10'
+    );
+    req.flush([]);
+  });
+
+  it('should return null if no measure fits in getCurrentMeasure', async () => {
+    const promise = service.getCurrentMeasure('1.2.3.4', 'humidity');
+    const req = httpMock.expectOne(`${environment.ORCHESTRATOR_MS}/humidity`);
+    req.flush([{ ip: '1.1.1.1', value: 20 }]);
+    const result = await promise;
+    expect(result).toBeNull();
+  });
 });

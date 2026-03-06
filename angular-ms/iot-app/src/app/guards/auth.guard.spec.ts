@@ -64,4 +64,17 @@ describe('AuthGuard', () => {
     expect(result).toBeFalse();
     expect(authServiceSpy.removeTokens).toHaveBeenCalled();
   });
+
+  it('should get and set last URL', () => {
+    const mockRouteWithUrl = {
+      url: [{ path: 'test' }, { path: 'path' }]
+    } as any as ActivatedRouteSnapshot;
+
+    guard.setLastUrl(mockRouteWithUrl);
+    expect(guard.getLastUrl()).toBe('/test/path');
+  });
+
+  it('should return default URL if lastUrl is not set', () => {
+    expect(guard.getLastUrl()).toBe('/');
+  });
 });

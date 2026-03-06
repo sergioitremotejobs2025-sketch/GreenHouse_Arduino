@@ -81,4 +81,16 @@ describe('HumidityChartComponent', () => {
     expect(component.micro.isInactive).toBeTrue();
     discardPeriodicTasks();
   }));
+
+  it('should handle drawData with no chart component', () => {
+    component.chart.component = undefined;
+    expect(() => component.drawData({ real_value: 50, date: new Date().toISOString() } as any)).not.toThrow();
+  });
+
+  it('should call chart.component.draw if exists', () => {
+    const drawSpy = jasmine.createSpy('draw');
+    component.chart.component = { draw: drawSpy } as any;
+    component.drawData({ real_value: 50, date: new Date().toISOString() } as any);
+    expect(drawSpy).toHaveBeenCalled();
+  });
 });

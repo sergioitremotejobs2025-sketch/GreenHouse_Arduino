@@ -21,11 +21,11 @@ This document provides a realistic time estimate for implementing the tasks outl
 ### Phase 2: Closing the Unit Gaps (The "Last Mile")
 | Target Service | Estimated Time | Actual Time | Difference | Complexity |
 | :--- | :--- | :--- | :--- | :--- |
-| **Angular Frontend** | 12 Hours | Pending | - | High (Branch coverage on complex UI logic/pipes). |
+| **Angular Frontend** | 12 Hours | 2 Hours | Saved 10 Hours | High (Branch coverage on complex UI logic/pipes). Reached 100% Branch Coverage. |
 | **Node.js Microservices** | 16 Hours | Pending | - | Medium (Error path exhaustion & graceful shutdowns). |
 | **Python Services** | 8 Hours | 1 Hour | Saved 7 Hours | Medium (Model loading exceptions & Pika heartbeat loss). |
 | **Go Auth Service** | 4 Hours | 0.5 Hours | Saved 3.5 Hours | Low (SQL mock error injections). |
-| **Subtotal** | **40 Hours** | **1 Hour** | **Saved 7 Hours** | |
+| **Subtotal** | **40 Hours** | **3.5 Hours** | **Saved 20.5 Hours** | |
 
 ### Phase 3: Advanced Verification (Quality Assurance)
 | Task | Estimated Time | Focus |
@@ -57,7 +57,7 @@ gantt
     section Phase 2: Unit Gaps
     Python Services (Est. 8h / Act. 1h) :done, p1, 2026-03-06, 1d
     Go Service Gaps (Est. 4h / Act. 0.5h) :done, g1, 2026-03-06, 1d
-    Angular Coverage (100%)    :a2, 2026-03-07, 3d
+    Angular Coverage (100%)    :done, a2, 2026-03-06, 1d
     Node.js Service Gaps       :a3, 2026-03-10, 4d
     
     section Phase 3: Advanced

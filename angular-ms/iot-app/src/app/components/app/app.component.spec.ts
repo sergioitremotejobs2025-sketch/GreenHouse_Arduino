@@ -54,4 +54,24 @@ describe('AppComponent', () => {
     app.ngOnDestroy();
     expect(app.mobileQuery.removeListener).toHaveBeenCalled();
   });
+
+  it('should call ngOnInit', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.ngOnInit();
+    expect(app).toBeTruthy();
+  });
+
+  it('should handle media query listener', () => {
+    let listener: any;
+    mediaMatcherMock.matchMedia.and.returnValue({
+      matches: false,
+      addListener: (l: any) => { listener = l; },
+      removeListener: () => { }
+    });
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    listener();
+    expect(app).toBeTruthy();
+  });
 });

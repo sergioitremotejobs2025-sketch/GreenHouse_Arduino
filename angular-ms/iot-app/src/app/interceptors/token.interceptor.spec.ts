@@ -3,7 +3,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
 import { AuthService } from '@services/auth.service';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subject } from 'rxjs';
+import { AuthResponse } from '@models/auth-response.model';
 
 describe('TokenInterceptor', () => {
   let httpMock: HttpTestingController;
@@ -99,10 +100,35 @@ describe('TokenInterceptor', () => {
   });
 
   it('should queue requests when refreshing', () => {
+    const refreshSubject = new Subject<AuthResponse>();
+    authServiceSpy.refresh.and.returnValue(refreshSubject);
     authServiceSpy.getAccessToken.and.returnValue('mock-token');
-    // We delay the refresh response to verify queuing behavior if needed
-    // However, handling queue logic natively with synchronous flush is tricky
-    // but the underlying switchMap and filter logic allows the test to pass if we just 
-    // setup normally.
+
+    httpClient.get('/api/request1').subscribe();
+    httpClient.get('/api/request2').subscribe();
+
+    const req1 = httpMock.expectOne('/api/request1');
+    const req2 = httpMock.expectOne('/api/request2');
+
+    // Both fail with 401
+    req1.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+    req2.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+
+    // Refresh called once
+    expect(authServiceSpy.refresh).toHaveBeenCalledTimes(1);
+
+    // Emit new token
+    refreshSubject.next({ accessToken: 'new-token' } as any);
+    refreshSubject.complete();
+
+    // Now both requests should be retried with new token
+    const retry1 = httpMock.expectOne('/api/request1');
+    const retry2 = httpMock.expectOne('/api/request2');
+
+    expect(retry1.request.headers.get('Authorization')).toBe('Bearer new-token');
+    expect(retry2.request.headers.get('Authorization')).toBe('Bearer new-token');
+
+    retry1.flush({});
+    retry2.flush({});
   });
 });

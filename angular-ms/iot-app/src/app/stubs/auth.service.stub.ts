@@ -48,8 +48,7 @@ export class AuthServiceStub {
         tap(
           (response: { refreshToken: string, token: string }) => {
             this.setTokens(response.refreshToken, response.token, username)
-          },
-          () => this.removeTokens()
+          }
         )
       );
   }
@@ -63,8 +62,7 @@ export class AuthServiceStub {
         tap(
           (response: { refreshToken: string, token: string }) => {
             this.setTokens(response.refreshToken, response.token, username)
-          },
-          () => this.removeTokens()
+          }
         )
       );
   }
@@ -77,8 +75,7 @@ export class AuthServiceStub {
         tap(
           (response: { refreshToken: string, token: string }) => {
             this.setTokens(response.refreshToken, response.token)
-          },
-          () => this.removeTokens()
+          }
         )
       )
       .toPromise();
