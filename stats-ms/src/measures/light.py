@@ -1,6 +1,6 @@
 from statistics import fmean
-from src.measures.measure import Measure
-from src.models import MeasureData, LightStats
+from measures.measure import Measure
+from models import MeasureData, LightStats
 
 class Light(Measure):
     def __init__(self, queue_collection, max_items):

@@ -1,9 +1,9 @@
 import json
 import unittest
 
-from src.measures.humidity import Humidity
-from src.measures.light import Light
-from src.measures.temperature import Temperature
+from measures.humidity import Humidity
+from measures.light import Light
+from measures.temperature import Temperature
 
 class TestStatsMS(unittest.TestCase):
     def test_humidity(self):

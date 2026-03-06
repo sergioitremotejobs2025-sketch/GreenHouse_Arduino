@@ -36,9 +36,11 @@ This document outlines the specific tasks and architectural changes required to 
 - [x] **Async Piping**: Ensure 100% coverage on Observable streams and subscription management. (Achieved 100% Statements / 100% Branches / 100% Functions / 100% Lines)
 
 ## 🟡 Phase 3: Advanced Verification (Quality over Quantity)
-- [ ] **Mutation Testing**:
-    - [ ] Run **StrykerJS** on all Node/Angular services to ensure tests fail when logic is mutated.
-    - [ ] Run **Mutmut** on Python services.
+- [x] **Mutation Testing**:
+    - [x] Run **StrykerJS** on all Node/Angular services to ensure tests fail when logic is mutated. (Done for orchestrator-ms, measure-ms, microcontrollers-ms)
+    - [x] Run **Mutmut** on Python services (ai-ms, stats-ms).
+    - [ ] Run **Go-mutesting** on auth-ms. (Paused: tool panics with Go 1.25)
+
 - [ ] **Contract Testing (Pact)**:
     - [ ] Implement Consumer-Driven Contract (CDC) tests to ensure microservices stay in sync across updates.
 - [ ] **Fuzz Testing**:

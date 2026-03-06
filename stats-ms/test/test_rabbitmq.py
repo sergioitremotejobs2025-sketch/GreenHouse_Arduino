@@ -2,12 +2,12 @@ import pytest
 from unittest.mock import patch, MagicMock
 import pika
 
-from src.amqp.rabbitmq import get_channel
+from amqp.rabbitmq import get_channel
 
-@patch('src.amqp.rabbitmq.pika.BlockingConnection')
+@patch('amqp.rabbitmq.pika.BlockingConnection')
 def test_get_channel_success(mock_blocking_connection):
     # Reset global channel
-    import src.amqp.rabbitmq as rmq
+    import amqp.rabbitmq as rmq
     rmq.channel = None
 
     mock_connection = MagicMock()
@@ -20,10 +20,10 @@ def test_get_channel_success(mock_blocking_connection):
     assert channel is not None
     assert mock_blocking_connection.call_count == 1
 
-@patch('src.amqp.rabbitmq.pika.BlockingConnection')
+@patch('amqp.rabbitmq.pika.BlockingConnection')
 def test_get_channel_retries_and_fails(mock_blocking_connection):
     # Reset global channel
-    import src.amqp.rabbitmq as rmq
+    import amqp.rabbitmq as rmq
     rmq.channel = None
 
     mock_blocking_connection.side_effect = Exception("Connection failed")

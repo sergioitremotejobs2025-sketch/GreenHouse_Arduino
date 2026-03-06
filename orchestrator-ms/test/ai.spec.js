@@ -35,7 +35,24 @@ describe('AI Orchestration endpoints', () => {
             expect(res.body).toEqual(mockResult.data)
             expect(axios.post).toHaveBeenCalledWith(
                 expect.stringContaining('/train'),
-                expect.objectContaining({ username, ip: '192.168.1.10', measure: 'temperature' }),
+                expect.objectContaining({ username, ip: '192.168.1.10', measure: 'temperature', limit: 1000 }),
+                expect.any(Object)
+            )
+        })
+
+        it('should delegate training request with custom limit to AI-MS', async () => {
+            const mockResult = { data: 'Training started' }
+            jest.spyOn(axios, 'post').mockResolvedValue(mockResult)
+
+            const res = await request(app)
+                .post('/ai/train')
+                .set('Authorization', `Bearer ${accessToken}`)
+                .send({ ip: '192.168.1.10', measure: 'temperature', limit: 5000 })
+
+            expect(res.statusCode).toEqual(200)
+            expect(axios.post).toHaveBeenCalledWith(
+                expect.stringContaining('/train'),
+                expect.objectContaining({ username, ip: '192.168.1.10', measure: 'temperature', limit: 5000 }),
                 expect.any(Object)
             )
         })

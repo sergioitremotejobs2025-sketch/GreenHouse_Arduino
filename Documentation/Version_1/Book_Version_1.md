@@ -677,6 +677,20 @@ The GitHub Actions pipeline has been upgraded from "Monitoring" to "Enforcement"
 2.  **No-Merge Policy**: The main branch is protected; coverage must be proven via CI artifacts before a merge is authorized.
 3.  **Local Git Hooks**: Developers utilize **Husky** and **lint-staged** to run tests locally before the commit is even allowed to leave the workstation.
 
+### 13.4 Mutation Testing: Guarding against the "Survived Mutant"
+Coverage metrics (100%) prove that every line was executed, but they do not prove that the tests are actually *checking* the logic. To solve this, we implemented **Mutation Testing**.
+
+#### 13.4.1 StrykerJS for Node.js
+We utilize **StrykerJS** for our core Javascript services (`orchestrator-ms`, `measure-ms`, `microcontrollers-ms`). Stryker modifies the source code (mutates it)—for example, changing a `>` to a `<` or a `true` to a `false`. 
+*   **The Goal**: If a mutant is introduced, at least one test must fail (killing the mutant).
+*   **The Result**: If all tests pass despite a code change, we have a "Survived Mutant," indicating a gap in our assertions.
+
+#### 13.4.2 Mutmut for Python
+For the analytical services (`stats-ms`, `ai-ms`), we utilize **Mutmut**. This tool specifically targets Python logic, ensuring that our analytical computations (like moving averages or LSTM data preparation) are rigorously verified beyond simple line coverage.
+
+#### 13.4.3 The Mutation Score Mandate
+Similar to line coverage, we track the **Mutation Score**. A high mutation score signifies that our test suite is not only comprehensive but also highly sensitive to logic regressions.
+
 ---
 
 <a id="chapter-14"></a>
@@ -730,6 +744,16 @@ The `fake-arduino-iot` services simulate real-world physics.
 **Incident**: Predict requests crashed with "ValueError: Input 0 of layer 'lstm' is incompatible."
 **Discovery**: The model was trained with a `look_back` of 10, but the prediction request sent the full 20-point historical window.
 **Resolution**: Implemented automatic window slicing in the `DataProcessor.transform_input` method, ensuring the LSTM only receives the most recent N points required by its architecture.
+
+#### 15.1.8 The Hidden Manifest Trap
+**Incident**: After running the automation script to recreate the entire GCP environment, database pods (`mongo-0`, `mysql-0`) remained in a perpetual `Pending` state.
+**Discovery**: The `recreate_all_gcp.sh` script used `kubectl apply -f manifests-k8s/config/`, which ignored the `pvc-k8s/` subdirectory where the PersistentVolumeClaims were defined. Without PVCs, the GKE scheduler could not bind storage to the database pods.
+**Resolution**: Modified the deployment script to use the recursive flag (`kubectl apply -R -f manifests-k8s/config/`), ensuring every layer of configuration is applied regardless of folder depth.
+
+#### 15.1.9 The MySQL Init Constraint
+**Incident**: Although the `mysql-0` pod reached a `Running` state, it failed its readiness probe indefinitely, reporting `connection refused`.
+**Discovery**: The container logs revealed an error during the initial database setup: `Column count doesn't match value count at row 1` in `initdb.sql`. The `INSERT` statement for the `microcontrollers` table was missing values for newer columns (`thresholdMin`, `thresholdMax`), causing the initialization to crash and restart the server process repeatedly.
+**Resolution**: Updated `mysql-iot/initdb.sql` to use explicit column-specific `INSERT` statements, ensuring robustness against future schema additions.
 
 ---
 
@@ -951,7 +975,90 @@ gantt
 
 <a id="Appendix 1"></a>
 ## 🗺️ Appendix 1: Technical Concepts and Design Decisions
+### Mutation Testing
+**Mutmut** (often written as "mutmut") is **not** a specific feature, model, or component built directly into **TensorFlow** or artificial intelligence/machine learning frameworks. It's a standalone **Python tool** for **mutation testing** (also called mutation analysis).
 
+In simple English:
+
+- **What is mutation testing?**  
+  It's an advanced way to check how good your **unit tests** really are. The tool automatically makes small, deliberate "bugs" (called **mutants**) in your code — for example:  
+  - Change `+` to `-`  
+  - Change `==` to `!=`  
+  - Flip `True` to `False`  
+  - Add/subtract 1 from a number  
+  - Change a string slightly, etc.
+
+- Then it runs your existing tests (like pytest or unittest).  
+  - If a test **fails** because of the mutant → good! Your test caught the bug ("killed" the mutant).  
+  - If the test **still passes** → bad! The mutant "survived" → your test didn't detect that change, meaning your tests might be weak or missing coverage for real bugs.
+
+- **Mutmut** is one of the most popular and easy-to-use mutation testing tools for Python.  
+  GitHub: https://github.com/boxed/mutmut  
+  Docs: https://mutmut.readthedocs.io/
+
+### Connection to TensorFlow / AI / Machine Learning?
+There is **no direct "mutmut" thing in TensorFlow**. TensorFlow itself is a library for building and training neural networks (with operations that "mutate" tensors/state, but that's unrelated word usage).
+
+However, people **do use mutmut** in ML/AI projects because:
+- ML code is often Python-heavy (data loading, preprocessing, custom layers, loss functions, metrics, training loops, evaluation scripts).
+- Small bugs in these parts (e.g., wrong normalization, flipped condition in augmentation, off-by-one in data splitting) can ruin model performance.
+- Mutation testing helps ensure your unit tests for ML pipelines are strong, especially in research code or production ML systems where reliability matters.
+- Some research papers and teams apply mutation testing (sometimes with mutmut or similar tools) to evaluate test quality for deep learning frameworks or models.
+
+### Quick example of using mutmut
+```bash
+pip install mutmut
+mutmut run  # runs mutation testing on your project (assumes pytest)
+mutmut results  # shows survived/killed mutants
+mutmut html     # generates a nice HTML report
+```
+
+In short:  
+Mutmut = Python mutation testing tool → measures real strength of your tests.  
+Useful for any Python project, including TensorFlow/Keras/PyTorch ML code, but **not** a TensorFlow-specific feature or AI model.
+
+If this still isn't what you meant (maybe a typo for something else like "mu" in stats, or a different term?), feel free to give more context! 😊
+
+**Mutation testing** is a powerful technique in software testing that goes beyond traditional metrics like code coverage. It evaluates the **true effectiveness** of your unit tests by introducing small, artificial faults (mutants) into the code and checking whether your tests detect ("kill") them.
+
+Here are the main **benefits** of using mutation testing, based on established practices and real-world usage in 2026:
+
+1. **Reveals weaknesses in your test suite that code coverage misses**  
+   High code coverage (e.g., 90%+) can give false confidence. You might execute all lines/branches, but your tests could still miss subtle bugs. Mutation testing shows where tests fail to catch real logic errors — even tiny changes like flipping a condition or operator go undetected.
+
+2. **Improves test quality and robustness**  
+   By forcing developers to write tests that kill more mutants, the test suite becomes stronger and more reliable. Studies (e.g., ICSE 2021 research) show that teams using mutation testing over time write significantly better tests, with fewer surviving mutants in new changes.
+
+3. **Better fault detection and higher confidence in catching real bugs**  
+   Mutants are designed to mimic realistic programming mistakes. If your tests kill most mutants, they are more likely to catch actual faults. Real-world reports mention mutants preventing production outages or saving debugging hours by exposing uncovered logic.
+
+4. **Encourages better code design and maintainability**  
+   Developers often refactor code to make it more testable just to kill stubborn mutants. This leads to cleaner, less complex code with fewer hidden issues, reduced technical debt, and easier future changes.
+
+5. **Makes code coverage more meaningful**  
+   Mutation score (percentage of killed mutants) is a stronger quality indicator than plain line/branch coverage. Tools combine both for a realistic view of test health.
+
+6. **Early bug detection and cost savings**  
+   Issues are found during development rather than in production or late-stage testing. This reduces expensive fixes, rework, and downtime — teams report faster, more reliable deliveries.
+
+7. **Developer learning and skill improvement**  
+   Reviewing surviving mutants teaches developers how to write more effective assertions, edge cases, and boundary tests. It turns testing into a learning process.
+
+8. **Particularly valuable in critical or complex domains**  
+   In areas like machine learning pipelines, financial systems, safety-critical software, or large codebases, even small logic errors can have big impacts — mutation testing helps ensure tests are trustworthy.
+
+### Quick Comparison Table
+
+| Aspect                  | Traditional Code Coverage                  | Mutation Testing                              |
+|-------------------------|--------------------------------------------|-----------------------------------------------|
+| Measures                | Lines/branches executed                    | Ability to detect injected faults             |
+| False confidence risk   | High (tests can pass without real checks)  | Low (surviving mutants highlight weaknesses)  |
+| Actionable feedback     | Limited                                    | Very high (specific places to improve tests)  |
+| Impact on test quality  | Moderate                                   | Strong (proven to lead to better tests over time) |
+
+In practice (e.g., with tools like **mutmut**, **PIT**, **Stryker**, or **MuJava**), teams integrate it into CI/CD to gate merges or track mutation score trends. While it can be computationally expensive for very large projects, selective/parallel runs and modern optimizations make it feasible.
+
+Overall, mutation testing is one of the best ways to move from "tests pass" to "I'm confident these tests actually protect the code." Many experienced teams consider it essential for high-quality, maintainable software — especially when reliability really matters.
 ### measure-ms implements Proactive Polling
 The phrase **"measure-ms implements Proactive Polling"** describes a feature in a system (likely an IoT platform, edge gateway, or monitoring service) where latency or response time measurements—expressed in **milliseconds (ms)**—are performed using a **proactive polling** mechanism rather than purely reactive/event-driven approaches.
 

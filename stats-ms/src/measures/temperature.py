@@ -1,6 +1,6 @@
 from statistics import fmean, stdev
-from src.measures.measure import Measure
-from src.models import MeasureData, NumericStats
+from measures.measure import Measure
+from models import MeasureData, NumericStats
 
 class Temperature(Measure):
     def __init__(self, queue_collection, max_items):

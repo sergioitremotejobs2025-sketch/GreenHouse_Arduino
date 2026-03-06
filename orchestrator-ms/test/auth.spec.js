@@ -23,6 +23,9 @@ describe('Auth endpoints', () => {
     )
     accessToken = res.body.accessToken
     refreshToken = res.body.refreshToken
+
+    const decoded = jwt.decode(accessToken)
+    expect(decoded.username).toBe(username)
   })
 
   it('Bad login', async () => {
@@ -98,6 +101,9 @@ describe('Refresh token endpoint', () => {
     )
     expect(res.body.refreshToken).not.toEqual(refreshToken)
     expect(res.body.accessToken).not.toEqual(accessToken)
+
+    const decoded = jwt.decode(res.body.accessToken)
+    expect(decoded.username).toBe(username)
   }, 60000)
 
   it('should not change refresh token and access token', async () => {

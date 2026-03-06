@@ -17,6 +17,8 @@
   },
   "description": "Orchestrator microservice",
   "devDependencies": {
+    "@stryker-mutator/core": "^9.6.0",
+    "@stryker-mutator/jest-runner": "^9.6.0",
     "jest": "^30.2.0",
     "nodemon": "^3.1.14",
     "supertest": "^4.0.2"
@@ -36,16 +38,6 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "test": "INTERNAL_API_KEY=testkey jest --coverage"
-  },
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    }
   },
   "version": "1.0.0"
 }

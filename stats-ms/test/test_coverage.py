@@ -1,13 +1,13 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from src.database.dao import Dao
-from src.amqp.rabbitmq import get_channel
-from src.amqp.queue import Queue
-from src.__main__ import app, main
+from database.dao import Dao
+from amqp.rabbitmq import get_channel
+from amqp.queue import Queue
+from main import app, main
 import json
 
 # Test Dao
-@patch('src.database.dao.MongoClient')
+@patch('database.dao.MongoClient')
 def test_dao(mock_client):
     mock_db = MagicMock()
     mock_collection = MagicMock()
@@ -30,9 +30,9 @@ def test_dao(mock_client):
     mock_collection.update_one.assert_called_with(query, {'$set': update})
 
 # Test RabbitMQ/Queue
-@patch('src.amqp.rabbitmq.pika.BlockingConnection')
+@patch('amqp.rabbitmq.pika.BlockingConnection')
 def test_rabbitmq_get_channel(mock_conn):
-    import src.amqp.rabbitmq as rabbitmq
+    import amqp.rabbitmq as rabbitmq
     rabbitmq.channel = None # Reset global channel
     
     mock_channel = MagicMock()
@@ -47,7 +47,7 @@ def test_rabbitmq_get_channel(mock_conn):
     assert ch2 == mock_channel
     assert mock_conn.call_count == 1
 
-@patch('src.amqp.queue.get_channel')
+@patch('amqp.queue.get_channel')
 def test_queue_processing(mock_get_channel):
     mock_channel = MagicMock()
     mock_get_channel.return_value = mock_channel
@@ -108,8 +108,8 @@ def test_metrics(client):
     assert 'python_info' in res.data.decode()
 
 # Test __main__.main
-@patch('src.__main__.Thread')
-@patch('src.__main__.Queue')
+@patch('main.Thread')
+@patch('main.Queue')
 def test_main_startup(mock_q, mock_t):
     # Call main
     main()
@@ -117,7 +117,7 @@ def test_main_startup(mock_q, mock_t):
     assert mock_t.call_count == 4
     # Check that Queue was passed as target in some thread calls
     queue_targets = [call.kwargs.get('target') for call in mock_t.call_args_list if call.kwargs.get('target') == mock_q]
-    # Since we patched src.__main__.Queue, and main() uses Thread(target=Queue, ...), it should work.
+    # Since we patched __main__.Queue, and main() uses Thread(target=Queue, ...), it should work.
     # Wait, the 4 calls are:
     # 1. Thread(target=run_metrics)
     # 2. Thread(target=Queue, args=(controller, )) x 3

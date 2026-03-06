@@ -24,7 +24,7 @@ INSERT INTO iot.users VALUES (
   ''
 );
 
-INSERT INTO iot.microcontrollers VALUES (
+INSERT INTO iot.microcontrollers (username, ip, measure, sensor) VALUES (
   'Rocky',
   '192.168.1.50',
   'temperature',

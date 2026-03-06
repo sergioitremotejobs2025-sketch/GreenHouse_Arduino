@@ -1,9 +1,9 @@
 import json
 import pytest
-from src.measures.humidity import Humidity
-from src.measures.light import Light
-from src.measures.temperature import Temperature
-from src.amqp.queue import Queue
+from measures.humidity import Humidity
+from measures.light import Light
+from measures.temperature import Temperature
+from amqp.queue import Queue
 from unittest.mock import MagicMock, patch
 
 def load_test_data(filename):
@@ -53,7 +53,7 @@ def test_temperature():
     assert stats['mean_value'] == 23.9
     assert stats['std_deviation'] == 2.1
 
-@patch('src.amqp.queue.get_channel')
+@patch('amqp.queue.get_channel')
 def test_queue_exception_handling(mock_get_channel):
     mock_channel = MagicMock()
     mock_get_channel.return_value = mock_channel

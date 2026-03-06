@@ -1,6 +1,6 @@
 import json
 
-from src.amqp.rabbitmq import get_channel
+from amqp.rabbitmq import get_channel
 
 class Queue():
     def __init__(self, controller):

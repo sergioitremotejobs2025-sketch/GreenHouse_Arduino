@@ -1,5 +1,6 @@
 const request = require('supertest')
 const app = require('../src/app/app')
+const axios = require('axios')
 
 let accessToken
 let refreshToken
@@ -126,10 +127,9 @@ describe('Microcontrollers endpoints from UI', () => {
   it('should delete a microcontroller', async () => {
     const res = await request(app)
       .delete('/microcontrollers')
-      .send({
+      .query({
         ip: '192.168.1.50',
         measure: 'temperature',
-        sensor: 'Grove - Temperature',
         username: 'Rocky'
       })
       .set('Authorization', `Bearer ${accessToken}`)
