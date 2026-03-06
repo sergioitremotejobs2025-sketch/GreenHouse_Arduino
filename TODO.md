@@ -3,8 +3,9 @@
 This document outlines the specific tasks and architectural changes required to achieve and maintain **100% Test-Driven Development (TDD) coverage** across the entire IoT Microservices platform.
 
 ## 🔴 Phase 1: Strict Enforcement (Immediate)
-- [ ] **Global Threshold Calibration**: 
-    - [ ] Update `package.json` in all Node.js services to set `coverageThreshold` to 100% for lines, branches, functions, and statements.
+- [x] **Global Threshold Calibration**: 
+    - [x] Update `package.json` in all Node.js services to set `coverageThreshold` to 100% for lines, branches, functions, and statements.
+    - [x] Review and ensure the `coverageThreshold` settings are properly implemented in all Node.js services.
     - [x] Add `pytest --cov-fail-under=100` to Python services (`ai-ms`, `stats-ms`).
     - [x] Integrate `go test -cover -failfast` with a script to check for 100% output in `auth-ms`.
 - [x] **CI/CD Hard Block**: 
