@@ -688,8 +688,22 @@ We utilize **StrykerJS** for our core Javascript services (`orchestrator-ms`, `m
 #### 13.4.2 Mutmut for Python
 For the analytical services (`stats-ms`, `ai-ms`), we utilize **Mutmut**. This tool specifically targets Python logic, ensuring that our analytical computations (like moving averages or LSTM data preparation) are rigorously verified beyond simple line coverage.
 
-#### 13.4.3 The Mutation Score Mandate
+#### 13.4.3 Gremlins for Go
+For the `auth-ms` written in Go, we transitioned to **gremlins**. (The legacy `go-mutesting` tool panicked on newer Go 1.25 ASTs). Gremlins identified subtle boundary condition vulnerabilities (e.g., `> 8` vs `>= 8` password lengths), enabling us to add explicit boundary tests and achieve a perfect 100% mutator kill rate.
+
+#### 13.4.4 The Mutation Score Mandate
 Similar to line coverage, we track the **Mutation Score**. A high mutation score signifies that our test suite is not only comprehensive but also highly sensitive to logic regressions.
+
+### 13.5 Contract Testing (Consumer-Driven Contracts)
+To ensure reliable communication between the internal services, we implemented **CDC Testing** using **Pact.js**.
+*   **Orchestrator-MS (Consumer)** uses Pact to dictate the exact HTTP payloads and headers it expects from providers like `auth-ms`, `measure-ms`, `microcontrollers-ms`, and `ai-ms`.
+*   Providers independently verify their code against these generated JSON contracts to mathematically guarantee they do not release breaking API changes.
+*   *Note on Stats-MS*: As `stats-ms` processes data entirely asynchronously via AMQP (RabbitMQ) rather than synchronous REST APIs, it relies on RabbitMQ message schema validation rather than RESTful Pact verification.
+
+### 13.6 Gateway Fuzz Testing
+To prove resilience against malicious actors, the **Orchestrator-MS Gateway** is hardened through **Fuzz Testing** using `fast-check`. 
+*   The system uses property-based generation to bombard external endpoints (`/login`, `/temperature`) with completely chaotic, randomized, and malformed payloads (huge strings, erratic Unicode, corrupted arrays).
+*   This proves that the Node.js event loop will gracefully catch, sanitize, and reject garbage data with 400-level codes without crashing or exposing 500 Internal Server Errors.
 
 ---
 
