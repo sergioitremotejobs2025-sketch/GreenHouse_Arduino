@@ -28,3 +28,13 @@ arduino-iot/main/*.h
 /***/.vscode/
 /**/.DS_Store
 auth-ms/src/.vscode/settings.json
+
+# Coverage and Reports
+**/coverage/
+**/reports/
+**/mutants/
+**/.stryker-tmp/
+**/.mutmut-cache/
+**/.pytest_cache/
+**/*.log
+
