@@ -10,8 +10,8 @@ gantt
     dateFormat  YYYY-MM-DD
     axisFormat  %b '%y
     section Phase 1.5: Pipeline Health
-    Workflow Stabilization          :active, p15_1, 2026-03-08, 3d
-    Badge Monitoring                :p15_2, after p15_1, 1d
+    Workflow Stabilization          :done, p15_1, 2026-03-07, 2d
+    Badge Monitoring                :done, p15_2, 2026-03-08, 1d
 
     section Phase 2: Observability & Security
     CI/CD Performance Regressions   :active, p2_1, 2026-03-08, 14d
@@ -32,13 +32,13 @@ gantt
 ---
 
 ## 📅 Detailed Task Breakdown & Estimates
-### 🔵 Phase 1.5: GitHub Actions Pipeline Health (Est: 4 Days)
+### 🔵 Phase 1.5: GitHub Actions Pipeline Health (Completed)
 Focus on resolving pending errors and stabilizing the existing CI/CD pipelines before advancing further.
 
-| Task | Estimated Effort | Complexity | Description |
+| Task | Effort | Status | Description |
 | :--- | :--- | :--- | :--- |
-| **Workflow Stabilization** | **3 Days** | Low | Review and execute all `.github/workflows/*.yml` pipelines. Resolve broken dependencies, outdated container images, or missing SECRETS. |
-| **Badge Monitoring** | **1 Day** | Low | Ensure that the "Build" indicator badge on the README correctly reflects a reliable 100% pass rate in the cloud runner. |
+| **Workflow Stabilization** | **2 Days** | ✅ Done | Resolved PR #1 failures, flattened `auth-ms`, and consolidated CI into a unified matrix workflow. |
+| **Badge Monitoring** | **1 Day** | ✅ Done | Verified dynamic README badge correctly tracks CI status across all services. |
 
 ### 🟡 Phase 2: Closing the Unit Gaps & Observability (Est: 7 Weeks)
 Focus on internal security hardening and expanding the SRE platform capabilities.
