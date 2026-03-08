@@ -6,8 +6,10 @@ arduino-iot/main/*.h
 /***/node_modules/
 
 /***/__pycache__/
-
-/**/*.pyc
+/***/.sh
+!auth-ms/check_coverage.sh
+!Scripts/*.sh
+!*.sh
 
 /**/HELP.md
 /***/target/
