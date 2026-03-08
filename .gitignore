@@ -7,7 +7,6 @@ arduino-iot/main/*.h
 
 /***/__pycache__/
 
-/**/*.sh
 /**/*.pyc
 
 /**/HELP.md
