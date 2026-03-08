@@ -85,7 +85,7 @@ func TestProvider(t *testing.T) {
 	// Verify the Pact
 	err = verifier.VerifyProvider(t, provider.VerifyRequest{
 		ProviderBaseURL: fmt.Sprintf("http://localhost:%d", port),
-		PactFiles:       []string{"../../orchestrator-ms/pacts/OrchestratorMS-AuthMS.json"},
+		PactFiles:       []string{"../orchestrator-ms/pacts/OrchestratorMS-AuthMS.json"},
 		StateHandlers:   stateHandlers,
 		Provider:        "AuthMS",
 	})
