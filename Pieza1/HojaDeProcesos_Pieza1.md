@@ -11,8 +11,8 @@
       <b style="font-size: 1.1em;">PRACTICA Nº:</b><br><span style="font-size: 1.2em;">01</span>
     </td>
     <td rowspan="2" style="border: 2px solid black; padding: 10px; vertical-align: top; background-color: #ffffff;">
-      <b style="font-size: 1.1em;">CROQUIS DE LA PIEZA:</b><br><br>
-      <img src="images/plano_acotado_gigante.png" width="95%" style="display: block; margin: 0 auto; max-width: 450px;">
+      <b style="font-size: 1.2em;">CROQUIS DE LA PIEZA:</b><br>
+      <img src="images/plano_acotado_gigante.png" width="100%" style="display: block; margin: 5px auto; max-width: 650px;" class="header-blueprint">
     </td>
   </tr>
   <tr>
