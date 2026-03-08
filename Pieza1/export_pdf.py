@@ -29,7 +29,7 @@ def export_to_pdf():
                 font-family: 'Arial', sans-serif;
                 margin: 0;
                 padding: 0;
-                font-size: 9.2px;
+                font-size: 10px;
                 color: #000;
             }}
             table {{
