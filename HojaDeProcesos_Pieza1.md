@@ -25,7 +25,7 @@ Esta operación es esencial cuando se usa contrapunto para piezas largas o para 
 Sujeción: Plato de 3 garras + contrapunto (usar luneta si necesario).  
 Longitud útil aprox. 100–110 mm desde el plato.
 
-| Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | Velocidad (rpm) aprox. | Avance (mm/rev) | Profundidad corte (mm) | Notas / Medidas clave                                      |
+| Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | N (rpm) aprox. | Avance (mm/rev) | Profundidad corte (mm) | Notas / Medidas clave                                      |
 |--------|------------------------------------|------------------------------------|------------|------------------------|------------------|--------------------------|------------------------------------------------------------|
 | 1.0    | Colocar tocho y alinear            | —                                  | —          | —                      | —                | —                        | Asegurar concentricidad inicial                            |
 | 1.1    | Refrentar cara frontal             | Plaquette torneado derecha         | 120–160    | 800–1000              | 0.15–0.25       | 0.5–1                   | Dejar longitud total ≈  +2 mm sobrematerial                 |
@@ -42,7 +42,7 @@ Longitud útil aprox. 100–110 mm desde el plato.
 **Cambio de sujeción – Atada 2**  
 Dar vuelta la pieza, sujetar por Ø40 mm (usar mordazas blandas o protector). Usar contrapunto en el centro punteado del lado opuesto.
 
-| Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | Velocidad (rpm) aprox. | Avance (mm/rev) | Profundidad corte (mm) | Notas / Medidas clave                                      |
+| Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | N (rpm) aprox. | Avance (mm/rev) | Profundidad corte (mm) | Notas / Medidas clave                                      |
 |--------|------------------------------------|------------------------------------|------------|------------------------|------------------|--------------------------|------------------------------------------------------------|
 | 2.0    | Colocar contrapunto en el punto existente | Contrapunto                   | —          | —                      | —                | —                        | Verificar alineación y presión                             |
 | 2.1    | Refrentar cara final               | Plaquette torneado                 | 100–125    | 800–1000              | 0.15–0.25       | 0.5–1                   | Longitud total final 80 mm (o según plano)                 |
