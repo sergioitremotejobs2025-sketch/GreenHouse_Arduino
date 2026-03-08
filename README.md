@@ -88,6 +88,15 @@ We'd love to have you! If you're interested in contributing, feel free to **drop
 
 ---
 
+## 👥 Top Contributors
+
+| Contributor | Role | Contribution |
+| :--- | :--- | :--- |
+| **[Sergio Abad](https://github.com/sergioitremotejobs2025)** | **Lead Architect** | Visionary, Core developer, and Infrastructure lead. |
+| **[Antigravity (AI)](https://github.com/features/copilot)** | **AI Architect** | Pair-programming, TDD enforcement, and Documentation specialist. |
+
+---
+
 ## 👨‍💻 About Me
 
 Hi! I'm Sergio, a Software Engineer passionate about Cloud computing, Microservices, and IoT architectures. I love building scalable backend systems and exploring new technologies.
