@@ -73,6 +73,20 @@ This project is built with a **Test-Driven Development (TDD)** first approach an
 - [Architecture Details](Documentation/Version_1/Book_Version_1.md)
 - [GCP Infrastructure Costs](COSTS05032026.md)
 
+## 🤝 Contributing & Open Source
+
+This project is **100% Open Source** and under active development. We are always looking for passionate developers to join our mission of building the next generation of resilient IoT ecosystems.
+
+Whether you're interested in:
+- **Cloud Infrastructure** (GKE, Terraform)
+- **Edge Computing** (WebAssembly, Rust)
+- **Frontend** (Angular 25+)
+- **Security** (mTLS, Zero-Trust Architecture)
+
+We'd love to have you! If you're interested in contributing, feel free to **drop me an email** at [sergioitremotejobs2025@gmail.com](mailto:sergioitremotejobs2025@gmail.com). Let's build something amazing together!
+
+---
+
 ## 👨‍💻 About Me
 
 Hi! I'm Sergio, a Software Engineer passionate about Cloud computing, Microservices, and IoT architectures. I love building scalable backend systems and exploring new technologies.
