@@ -9,12 +9,12 @@
       <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 120px; width: auto; max-width: 98%;" class="header-blueprint">
     </td>
     <td width="1%" style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.7em;">
-      <b>P:</b> 01
+      <b>Practica:</b> 01
     </td>
   </tr>
   <tr>
     <td style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.7em;">
-      <b>H:</b> 1/2
+      <b>Hoja:</b> 1/2
     </td>
   </tr>
   <tr>
@@ -58,6 +58,51 @@
 | 1.8    | Cilindrar Ø22 (acabado)            | Plaquette acabado                  | 120–160    | 1100–1400| 0.12–0.20 | 0.3    | ![Ø22](images/4_cil_22.png) |
 | 1.9    | Chaflanes / redondeos              | Plaquette o herramienta chaflán 45°| 100–140    | 800–1000| manual    | —      | ![Chamfer](images/9_chaflan_A.png) |
 | 1.10   | Colocar contrapunto (si no estaba) | Contrapunto fijo o giratorio       | —          | —       | —         | —      | ![Contrapunto](images/11_contrapunto_A.png) |
+
+<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 0.85em; page-break-before: always;">
+  <tr>
+    <td rowspan="2" align="center" width="20%" style="border: 2px solid black; padding: 4px; background-color: #f9f9f9;">
+      <b style="font-size: 0.9em; display: block;">HOJA DE PROCESO</b>
+      <span style="font-size: 0.65em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
+    </td>
+    <td rowspan="2" align="center" width="85%" style="border: 2px solid black; padding: 3px; vertical-align: top; background-color: #ffffff;">
+      <b style="font-size: 0.85em; display: block; margin-bottom: 2px; border-bottom: 1px solid #eee; padding-bottom: 1px;">CROQUIS DE LA PIEZA:</b>
+      <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 120px; width: auto; max-width: 98%;" class="header-blueprint">
+    </td>
+    <td width="1%" style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.7em;">
+      <b>Practica:</b> 01
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.7em;">
+      <b>Hoja:</b> 2/2
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 2px solid black; padding: 4px; background-color: #fcfcfc;">
+      <b>Alumno:</b> Sergio Abad
+    </td>
+    <td colspan="2" style="border: 2px solid black; padding: 4px; background-color: #fcfcfc;">
+      <div style="display: flex; justify-content: space-around; width: 100%;">
+        <span><b>Material:</b> Acero AISI 1045</span>
+        <span><b>Bruto:</b> Ø50 x 140 mm</span>
+        <span style="color: #666; font-size: 0.85em;">(Rev. A)</span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<style>
+  table:not(.header-table) th:nth-child(1), table:not(.header-table) td:nth-child(1) { width: 35px; } /* Op */
+  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 170px; } /* Operación */
+  table:not(.header-table) th:nth-child(3), table:not(.header-table) td:nth-child(3) { width: 120px; } /* Herramienta */
+  table:not(.header-table) th:nth-child(4), table:not(.header-table) td:nth-child(4) { width: 55px; }  /* Vc */
+  table:not(.header-table) th:nth-child(5), table:not(.header-table) td:nth-child(5) { width: 55px; }  /* N */
+  table:not(.header-table) th:nth-child(6), table:not(.header-table) td:nth-child(6) { width: 55px; }  /* a */
+  table:not(.header-table) th:nth-child(7), table:not(.header-table) td:nth-child(7) { width: 45px; }  /* P */
+  table:not(.header-table) th:nth-child(8), table:not(.header-table) td:nth-child(8) { width: 130px; } /* Croquis */
+  tr { height: auto !important; }
+</style>
 
 | Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | N (rpm) | a(mm/rev) | P (mm) | Croquis |
 |--------|------------------------------------|------------------------------------|------------|---------|-----------|--------|---------|
