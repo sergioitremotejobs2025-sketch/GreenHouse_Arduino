@@ -1,48 +1,47 @@
-<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 1em;">
+<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 0.95em;">
   <tr>
-    <td rowspan="2" align="center" width="25%" style="border: 2px solid black; padding: 15px; background-color: #fcfcfc;">
-      <h3 style="margin: 0; font-size: 1.3em;">HOJA DE PROCESO</h3>
-      <p style="margin: 8px 0; font-size: 0.9em; text-transform: uppercase;">Técnicas de Fabricación - 1ºME</p>
-      <div style="border: 2px solid black; padding: 10px; color: #b8860b; font-weight: bold; font-family: 'Copperplate', serif; font-size: 1em; margin-top: 10px;">
+    <td rowspan="2" align="center" width="22%" style="border: 2px solid black; padding: 5px 10px; background-color: #fcfcfc;">
+      <h3 style="margin: 0; font-size: 1.1em;">HOJA DE PROCESO</h3>
+      <p style="margin: 4px 0; font-size: 0.8em; text-transform: uppercase;">Técnicas de Fabricación - 1ºME</p>
+      <div style="border: 2.5px solid black; padding: 6px; color: #b8860b; font-weight: bold; font-family: 'Copperplate', serif; font-size: 0.85em; margin-top: 5px;">
         IES TRINIDAD ARROYO
       </div>
     </td>
-    <td width="20%" style="border: 2px solid black; padding: 15px; vertical-align: top;">
-      <b style="font-size: 1.1em;">PRACTICA Nº:</b><br><span style="font-size: 1.2em;">01</span>
+    <td width="8%" style="border: 2px solid black; padding: 5px; vertical-align: top; text-align: center;">
+      <b style="font-size: 0.8em;">PR. Nº:</b><br><span style="font-size: 1.1em;">01</span>
     </td>
-    <td rowspan="2" style="border: 2px solid black; padding: 10px; vertical-align: top; background-color: #ffffff;">
-      <b style="font-size: 1.2em;">CROQUIS DE LA PIEZA:</b><br>
-      <img src="images/plano_acotado_gigante.png" width="100%" style="display: block; margin: 5px auto; max-width: 650px;" class="header-blueprint">
-    </td>
-  </tr>
-  <tr>
-    <td style="border: 2px solid black; padding: 15px; vertical-align: top;">
-      <b style="font-size: 1.1em;">HOJA Nº:</b><br><span style="font-size: 1.2em;">1 / 2</span>
+    <td rowspan="2" align="center" width="70%" style="border: 2px solid black; padding: 5px; vertical-align: top; background-color: #ffffff;">
+      <b style="font-size: 1.1em; display: block; margin-bottom: 5px;">CROQUIS DE LA PIEZA:</b>
+      <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 0 auto; max-height: 220px; object-fit: contain;" class="header-blueprint">
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 12px;">
+    <td style="border: 2px solid black; padding: 5px; vertical-align: top; text-align: center;">
+      <b style="font-size: 0.8em;">HOJA:</b><br><span style="font-size: 1.1em;">1 / 2</span>
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 2px solid black; padding: 8px;">
       <b>Alumno:</b> Sergio Abad
     </td>
-    <td style="border: 2px solid black; padding: 12px;">
-      <b>Material:</b> Acero AISI 1045
-    </td>
-    <td style="border: 2px solid black; padding: 12px;">
-      <b>Bruto:</b> Ø50 x 140 mm
+    <td colspan="1" style="border: 2px solid black; padding: 8px; text-align: center;"><b>Rev.</b> A</td>
+    <td style="border: 2px solid black; padding: 8px;">
+      <b>Material:</b> Acero AISI 1045 | <b>Bruto:</b> Ø50 x 140 mm
     </td>
   </tr>
 </table>
 
 <style>
-  table:not(.header-table) th:nth-child(1), table:not(.header-table) td:nth-child(1) { width: 40px; } /* Op */
-  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 180px; } /* Operación */
-  table:not(.header-table) th:nth-child(3), table:not(.header-table) td:nth-child(3) { width: 140px; } /* Herramienta */
-  table:not(.header-table) th:nth-child(4), table:not(.header-table) td:nth-child(4) { width: 60px; }  /* Vc */
-  table:not(.header-table) th:nth-child(5), table:not(.header-table) td:nth-child(5) { width: 60px; }  /* N */
-  table:not(.header-table) th:nth-child(6), table:not(.header-table) td:nth-child(6) { width: 60px; }  /* a */
-  table:not(.header-table) th:nth-child(7), table:not(.header-table) td:nth-child(7) { width: 50px; }  /* P */
+  table:not(.header-table) th:nth-child(1), table:not(.header-table) td:nth-child(1) { width: 35px; } /* Op */
+  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 170px; } /* Operación */
+  table:not(.header-table) th:nth-child(3), table:not(.header-table) td:nth-child(3) { width: 120px; } /* Herramienta */
+  table:not(.header-table) th:nth-child(4), table:not(.header-table) td:nth-child(4) { width: 55px; }  /* Vc */
+  table:not(.header-table) th:nth-child(5), table:not(.header-table) td:nth-child(5) { width: 55px; }  /* N */
+  table:not(.header-table) th:nth-child(6), table:not(.header-table) td:nth-child(6) { width: 55px; }  /* a */
+  table:not(.header-table) th:nth-child(7), table:not(.header-table) td:nth-child(7) { width: 45px; }  /* P */
   table:not(.header-table) th:nth-child(8), table:not(.header-table) td:nth-child(8) { width: auto; }   /* Notas */
-  table:not(.header-table) th:nth-child(9), table:not(.header-table) td:nth-child(9) { width: 140px; } /* Croquis */
+  table:not(.header-table) th:nth-child(9), table:not(.header-table) td:nth-child(9) { width: 130px; } /* Croquis */
+  tr { height: auto !important; }
 </style>
 
 
