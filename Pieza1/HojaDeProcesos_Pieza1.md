@@ -1,35 +1,33 @@
-<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black;">
+<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 1.5px solid black; font-size: 0.85em;">
   <tr>
-    <td rowspan="2" align="center" width="25%" style="border: 2px solid black; padding: 10px; background-color: #fcfcfc;">
-      <h3 style="margin: 0; font-size: 1.2em;">HOJA DE PROCESO</h3>
-      <p style="margin: 5px 0; font-size: 0.8em; text-transform: uppercase;">Técnicas de Fabricación</p>
-      <p style="margin: 0; font-size: 0.8em; font-weight: bold;">1ºME</p>
-      <br>
-      <div style="border: 3px solid black; padding: 10px; color: #dca311; font-weight: bold; font-family: 'Copperplate', serif;">
-        IES<br>TRINIDAD ARROYO
+    <td rowspan="2" align="center" width="22%" style="border: 1.5px solid black; padding: 5px; background-color: #fcfcfc;">
+      <h4 style="margin: 0; font-size: 1em;">HOJA DE PROCESO</h4>
+      <p style="margin: 2px 0; font-size: 0.7em; text-transform: uppercase;">Técnicas de Fabricación - 1ºME</p>
+      <div style="border: 1.5px solid black; padding: 4px; color: #b8860b; font-weight: bold; font-family: 'Copperplate', serif; font-size: 0.8em; margin-top: 5px;">
+        IES TRINIDAD ARROYO
       </div>
     </td>
-    <td width="20%" style="border: 2px solid black; padding: 10px; vertical-align: top;">
-      <b>PRACTICA Nº:</b><br>01
+    <td width="18%" style="border: 1.5px solid black; padding: 5px; vertical-align: top;">
+      <b>PRACTICA Nº:</b> 01
     </td>
-    <td rowspan="2" style="border: 2px solid black; padding: 10px; vertical-align: top; background-color: #ffffff;">
-      <b>CROQUIS:</b><br><br>
-      <img src="images/eje_escalonado_normativo_espanol_final_1772989980834.png" width="100%" style="display: block; margin: 0 auto; max-width: 500px;">
-    </td>
-  </tr>
-  <tr>
-    <td style="border: 2px solid black; padding: 10px; vertical-align: top;">
-      <b>HOJA Nº:</b><br>1 / 1
+    <td rowspan="2" style="border: 1.5px solid black; padding: 5px; vertical-align: top; background-color: #ffffff;">
+      <b style="font-size: 0.9em;">CROQUIS:</b>
+      <img src="images/eje_escalonado_normativo_espanol_final_1772989980834.png" width="90%" style="display: block; margin: 5px auto 0 auto; max-width: 280px;">
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 10px;">
-      <b>Alumno:</b> Roberto Gesteira / Sergio Abad
+    <td style="border: 1.5px solid black; padding: 5px; vertical-align: top;">
+      <b>HOJA Nº:</b> 1 / 1
     </td>
-    <td style="border: 2px solid black; padding: 10px;">
+  </tr>
+  <tr>
+    <td style="border: 1.5px solid black; padding: 5px;">
+      <b>Alumno:</b> Sergio Abad
+    </td>
+    <td style="border: 1.5px solid black; padding: 5px;">
       <b>Material:</b> Acero AISI 1045
     </td>
-    <td style="border: 2px solid black; padding: 10px;">
+    <td style="border: 1.5px solid black; padding: 5px;">
       <b>Bruto:</b> Ø50 x 140 mm
     </td>
   </tr>
