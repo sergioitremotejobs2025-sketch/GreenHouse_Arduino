@@ -70,6 +70,7 @@ This project is built with a **Test-Driven Development (TDD)** first approach an
 
 - [Project Roadmap & Timeline](Timeline.md)
 - [TDD TODO List](TODO.md)
+- [Open Source Strategy & Roadmap](Open_Source.md)
 - [Architecture Details](Documentation/Version_1/Book_Version_1.md)
 - [GCP Infrastructure Costs](COSTS05032026.md)
 
