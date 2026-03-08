@@ -7,17 +7,17 @@
         IES TRINIDAD ARROYO
       </div>
     </td>
-    <td width="8%" style="border: 2px solid black; padding: 5px; vertical-align: top; text-align: center;">
-      <b style="font-size: 0.8em;">PR. Nº:</b><br><span style="font-size: 1.1em;">01</span>
+    <td width="5%" style="border: 2px solid black; padding: 2px; vertical-align: middle; text-align: center; white-space: nowrap;">
+      <b style="font-size: 0.75em;">PR.:</b><br><span style="font-size: 1.1em;">01</span>
     </td>
-    <td rowspan="2" align="center" width="70%" style="border: 2px solid black; padding: 5px; vertical-align: top; background-color: #ffffff;">
+    <td rowspan="2" align="center" width="73%" style="border: 2px solid black; padding: 5px; vertical-align: top; background-color: #ffffff;">
       <b style="font-size: 1.1em; display: block; margin-bottom: 5px;">CROQUIS DE LA PIEZA:</b>
       <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 0 auto; max-height: 220px; object-fit: contain;" class="header-blueprint">
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 5px; vertical-align: top; text-align: center;">
-      <b style="font-size: 0.8em;">HOJA:</b><br><span style="font-size: 1.1em;">1 / 2</span>
+    <td style="border: 2px solid black; padding: 2px; vertical-align: middle; text-align: center; white-space: nowrap;">
+      <b style="font-size: 0.75em;">HOJA:</b><br><span style="font-size: 1.1em;">1 / 2</span>
     </td>
   </tr>
   <tr>
