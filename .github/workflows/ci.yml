@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [orchestrator-ms, measure-ms, microcontrollers-ms, publisher-ms]
+        service: [orchestrator-ms, measure-ms, microcontrollers-ms, publisher-ms, fake-arduino-iot-pictures]
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -56,6 +56,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.23.0'
+          cache-dependency-path: 'auth-ms/go.sum'
       - name: Build & Test Go
         run: |
           cd auth-ms

@@ -18,6 +18,15 @@ describe('Measure-MS 100% Coverage Final Push', () => {
         spy.mockRestore();
     });
 
+    test('MeasureController: getMeasure catch block (Line 23)', async () => {
+        const controller = new MeasureController('temperature');
+        const res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
+        jest.spyOn(controller.microsModule, 'getMicrocontrollers').mockRejectedValueOnce(new Error('Module Error'));
+        await controller.getMeasure({ query: { username: 'test' } }, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledWith('Module Error');
+    });
+
     test('MeasureController: postLight branches (Lines 47-57)', async () => {
         const controller = new MeasureController('light');
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };

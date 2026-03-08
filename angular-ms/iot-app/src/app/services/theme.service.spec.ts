@@ -63,4 +63,11 @@ describe('ThemeService', () => {
         const darkService = new ThemeService();
         darkService.theme$.subscribe(theme => expect(theme).toBe('dark'));
     });
+
+    it('should initialize with saved theme from localStorage', () => {
+        localStorage.setItem('theme', 'dark');
+        const savedService = new ThemeService();
+        savedService.theme$.subscribe(theme => expect(theme).toBe('dark'));
+        localStorage.clear();
+    });
 });

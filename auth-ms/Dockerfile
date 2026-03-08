@@ -1,12 +1,12 @@
 FROM golang:1.23-alpine
 
-WORKDIR /go/src
+WORKDIR /app
 
-COPY src/go.mod ./
-COPY src/go.sum ./
+COPY go.mod ./
+COPY go.sum ./
 RUN go mod download
 
-COPY src ./
+COPY . ./
 RUN go build -o main .
 
 CMD [ "./main" ]
