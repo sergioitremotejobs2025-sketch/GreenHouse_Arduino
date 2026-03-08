@@ -38,7 +38,7 @@ Longitud útil aprox. 100–110 mm desde el plato.
 | 1.6    | Cilindrar Ø31 (acabado)            | Plaquette acabado                  | 130–170    | 1000–1300| 0.15–0.20 | 0.3    | Ø31 mm                                                     | ![Ø31](images/3_cil_31.png) |
 | 1.7    | Cilindrar Ø22 (desbaste)           | Plaquette desbaste                 | 90–120     | 800–1000| 0.25–0.4  | 2      | Longitud aprox. 18 mm + margen                             | ![Ø22](images/4_cil_22.png) |
 | 1.8    | Cilindrar Ø22 (acabado)            | Plaquette acabado                  | 120–160    | 1100–1400| 0.12–0.20 | 0.3    | Ø22 mm                                                     | ![Ø22](images/4_cil_22.png) |
-| 1.9    | Chaflanes / redondeos              | Plaquette o herramienta chaflán 45°| 100–140    | 800–1000| manual    | —      | Chaflanes 1×45° en todos los escalones                     | ![Chamfer](images/4_cil_22.png) |
+| 1.9    | Chaflanes / redondeos              | Plaquette o herramienta chaflán 45°| 100–140    | 800–1000| manual    | —      | Chaflanes 1×45° en todos los escalones                     | ![Chamfer](images/9_chaflan_A.png) |
 | 1.10   | Colocar contrapunto (si no estaba) | Contrapunto fijo o giratorio       | —          | —       | —         | —      | Apoyar en el punto centrado; ajustar presión moderada     | ![Centering](images/2_punteado.png) |
 
 **Cambio de sujeción – Atada 2**  
@@ -55,7 +55,7 @@ Dar vuelta la pieza, sujetar por Ø40 mm (usar mordazas blandas o protector). Us
 | 2.6    | Cilindrar Ø24 (acabado)            | Plaquette acabado                  | 110–140    | 1100–1300| 0.12–0.20 | 0.3    | Ø24 mm                                                     | ![Ø24](images/7_cil_24.png) |
 | 2.7    | Cilindrar Ø20 (desbaste)           | Plaquette desbaste                 | 80–100     | 900–1100| 0.25–0.35 | 1.5–2  | Longitud aprox. 16 mm                                      | ![Final](images/8_final_shaft.png) |
 | 2.8    | Cilindrar Ø20 (acabado)            | Plaquette acabado                  | 100–130    | 1200–1500| 0.10–0.18 | 0.3    | Ø20 mm                                                     | ![Final](images/8_final_shaft.png) |
-| 2.9    | Chaflanes / redondeos              | Herramienta chaflán                | 80–110     | 800–1000| manual    | —      | Todos los escalones                                        | ![Final](images/8_final_shaft.png) |
+| 2.9    | Chaflanes / redondeos              | Herramienta chaflán                | 80–110     | 800–1000| manual    | —      | Todos los escalones                                        | ![Chamfer](images/10_chaflan_B.png) |
 | 2.10   | Control dimensional final          | Calibre, micrómetro, etc.          | —          | —       | —         | —      | Verificar todas medidas + concentricidad                   | ![Final](images/8_final_shaft.png) |
 
 **Notas adicionales sobre punteado**
