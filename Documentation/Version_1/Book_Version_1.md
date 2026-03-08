@@ -23,9 +23,9 @@
 16. **[Chapter 15: Troubleshooting & Post-Mortems](#chapter-15)**
 17. **[Chapter 16: Technical Roadmap & Future Improvements](#chapter-16)**
 18. **[Chapter 17: Strategic Roadmap — The Execution Plan](#chapter-17)**
-19. **[Appendix 1: Technical Concepts and Design Decisions](#Appendix 1)**
-20. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#Appendix 2)**
-21. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#Appendix 3)**
+19. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
+20. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
+21. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
 22. **[Conclusion: The Horizon of IoT](#conclusion)**
 
 ---
@@ -1001,7 +1001,7 @@ gantt
 
 ---
 
-<a id="Appendix 3"></a>
+<a id="appendix-3"></a>
 ## 🛠️ Appendix 3: DevOps & Automation — The Scripting Toolkit
 To maintain a high-velocity environment and ensure consistent deployments across Dev, QA, and GKE Production, we use a comprehensive suite of automation scripts. These are located in the root directory and the `/Scripts` folder.
 
@@ -1031,7 +1031,7 @@ These scripts handle the lifecycle of the Google Cloud Platform (GCP) environmen
 ---
 
 
-<a id="Appendix 1"></a>
+<a id="appendix-1"></a>
 ## 🗺️ Appendix 1: Technical Concepts and Design Decisions
 ### Mutation Testing
 **Mutmut** (often written as "mutmut") is **not** a specific feature, model, or component built directly into **TensorFlow** or artificial intelligence/machine learning frameworks. It's a standalone **Python tool** for **mutation testing** (also called mutation analysis).
@@ -1243,7 +1243,7 @@ Which specific use case or comparison are you looking into (e.g., open-source vs
 
 ---
 
-<a id="Appendix 2"></a>
+<a id="appendix-2"></a>
 ## 🛠️ Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)
 The transition to a unified GitHub Actions pipeline (March 2026) revealed several architectural friction points. Below is the documentation of the critical failures and implemented solutions that stabilized the "Zero-Tolerance" CI.
 
