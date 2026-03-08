@@ -93,6 +93,7 @@ We'd love to have you! If you're interested in contributing, feel free to **drop
 | Contributor | Role | Contribution |
 | :--- | :--- | :--- |
 | **[Sergio Abad](https://github.com/sergioitremotejobs2025)** | **Lead Architect** | Visionary, Core developer, and Infrastructure lead. |
+| **Roberto Gesteira Miñarro** | **Open Source Collaborator** | Strategic contributions and architectural guidance. |
 | **[Antigravity (AI)](https://github.com/features/copilot)** | **AI Architect** | Pair-programming, TDD enforcement, and Documentation specialist. |
 
 ---
