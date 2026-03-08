@@ -4,16 +4,16 @@
       <b style="font-size: 1em; display: block;">HOJA DE PROCESO</b>
       <span style="font-size: 0.7em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
     </td>
-    <td width="1%" style="border: 2px solid black; padding: 1px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.8em;">
-      <b>P:</b> 01
-    </td>
-    <td rowspan="2" align="center" width="79%" style="border: 2px solid black; padding: 4px; vertical-align: top; background-color: #ffffff;">
+    <td rowspan="2" align="center" width="77%" style="border: 2px solid black; padding: 4px; vertical-align: top; background-color: #ffffff;">
       <b style="font-size: 0.9em; display: block; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 2px;">CROQUIS DE LA PIEZA:</b>
       <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 180px; width: auto; max-width: 98%;" class="header-blueprint">
     </td>
+    <td width="3%" style="border: 2px solid black; padding: 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.75em;">
+      <b>P:</b> 01
+    </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.8em;">
+    <td style="border: 2px solid black; padding: 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.75em;">
       <b>H:</b> 1/2
     </td>
   </tr>
