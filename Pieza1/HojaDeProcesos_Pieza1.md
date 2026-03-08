@@ -33,13 +33,13 @@
 
 <style>
   table:not(.header-table) th:nth-child(1), table:not(.header-table) td:nth-child(1) { width: 35px; } /* Op */
-  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 170px; } /* Operación */
+  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 120px; } /* Operación */
   table:not(.header-table) th:nth-child(3), table:not(.header-table) td:nth-child(3) { width: 120px; } /* Herramienta */
   table:not(.header-table) th:nth-child(4), table:not(.header-table) td:nth-child(4) { width: 55px; }  /* Vc */
   table:not(.header-table) th:nth-child(5), table:not(.header-table) td:nth-child(5) { width: 55px; }  /* N */
   table:not(.header-table) th:nth-child(6), table:not(.header-table) td:nth-child(6) { width: 55px; }  /* a */
   table:not(.header-table) th:nth-child(7), table:not(.header-table) td:nth-child(7) { width: 45px; }  /* P */
-  table:not(.header-table) th:nth-child(8), table:not(.header-table) td:nth-child(8) { width: 130px; } /* Croquis */
+  table:not(.header-table) th:nth-child(8), table:not(.header-table) td:nth-child(8) { width: 180px; } /* Croquis */
   tr { height: auto !important; }
 </style>
 
@@ -94,13 +94,13 @@
 
 <style>
   table:not(.header-table) th:nth-child(1), table:not(.header-table) td:nth-child(1) { width: 35px; } /* Op */
-  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 170px; } /* Operación */
+  table:not(.header-table) th:nth-child(2), table:not(.header-table) td:nth-child(2) { width: 120px; } /* Operación */
   table:not(.header-table) th:nth-child(3), table:not(.header-table) td:nth-child(3) { width: 120px; } /* Herramienta */
   table:not(.header-table) th:nth-child(4), table:not(.header-table) td:nth-child(4) { width: 55px; }  /* Vc */
   table:not(.header-table) th:nth-child(5), table:not(.header-table) td:nth-child(5) { width: 55px; }  /* N */
   table:not(.header-table) th:nth-child(6), table:not(.header-table) td:nth-child(6) { width: 55px; }  /* a */
   table:not(.header-table) th:nth-child(7), table:not(.header-table) td:nth-child(7) { width: 45px; }  /* P */
-  table:not(.header-table) th:nth-child(8), table:not(.header-table) td:nth-child(8) { width: 130px; } /* Croquis */
+  table:not(.header-table) th:nth-child(8), table:not(.header-table) td:nth-child(8) { width: 180px; } /* Croquis */
   tr { height: auto !important; }
 </style>
 
