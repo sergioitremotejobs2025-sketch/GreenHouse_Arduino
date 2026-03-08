@@ -1,19 +1,19 @@
-<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 1.0em;">
+<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 1.1em;">
   <tr>
     <td rowspan="2" align="center" width="20%" style="border: 2px solid black; padding: 4px; background-color: #f9f9f9;">
-      <b style="font-size: 1.15em; display: block;">HOJA DE PROCESO</b>
-      <span style="font-size: 0.8em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
+      <b style="font-size: 1.25em; display: block;">HOJA DE PROCESO</b>
+      <span style="font-size: 0.85em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
     </td>
     <td rowspan="2" align="center" width="85%" style="border: 2px solid black; padding: 3px; vertical-align: top; background-color: #ffffff;">
-      <b style="font-size: 1.0em; display: block; margin-bottom: 2px; border-bottom: 1px solid #eee; padding-bottom: 1px;">CROQUIS DE LA PIEZA:</b>
-      <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 120px; width: auto; max-width: 98%;" class="header-blueprint">
+      <b style="font-size: 1.1em; display: block; margin-bottom: 2px; border-bottom: 1px solid #eee; padding-bottom: 1px;">CROQUIS DE LA PIEZA:</b>
+      <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 110px; width: auto; max-width: 98%;" class="header-blueprint">
     </td>
-    <td width="1%" style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.85em;">
+    <td width="1%" style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.9em;">
       <b>Practica:</b> 01
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.85em;">
+    <td style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.9em;">
       <b>Hoja:</b> 1/2
     </td>
   </tr>
@@ -25,7 +25,7 @@
       <div style="display: flex; justify-content: space-around; width: 100%;">
         <span><b>Material:</b> Acero AISI 1045</span>
         <span><b>Bruto:</b> Ø50 x 140 mm</span>
-        <span style="color: #666; font-size: 0.95em;">(Rev. A)</span>
+        <span style="color: #666; font-size: 1.0em;">(Rev. A)</span>
       </div>
     </td>
   </tr>
@@ -59,22 +59,22 @@
 | 1.9    | Chaflanes / redondeos              | Plaquette o herramienta chaflán 45°| 100–140    | 800–1000| manual    | —      | ![Chamfer](images/9_chaflan_A.png) |
 | 1.10   | Colocar contrapunto (si no estaba) | Contrapunto fijo o giratorio       | —          | —       | —         | —      | ![Contrapunto](images/11_contrapunto_A.png) |
 
-<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 1.0em; page-break-before: always;">
+<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 1.1em; page-break-before: always;">
   <tr>
     <td rowspan="2" align="center" width="20%" style="border: 2px solid black; padding: 4px; background-color: #f9f9f9;">
-      <b style="font-size: 1.15em; display: block;">HOJA DE PROCESO</b>
-      <span style="font-size: 0.8em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
+      <b style="font-size: 1.25em; display: block;">HOJA DE PROCESO</b>
+      <span style="font-size: 0.85em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
     </td>
     <td rowspan="2" align="center" width="85%" style="border: 2px solid black; padding: 3px; vertical-align: top; background-color: #ffffff;">
-      <b style="font-size: 1.0em; display: block; margin-bottom: 2px; border-bottom: 1px solid #eee; padding-bottom: 1px;">CROQUIS DE LA PIEZA:</b>
-      <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 120px; width: auto; max-width: 98%;" class="header-blueprint">
+      <b style="font-size: 1.1em; display: block; margin-bottom: 2px; border-bottom: 1px solid #eee; padding-bottom: 1px;">CROQUIS DE LA PIEZA:</b>
+      <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 110px; width: auto; max-width: 98%;" class="header-blueprint">
     </td>
-    <td width="1%" style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.85em;">
+    <td width="1%" style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.9em;">
       <b>Practica:</b> 01
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.85em;">
+    <td style="border: 2px solid black; padding: 0px 2px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.9em;">
       <b>Hoja:</b> 2/2
     </td>
   </tr>
@@ -86,7 +86,7 @@
       <div style="display: flex; justify-content: space-around; width: 100%;">
         <span><b>Material:</b> Acero AISI 1045</span>
         <span><b>Bruto:</b> Ø50 x 140 mm</span>
-        <span style="color: #666; font-size: 0.95em;">(Rev. A)</span>
+        <span style="color: #666; font-size: 1.0em;">(Rev. A)</span>
       </div>
     </td>
   </tr>
