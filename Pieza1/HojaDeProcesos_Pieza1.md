@@ -1,4 +1,4 @@
-![Plano Final de la Pieza (Medidas Correctas)](/Users/sergioabad/.gemini/antigravity/brain/51803315-03ee-437a-8637-11d49e54279b/stepped_shaft_clean_blueprint_v3_consistent_1772989673008.png)
+![Plano Técnico del Eje (Español)](/Users/sergioabad/.gemini/antigravity/brain/51803315-03ee-437a-8637-11d49e54279b/eje_escalonado_plano_tecnico_fiel_espanol_1772989837642.png)
 
 ¡Claro! He actualizado la **hoja de procesos** incorporando la operación de **punteado** (centrado) con **broca de centrar** (o broca de puntear/center drill) para preparar el soporte del contrapunto en ambos extremos de la pieza.  
 
