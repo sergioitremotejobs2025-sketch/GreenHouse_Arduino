@@ -50,7 +50,7 @@
 |--------|------------------------------------|------------------------------------|------------|---------|-----------|--------|------------------------------------------------------------|---------|
 | 1.0    | Colocar tocho y alinear            | —                                  | —          | —       | —         | —      | Asegurar concentricidad inicial                            | ![Tocho](images/0_tocho.png) |
 | 1.1    | Refrentar cara frontal             | Plaquette torneado derecha         | 120–160    | 800–1000| 0.15–0.25 | 0.5–1  | Dejar longitud total ≈  +2 mm sobrematerial                 | ![Facing](images/1_refrentado.png) |
-| 1.2    | Punteado contrapunto | Broca centrar (Ø4–5) | 15–20 | 400–600 | Manual | 3–5 | Avance lento; cono 60°. Usar refrigerante. | ![Centering](images/2_punteado.png) |
+| 1.2 | Punteado | Broca centrar Ø4-5 | 15–20 | 400–600 | Man. | 3–5 | Avance lento; cono 60º; refrigerante. | ![Centering](images/2_punteado.png) |
 | 1.3    | Cilindrar Ø40 (desbaste)           | Plaquette desbaste                 | 100–140    | 600–800 | 0.3–0.5   | 2–3 por pasada | Hasta Ø41–42 mm                                            | ![Facing](images/1_refrentado.png) |
 | 1.4    | Cilindrar Ø40 (acabado)            | Plaquette acabado                  | 140–180    | 1000–1200| 0.15–0.25 | 0.3–0.5 | Ø40 mm final                                               | ![Facing](images/1_refrentado.png) |
 | 1.5    | Cilindrar Ø31 (desbaste)           | Plaquette desbaste                 | 100–130    | 700–900 | 0.3–0.5   | 2–3    | Longitud aprox. 36 mm + margen                             | ![Ø31](images/3_cil_31.png) |
