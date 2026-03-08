@@ -12,7 +12,7 @@
     </td>
     <td rowspan="2" style="border: 1.5px solid black; padding: 5px; vertical-align: top; background-color: #ffffff;">
       <b style="font-size: 0.9em;">CROQUIS:</b>
-      <img src="images/eje_escalonado_normativo_espanol_final_1772989980834.png" width="90%" style="display: block; margin: 5px auto 0 auto; max-width: 280px;">
+      <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 2px auto 0 auto;">
     </td>
   </tr>
   <tr>
