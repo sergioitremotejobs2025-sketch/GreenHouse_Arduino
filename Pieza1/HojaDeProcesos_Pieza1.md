@@ -1,27 +1,27 @@
-<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 0.95em;">
+<table width="100%" border="1" style="border-collapse: collapse; font-family: Arial, sans-serif; table-layout: fixed; border: 2px solid black; font-size: 0.85em;">
   <tr>
-    <td rowspan="2" align="center" width="20%" style="border: 2px solid black; padding: 5px; background-color: #fcfcfc;">
-      <h3 style="margin: 0; font-size: 1em;">HOJA DE PROCESO</h3>
-      <p style="margin: 2px 0; font-size: 0.7em; text-transform: uppercase;">1ºME - TRINIDAD ARROYO</p>
+    <td rowspan="2" align="center" width="20%" style="border: 2px solid black; padding: 3px; background-color: #fcfcfc;">
+      <b style="font-size: 0.9em; display: block;">HOJA DE PROCESO</b>
+      <span style="font-size: 0.65em; text-transform: uppercase;">1ºME - TRINIDAD ARROYO</span>
     </td>
-    <td width="3%" style="border: 2px solid black; padding: 1px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.8em;">
-      <b>P:</b><br>01
+    <td width="3%" style="border: 2px solid black; padding: 1px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.75em;">
+      <b>P:</b> 01
     </td>
-    <td rowspan="2" align="center" width="77%" style="border: 2px solid black; padding: 5px; vertical-align: top; background-color: #ffffff;">
-      <b style="font-size: 1.1em; display: block; margin-bottom: 2px;">CROQUIS DE LA PIEZA:</b>
-      <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 0 auto; max-height: 240px; object-fit: contain;" class="header-blueprint">
+    <td rowspan="2" align="center" width="77%" style="border: 2px solid black; padding: 3px; vertical-align: top; background-color: #ffffff;">
+      <b style="font-size: 0.9em; display: block; margin-bottom: 2px;">CROQUIS DE LA PIEZA:</b>
+      <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 0 auto; max-height: 160px; object-fit: contain;" class="header-blueprint">
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 1px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.8em;">
-      <b>H:</b><br>1/2
+    <td style="border: 2px solid black; padding: 1px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.75em;">
+      <b>H:</b> 1/2
     </td>
   </tr>
   <tr>
-    <td style="border: 2px solid black; padding: 6px;">
+    <td style="border: 2px solid black; padding: 4px;">
       <b>Alumno:</b> Sergio Abad (Rev. A)
     </td>
-    <td colspan="2" style="border: 2px solid black; padding: 6px;">
+    <td colspan="2" style="border: 2px solid black; padding: 4px;">
       <b>Material:</b> Acero AISI 1045 | <b>Bruto:</b> Ø50 x 140 mm
     </td>
   </tr>
