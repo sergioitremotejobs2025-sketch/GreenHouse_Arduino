@@ -35,32 +35,7 @@
   </tr>
 </table>
 
-¡Claro! He actualizado la **hoja de procesos** incorporando la operación de **punteado** (centrado) con **broca de centrar** (o broca de puntear/center drill) para preparar el soporte del contrapunto en ambos extremos de la pieza.  
 
-Esta operación es esencial cuando se usa contrapunto para piezas largas o para evitar vibraciones en torneado de ejes escalonados como este.
-
-### Actualizaciones clave:
-- **Atada 1** (lado inicial): Punteado al final de la primera sujeción, una vez refrentada la cara.
-- **Atada 2** (después de dar vuelta): Punteado en la cara opuesta, antes de mecanizar ese lado con contrapunto.
-- Herramienta: Broca de centrar tipo A o B (común: Ø 4 mm o Ø 5 mm para ejes de este tamaño, con cono 60° para contrapunto estándar).
-- Parámetros típicos: Baja velocidad (300–600 rpm), avance manual lento o 0.05–0.10 mm/rev, con refrigerante. Profundidad: suficiente para que el contrapunto entre bien (aprox. 3–5 mm total, dependiendo del tamaño de la broca).
-- Secuencia lógica: Siempre puntear **después de refrentar** la cara (para que quede perpendicular y centrada).
-
-### Hoja de Procesos Actualizada – Pieza: Eje Escalonado
-
-**Datos generales**  
-- Pieza: Eje escalonado  
-- Código / Dibujo: [tu referencia]  
-- Material: Acero AISI 1045 (o equivalente)  
-- Tocho inicial: Ø50 × 140 mm (aprox.)  
-- Máquina: Torno paralelo / Torno CNC  
-- Operario: [nombre o puesto]  
-- Fecha: Marzo 2026  
-- Cantidad: [1 / lote]  
-
-**Fase 1 – Preparación y sujeción inicial (Atada 1)**  
-Sujeción: Plato de 3 garras + contrapunto (usar luneta si necesario).  
-Longitud útil aprox. 100–110 mm desde el plato.
 
 | Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | N (rpm) | a(mm/rev) | P (mm) | Notas / Medidas clave                                      | Croquis |
 |--------|------------------------------------|------------------------------------|------------|---------|-----------|--------|------------------------------------------------------------|---------|
@@ -74,14 +49,14 @@ Longitud útil aprox. 100–110 mm desde el plato.
 | 1.7    | Cilindrar Ø22 (desbaste)           | Plaquette desbaste                 | 90–120     | 800–1000| 0.25–0.4  | 2      | Longitud aprox. 18 mm + margen                             | ![Ø22](images/4_cil_22.png) |
 | 1.8    | Cilindrar Ø22 (acabado)            | Plaquette acabado                  | 120–160    | 1100–1400| 0.12–0.20 | 0.3    | Ø22 mm                                                     | ![Ø22](images/4_cil_22.png) |
 | 1.9    | Chaflanes / redondeos              | Plaquette o herramienta chaflán 45°| 100–140    | 800–1000| manual    | —      | Chaflanes 1×45° en todos los escalones                     | ![Chamfer](images/9_chaflan_A.png) |
-| 1.10   | Colocar contrapunto (si no estaba) | Contrapunto fijo o giratorio       | —          | —       | —         | —      | Apoyar en el punto centrado; ajustar presión moderada     | ![Centering](images/2_punteado.png) |
+| 1.10   | Colocar contrapunto (si no estaba) | Contrapunto fijo o giratorio       | —          | —       | —         | —      | Apoyar en el punto centrado; ajustar presión moderada     | ![Contrapunto](images/11_contrapunto_A.png) |
 
 **Cambio de sujeción – Atada 2**  
 Dar vuelta la pieza, sujetar por Ø40 mm (usar mordazas blandas o protector). Usar contrapunto en el centro punteado del lado opuesto.
 
 | Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | N (rpm) | a(mm/rev) | P (mm) | Notas / Medidas clave                                      | Croquis |
 |--------|------------------------------------|------------------------------------|------------|---------|-----------|--------|------------------------------------------------------------|---------|
-| 2.0    | Colocar contrapunto en el punto existente | Contrapunto                   | —          | —       | —         | —      | Verificar alineación y presión                             | ![Centering](images/2_punteado.png) |
+| 2.0    | Colocar contrapunto en el punto existente | Contrapunto                   | —          | —       | —         | —      | Verificar alineación y presión                             | ![Contrapunto](images/2.0_contrapunto_B.png) |
 | 2.1    | Refrentar cara final               | Plaquette torneado                 | 100–125    | 800–1000| 0.15–0.25 | 0.5–1  | Longitud total final 80 mm (o según plano)                 | ![Atada2](images/5_atada2_base.png) |
 | 2.2    | **Punteado (centrado) cara opuesta** | Broca de centrar (Ø4–5 mm)     | 15–20      | 400–600 | Manual / 0.05–0.10 | 3–5 mm total | Avanzar con contrapunto; asegurar perpendicularidad; refrigerante. | ![Centering](images/2_punteado.png) |
 | 2.3    | Cilindrar Ø28 (desbaste)           | Plaquette desbaste                 | 90–120     | 700–900 | 0.3–0.5   | 2–3    | Longitud aprox. 34 mm + margen                             | ![Ø28](images/6_cil_28.png) |
@@ -93,10 +68,3 @@ Dar vuelta la pieza, sujetar por Ø40 mm (usar mordazas blandas o protector). Us
 | 2.9    | Chaflanes / redondeos              | Herramienta chaflán                | 80–110     | 800–1000| manual    | —      | Todos los escalones                                        | ![Chamfer](images/10_chaflan_B.png) |
 | 2.10   | Control dimensional final          | Calibre, micrómetro, etc.          | —          | —       | —         | —      | Verificar todas medidas + concentricidad                   | ![Final](images/8_final_shaft.png) |
 
-**Notas adicionales sobre punteado**
-- Usa siempre **broca de centrar** (no broca normal) porque crea un cono preciso de 60° que coincide con el ángulo del contrapunto.
-- Si el torno es CNC, esta operación se puede programar como ciclo G81 o manual.
-- En producción en serie, haz el punteado en ambos extremos antes de cualquier torneado extenso para maximizar rigidez.
-- Si la pieza es muy larga o delgada, considera luneta fija/móvil después del punteado.
-
-¿Quieres agregar más detalles (por ejemplo, si hay taladrado axial completo, roscado, o parámetros más precisos para CNC)? ¿O prefieres una versión en formato tabla más simple para imprimir? ¡Avísame!
