@@ -9,11 +9,14 @@ gantt
     title IoT Microservices Implementation Timeline (Estimated)
     dateFormat  YYYY-MM-DD
     axisFormat  %b '%y
+    section Phase 1.5: Pipeline Health
+    Workflow Stabilization          :active, p15_1, 2026-03-08, 3d
+    Badge Monitoring                :p15_2, after p15_1, 1d
 
     section Phase 2: Observability & Security
-    mTLS Service Mesh Pilot         :active, p2_1, 2026-04-01, 21d
-    Advanced Observability (SRE)    :p2_2, after p2_1, 14d
-    CI/CD Performance Regressions   :p2_3, after p2_2, 14d
+    CI/CD Performance Regressions   :active, p2_1, 2026-03-08, 14d
+    mTLS Service Mesh Pilot         :p2_2, after p2_1, 21d
+    Advanced Observability (SRE)    :p2_3, after p2_2, 14d
 
     section Phase 3: Edge & Fog
     Device Registry V2 Upgrade      :p3_1, 2026-05-20, 28d
@@ -29,6 +32,13 @@ gantt
 ---
 
 ## 📅 Detailed Task Breakdown & Estimates
+### 🔵 Phase 1.5: GitHub Actions Pipeline Health (Est: 4 Days)
+Focus on resolving pending errors and stabilizing the existing CI/CD pipelines before advancing further.
+
+| Task | Estimated Effort | Complexity | Description |
+| :--- | :--- | :--- | :--- |
+| **Workflow Stabilization** | **3 Days** | Low | Review and execute all `.github/workflows/*.yml` pipelines. Resolve broken dependencies, outdated container images, or missing SECRETS. |
+| **Badge Monitoring** | **1 Day** | Low | Ensure that the "Build" indicator badge on the README correctly reflects a reliable 100% pass rate in the cloud runner. |
 
 ### 🟡 Phase 2: Closing the Unit Gaps & Observability (Est: 7 Weeks)
 Focus on internal security hardening and expanding the SRE platform capabilities.

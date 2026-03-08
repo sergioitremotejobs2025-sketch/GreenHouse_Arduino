@@ -1,7 +1,7 @@
 # 🌿 IoT Microservices: Greenhouse Automation & Analytics
 
 [![Coverage: 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](CURRENT_COVERAGE.md)
-[![Build: Passing](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](#)
+[![Continuous Integration](https://github.com/sergioitremotejobs2025-sketch/GreenHouse_Arduino/actions/workflows/ci.yml/badge.svg)](https://github.com/sergioitremotejobs2025-sketch/GreenHouse_Arduino/actions/workflows/ci.yml)
 [![Phase: 3 (QA)](https://img.shields.io/badge/Phase-3%20QA-blue.svg)](Timeline.md)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 

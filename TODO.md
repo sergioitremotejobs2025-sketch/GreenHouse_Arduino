@@ -7,12 +7,20 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 - [x] **TDD Hard Block**: Enforce 100% branch and line coverage across all 10+ microservices as a prerequisite for CI/CD.
 - [x] **Metric Unification**: Consolidate Prometheus exporters to reduce resource overhead.
 - [x] **GKE Migration**: Transition from Minikube to GKE Autopilot, achieving cost reductions via resource right-sizing.
+## 🔵 Phase 1.5: GitHub Actions Pipeline Health
+*Status: In Progress*
+- [ ] **Workflow Stabilization**: Review and execute all `.github/workflows/*.yml` pipelines. Resolve any pending errors (e.g., broken dependencies, outdated container images, or missing SECRETS).
+- [ ] **Badge Monitoring**: Ensure that the "Build" indicator badge on the README correctly reflects a reliable 100% pass rate in the cloud runner.
+
 
 ## 🟡 Phase 2: Closing the Unit Gaps & Observability 
 *Status: In Progress*
 - [ ] **mTLS Pilot**: Implement mutual TLS (mTLS) via a Service Mesh (like Istio/Linkerd) specifically for the `auth-ms` to `orchestrator-ms` path to harden identity services.
 - [ ] **Advanced Observability**: Integrate Grafana Loki (Logs) and Prometheus (Metrics) into a unified, single-pane SRE dashboard.
 - [ ] **CI/CD Maturity**: Automate performance regression tests to detect latency spikes before deployment to production.
+    - [x] Create K6 load testing script (`load-test.js`)
+    - [x] Create GitHub Actions workflow (`performance-tests.yml`)
+    - [x] Push to remote branch (`feature/perf-tests`) to verify in cloud runner
 
 ## 🟠 Phase 3: Edge Intelligence & Fog Deployment 
 *Timeline: Next 6 Months*
