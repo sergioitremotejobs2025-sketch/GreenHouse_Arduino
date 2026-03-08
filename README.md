@@ -60,7 +60,7 @@ This project is built with a **Test-Driven Development (TDD)** first approach.
 - **Backend**: Node.js (Express), Go, Python (Flask/TensorFlow).
 - **Storage**: MongoDB, MySQL, Redis (Cache).
 - **Communication**: REST API, RabbitMQ, WebSockets.
-- **Frontend**: Angular 19+ with SCSS.
+- **Frontend**: Angular 25+ with SCSS.
 - **DevOps**: Docker, K8s, GitHub Actions, Terraform.
 
 ## 📜 Documentation
@@ -70,5 +70,15 @@ This project is built with a **Test-Driven Development (TDD)** first approach.
 - [Architecture Details](Documentation/Version_1/Book_Version_1.md)
 - [GCP Infrastructure Costs](COSTS05032026.md)
 
+## 👨‍💻 About Me
+
+Hi! I'm Sergio, a Software Engineer passionate about Cloud computing, Microservices, and IoT architectures. I love building scalable backend systems and exploring new technologies.
+
+📫 **Contact me:**
+- **Email:** sergioitremotejobs2025@gmail.com
+- **LinkedIn:** [Sergio Abad](https://www.linkedin.com/in/sergio-abad/) *(Update with your actual link if different)*
+
+🚀 **Open to opportunities!** I am currently looking for new roles and am open to job offers. Feel free to reach out to me!
+
 ---
-*Maintained with ❤️ by Rocky*
+*Maintained with ❤️ by Sergio*
