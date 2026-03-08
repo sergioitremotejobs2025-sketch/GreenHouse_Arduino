@@ -4,7 +4,7 @@
       <b style="font-size: 1em; display: block;">HOJA DE PROCESO</b>
       <span style="font-size: 0.7em; text-transform: uppercase; color: #444;">1ºME - TRINIDAD ARROYO</span>
     </td>
-    <td rowspan="2" align="center" width="79%" style="border: 2px solid black; padding: 4px; vertical-align: top; background-color: #ffffff;">
+    <td rowspan="2" align="center" width="85%" style="border: 2px solid black; padding: 4px; vertical-align: top; background-color: #ffffff;">
       <b style="font-size: 0.9em; display: block; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 2px;">CROQUIS DE LA PIEZA:</b>
       <img src="images/plano_acotado_gigante.png" style="display: block; margin: 0 auto; max-height: 180px; width: auto; max-width: 98%;" class="header-blueprint">
     </td>
@@ -59,9 +59,6 @@
 | 1.8    | Cilindrar Ø22 (acabado)            | Plaquette acabado                  | 120–160    | 1100–1400| 0.12–0.20 | 0.3    | Ø22 mm                                                     | ![Ø22](images/4_cil_22.png) |
 | 1.9    | Chaflanes / redondeos              | Plaquette o herramienta chaflán 45°| 100–140    | 800–1000| manual    | —      | Chaflanes 1×45° en todos los escalones                     | ![Chamfer](images/9_chaflan_A.png) |
 | 1.10   | Colocar contrapunto (si no estaba) | Contrapunto fijo o giratorio       | —          | —       | —         | —      | Apoyar en el punto centrado; ajustar presión moderada     | ![Contrapunto](images/11_contrapunto_A.png) |
-
-**Cambio de sujeción – Atada 2**  
-Dar vuelta la pieza, sujetar por Ø40 mm (usar mordazas blandas o protector). Usar contrapunto en el centro punteado del lado opuesto.
 
 | Nº Op. | Operación                          | Herramienta                        | Vc (m/min) | N (rpm) | a(mm/rev) | P (mm) | Notas / Medidas clave                                      | Croquis |
 |--------|------------------------------------|------------------------------------|------------|---------|-----------|--------|------------------------------------------------------------|---------|
