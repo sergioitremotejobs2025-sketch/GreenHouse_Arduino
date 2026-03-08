@@ -1,3 +1,5 @@
+![Plano Final de la Pieza](/Users/sergioabad/.gemini/antigravity/brain/51803315-03ee-437a-8637-11d49e54279b/final_part_technical_drawing_clean_1772989346345.png)
+
 ¡Claro! He actualizado la **hoja de procesos** incorporando la operación de **punteado** (centrado) con **broca de centrar** (o broca de puntear/center drill) para preparar el soporte del contrapunto en ambos extremos de la pieza.  
 
 Esta operación es esencial cuando se usa contrapunto para piezas largas o para evitar vibraciones en torneado de ejes escalonados como este.
