@@ -2,7 +2,7 @@
 
 [![Coverage: 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](CURRENT_COVERAGE.md)
 [![Continuous Integration](https://github.com/sergioitremotejobs2025-sketch/GreenHouse_Arduino/actions/workflows/ci.yml/badge.svg)](https://github.com/sergioitremotejobs2025-sketch/GreenHouse_Arduino/actions/workflows/ci.yml)
-[![Phase: 3 (QA)](https://img.shields.io/badge/Phase-3%20QA-blue.svg)](Timeline.md)
+[![Phase: 2 (Security)](https://img.shields.io/badge/Phase-2%20Security-blue.svg)](Timeline.md)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
 A robust, enterprise-grade IoT ecosystem for remote monitoring and automation of smart greenhouses. This project leverages a microservices architecture to provide real-time sensing, AI-driven forecasting, and secure device management.
@@ -46,12 +46,15 @@ graph TD
 - **Secure by Design**: JWT-based authentication with internal API-key guarding for service-to-service communication.
 - **Fully Containerized**: Kubernetes (GKE) ready with optimized Dockerfiles and Helm charts.
 
-## 🧪 Testing State
-
-This project is built with a **Test-Driven Development (TDD)** first approach.
+## 🧪 Testing State & CI/CD
+This project is built with a **Test-Driven Development (TDD)** first approach and a "Zero-Tolerance" CI/CD policy.
 
 - **Unit Tests**: `Jest` (Node), `Pytest` (Python), `Go internal` (Go).
-- **Coverage Summary**: See [CURRENT_COVERAGE.md](CURRENT_COVERAGE.md).
+- **Coverage Summary**: **100%** Across all 10+ services (See [CURRENT_COVERAGE.md](CURRENT_COVERAGE.md)).
+- **Continuous Integration**: Powered by a unified **GitHub Actions Matrix**.
+  - **Status**: ✅ **Stable & Green** on `fix/pipeline-health`.
+  - **Performance**: High-speed dependency caching (npm/go) for < 60s feedback loops.
+  - **Regressions**: Integrated **K6 Load Testing** for latency-spike detection.
 - **Contract Verification**: Pact files are located in `orchestrator-ms/pacts/`.
 - **Quality Metrics**: [Timeline.md](Timeline.md) tracks the progress towards 100% coverage and advanced quality.
 
