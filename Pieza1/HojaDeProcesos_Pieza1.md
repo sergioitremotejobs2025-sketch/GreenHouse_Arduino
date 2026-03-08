@@ -4,12 +4,15 @@
       <b style="font-size: 0.9em; display: block;">HOJA DE PROCESO</b>
       <span style="font-size: 0.65em; text-transform: uppercase;">1ºME - TRINIDAD ARROYO</span>
     </td>
-    <td width="3%" style="border: 2px solid black; padding: 1px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.75em;">
+    <td width="1%" style="border: 2px solid black; padding: 1px; vertical-align: middle; text-align: center; white-space: nowrap; font-size: 0.75em;">
       <b>P:</b> 01
     </td>
-    <td rowspan="2" align="center" width="77%" style="border: 2px solid black; padding: 3px; vertical-align: top; background-color: #ffffff;">
-      <b style="font-size: 0.9em; display: block; margin-bottom: 2px;">CROQUIS DE LA PIEZA:</b>
-      <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 0 auto; max-height: 160px; object-fit: contain;" class="header-blueprint">
+    <td rowspan="2" align="center" width="79%" style="border: 2px solid black; padding: 3px; vertical-align: top; background-color: #ffffff;">
+      <div style="display: flex; justify-content: space-between; padding: 0 5px;">
+        <b style="font-size: 0.85em;">CROQUIS DE LA PIEZA:</b>
+        <span style="font-size: 0.85em;"><b>Bruto:</b> Ø50 x 140 mm</span>
+      </div>
+      <img src="images/plano_acotado_gigante.png" width="98%" style="display: block; margin: 2px auto 0 auto; max-height: 160px; object-fit: contain;" class="header-blueprint">
     </td>
   </tr>
   <tr>
@@ -22,7 +25,7 @@
       <b>Alumno:</b> Sergio Abad (Rev. A)
     </td>
     <td colspan="2" style="border: 2px solid black; padding: 4px;">
-      <b>Material:</b> Acero AISI 1045 | <b>Bruto:</b> Ø50 x 140 mm
+      <b>Material:</b> Acero AISI 1045
     </td>
   </tr>
 </table>
