@@ -29,7 +29,7 @@ def export_to_pdf():
                 font-family: 'Arial', sans-serif;
                 margin: 0;
                 padding: 0;
-                font-size: 8.5px;
+                font-size: 9.2px;
                 color: #000;
             }}
             table {{
@@ -45,7 +45,7 @@ def export_to_pdf():
                 text-align: left;
                 vertical-align: middle;
                 overflow: hidden;
-                line-height: 1.05;
+                line-height: 1.12;
             }}
             th {{
                 background-color: #f2f2f2;
