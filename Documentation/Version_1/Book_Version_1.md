@@ -27,6 +27,7 @@
 20. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
 21. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
 22. **[Conclusion: The Horizon of IoT](#conclusion)**
+23. **[About the Author](#about-the-author)**
 
 ---
 
@@ -1280,6 +1281,23 @@ The IoT Microservices project is a living ecosystem. By moving away from the "Bi
 1.  **Distributed Intelligence**: WebAssembly workers at the gateway level.
 2.  **Global Mesh**: Cross-cluster federation for international fleets.
 3.  **Autonomous Response**: Closing feedback loops at the Edge via Fog nodes.
+
+---
+
+<a id="about-the-author"></a>
+## 👨‍💻 About the Author: Sergio Abad
+
+**Sergio Abad** is a Software Engineer fueled by a deep-seated passion for **Cloud Computing**, **Microservices Architecture**, and the vast **IoT ecosystem**. With a focus on building high-performance, resilient, and enterprise-grade backend systems, Sergio has dedicated himself to exploring the frontiers of scalable technology.
+
+### 🌟 Vision and Expertise
+This project, the *IoT Microservices Encyclopedia*, is a testament to Sergio's commitment to the **Test-Driven Development (TDD)** philosophy and his belief in **Decoupled Sensing, Centralized Intelligence**. His expertise spans from low-level device communication to high-level cloud orchestration, always with an eye for security, observability, and clean, maintainable code.
+
+### 🚀 Join the Journey
+Sergio is always looking for new challenges and opportunities to push the boundaries of what's possible in the world of software. Whether it's discussing the future of **WebAssembly at the Edge**, optimizing **Kubernetes clusters**, or architecting **global-scale meshes**, he's ready to innovate.
+
+📫 **Let's Connect:**
+-   **Email:** [sergioitremotejobs2025@gmail.com](mailto:sergioitremotejobs2025@gmail.com)
+-   **LinkedIn:** [linkedin.com/in/sergio-abad/](https://www.linkedin.com/in/sergio-abad/)
 
 ---
 *End of Volume I: The Engineering Manual.*
