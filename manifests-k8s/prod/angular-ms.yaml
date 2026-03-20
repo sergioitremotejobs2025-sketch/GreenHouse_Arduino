@@ -11,7 +11,7 @@ spec:
   selector:
     app: angular-ms
     tier: frontend
-  type: NodePort
+  type: LoadBalancer
 
 ---
 apiVersion: apps/v1

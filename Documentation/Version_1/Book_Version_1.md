@@ -21,13 +21,13 @@
 14. **[Chapter 13: Engineering Excellence: TDD & CI/CD](#chapter-13)**
 15. **[Chapter 14: The Simulation Layer: Fake Arduino IoT](#chapter-14)**
 16. **[Chapter 15: Troubleshooting & Post-Mortems](#chapter-15)**
-17. **[Chapter 16: Technical Roadmap & Future Improvements](#chapter-16)**
-18. **[Chapter 17: Strategic Roadmap — The Execution Plan](#chapter-17)**
-19. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
-20. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
-21. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
-22. **[Conclusion: The Horizon of IoT](#conclusion)**
-23. **[About the Author](#about-the-author)**
+19. **[Chapter 18: Deployment Guide — Getting the Application Up and Running](#chapter-18)**
+20. **[Chapter 19: Operational Troubleshooting — Real-World Post-Mortems](#chapter-19)**
+21. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
+22. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
+23. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
+24. **[Conclusion: The Horizon of IoT](#conclusion)**
+25. **[About the Author](#about-the-author)**
 
 ---
 
@@ -999,6 +999,91 @@ gantt
     Serverless Offloading          :d2, 2027-02-01, 90d
 ```
 
+
+---
+
+<a id="chapter-18"></a>
+## 🚀 Chapter 18: Deployment Guide — Getting the Application Up and Running
+
+Deploying a complex ecosystem of 10+ microservices into Google Cloud requires a coordinated approach. This chapter details the lifecycle of the deployment and the critical scripts that automate this process.
+
+### 18.1 The Deployment Workflow
+The complete deployment process is discretized into four logical phases: **Infrastructure Provisioning**, **Manifest Synchronization**, **Image Compilation**, and **Kubernetes Orchestration**.
+
+### 18.2 Phase 1: Infrastructure Provisioning (`setup_gcp_infra.sh`)
+Before any services can run, the GKE environment and Artifact Registry must exist.
+*   **Action**: `sh setup_gcp_infra.sh`
+*   **Outcome**: 
+    - Creates the `iot-cluster` (GKE Autopilot).
+    - Creates the `iot-repo` in Artifact Registry.
+    - Configures local `kubectl` context with the cluster credentials.
+
+### 18.3 Phase 2: Manifest Synchronization (`update_manifest_tags.py`)
+Since the project ID and registry location can vary, the Kubernetes YAML files in `manifests-k8s/` must be synchronized with the actual cloud endpoints.
+*   **Action**: `python3 update_manifest_tags.py`
+*   **Outcome**: Rewrites image URLs in all deployment files to match the current Google Cloud project.
+
+### 18.4 Phase 3: Image Compilation (`build_and_push_to_gcp.sh`)
+Compiling containers locally is inefficient. We use **Cloud Build** to build images concurrently in the cloud.
+*   **Action**: `sh build_and_push_to_gcp.sh`
+*   **Outcome**: Submits 10 parallel build jobs. These images are pushed directly to the Artifact Registry once complete.
+
+### 18.5 Phase 4: Kubernetes Orchestration (`kubectl apply`)
+Finally, we apply the configurations and deployments to GKE.
+*   **Action**: 
+    1. `kubectl apply -R -f manifests-k8s/config/` (Configs and Secrets).
+    2. `kubectl apply -f manifests-k8s/prod/` (Microservices).
+*   **Outcome**: The GKE scheduler pulls the latest images and initiates the pods.
+
+### 18.6 The "One-Command" Solution: `recreate_all_gcp.sh`
+For a complete, end-to-end reconstruction, the `recreate_all_gcp.sh` script aggregates all the above steps into a single execution. This is the recommended way to restore the system after a teardown.
+
+### 18.7 Accessing the Application
+By default, services in Kubernetes are internal. For the **Angular Dashboard** to be reachable from your browser, its service type must be set to `LoadBalancer` in `manifests-k8s/prod/angular-ms.yaml`.
+
+*   **Command**: `kubectl get svc angular-ms --watch`
+*   **Navigation**: Once the `EXTERNAL-IP` changes from `<pending>` to a public IP (e.g., `35.x.x.x`), navigate to that IP in your browser on port 80.
+
+### 18.8 Testing with Simulated Components
+Once the dashboard is reachable, you can test the end-to-end flow using the included simulators.
+
+#### 18.8.1 Default Test User
+You can log into the Angular dashboard using the preset credentials established during the database initialization:
+*   **Username**: `Rocky`
+*   **Password**: `Rocky`
+
+#### 18.8.2 Simulating an IoT Device (Fake Arduino)
+To simulate a real sensor sending data to your GKE cluster:
+1.  **Configure environment**: The `fake-arduino-iot` simulator needs to know which backend to talk to. 
+2.  **Run the simulator**: Use the local service to generate traffic:
+    ```bash
+    cd fake-arduino-iot
+    npm run start
+    ```
+3.  **Observation**: The simulator will generate random measurements and push them to the orchestrator. You should see these values update in real-time on your dashboard.
+
+---
+
+<a id="chapter-19"></a>
+## 🛠️ Chapter 19: Operational Troubleshooting — Real-World Post-Mortems
+
+Maintaining a distributed system involves continuous learning from operational failures. This chapter documents common errors encountered during the GKE migration and their definitive solutions.
+
+### 19.1 Case Study: `stats-ms` CrashLoopBackOff (Python Entrypoint Error)
+**Symptom**: 
+The `stats-ms` pod constantly restarts with a `CrashLoopBackOff` status. Running `kubectl logs stats-ms` reveals the following error:
+`python: No module named src.__main__; 'src' is a package and cannot be directly executed`
+
+**Root Cause**:
+The Python `-m` (module) switch requires a file named `__main__.py` to be present inside the target directory (in this case, `/src`). Because the project structure used `src/main.py` without a `__main__.py`, the interpreter did not know how to "execute" the package.
+
+**Solution**:
+Modify the `Dockerfile` to call the main script explicitly using its relative path. 
+*   **Original CMD**: `CMD [ "python", "-m", "src" ]`
+*   **Corrected CMD**: `CMD [ "python", "src/main.py" ]`
+
+**Verification**:
+After rebuilding and pushing the image, the pod status should transition to `Running` and the liveness probe `/health` should return a 200 OK.
 
 ---
 

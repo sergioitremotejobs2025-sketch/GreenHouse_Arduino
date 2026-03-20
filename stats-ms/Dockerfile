@@ -7,4 +7,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY src/ ./src/
 
-CMD [ "python", "-m", "src" ]
+CMD [ "python", "src/main.py" ]
