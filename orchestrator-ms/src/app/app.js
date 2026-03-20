@@ -8,17 +8,26 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 // Rate limiting
 const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window`
-    message: 'Too many requests from this IP, please try again after 15 minutes'
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+    message: 'Too many requests from this IP, please try again after 15 minutes',
+    skip: (req) => req.url === '/health' || req.url === '/metrics'
 });
 
 const authLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // Limit each IP to 10 login requests per hour
+    windowMs: 60 * 60 * 1000,
+    max: 100,
     message: 'Too many login attempts from this IP, please try again after an hour'
+});
+
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'orchestrator-ms' }));
+app.get('/metrics', async (req, res) => {
+    res.setHeader('Content-Type', register.contentType);
+    res.send(await register.metrics());
 });
 
 app.use(globalLimiter);
@@ -70,13 +79,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
-});
-
-app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'orchestrator-ms' }))
-
-app.get('/metrics', async (req, res) => {
-    res.setHeader('Content-Type', register.contentType);
-    res.send(await register.metrics());
 });
 
 app.use(require('./routes/orchestrator.routes'))
