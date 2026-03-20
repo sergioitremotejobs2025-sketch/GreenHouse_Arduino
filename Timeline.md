@@ -13,10 +13,12 @@ gantt
     Workflow Stabilization          :done, p15_1, 2026-03-07, 2d
     Badge Monitoring                :done, p15_2, 2026-03-08, 1d
 
-    section Phase 2: Observability & Security
-    CI/CD Performance Regressions   :active, p2_1, 2026-03-08, 14d
-    mTLS Service Mesh Pilot         :p2_2, after p2_1, 21d
-    Advanced Observability (SRE)    :p2_3, after p2_2, 14d
+    section Phase 2: Observability & Scaling
+    GKE Cloud Migration (Phase 2.1) :done, p2_1, 2026-03-10, 10d
+    Cloud Simulation Implementation :done, p2_2, 2026-03-19, 2d
+    Disaster Recovery Scripting     :done, p2_3, 2026-03-20, 1d
+    mTLS Service Mesh Pilot         :active, p2_4, 2026-03-21, 21d
+    Advanced Observability (SRE)    :p2_5, after p2_4, 14d
 
     section Phase 3: Edge & Fog
     Device Registry V2 Upgrade      :p3_1, 2026-05-20, 28d
@@ -40,14 +42,17 @@ Focus on resolving pending errors and stabilizing the existing CI/CD pipelines b
 | **Workflow Stabilization** | **2 Days** | ✅ Done | Resolved PR #1 failures, flattened `auth-ms`, and consolidated CI into a unified matrix workflow. |
 | **Badge Monitoring** | **1 Day** | ✅ Done | Verified dynamic README badge correctly tracks CI status across all services. |
 
-### 🟡 Phase 2: Closing the Unit Gaps & Observability (Est: 7 Weeks)
-Focus on internal security hardening and expanding the SRE platform capabilities.
+### 🟢 Phase 2: Cloud Migration & Observability (In Progress)
+Focus on migrating workflows to GKE, internal security hardening, and expanding the SRE platform.
 
-| Task | Estimated Effort | Complexity | Description |
+| Task | Effort | Status | Description |
 | :--- | :--- | :--- | :--- |
-| **mTLS Service Mesh Pilot** | **3 Weeks** | High | Deploying Istio/Linkerd. Learning curve for configuring sidecar proxies. Piloting exclusively on `auth-ms` -> `orchestrator-ms` to prevent cluster-wide outages during rollout. |
-| **Advanced Observability HQ** | **2 Weeks** | Medium | Aggregating Promtail/Loki logs with Prometheus metrics. Building correlated Grafana dashboards. Setting up alerting rules for threshold breaches. |
-| **CI/CD Maturity (Perf Tests)** | **2 Weeks** | Medium | Integrating load-testing frameworks (e.g., K6) into GitHub Actions. Setting up baseline latency metrics and enforcing CI failure on degradation. |
+| **GKE Cloud Migration** | **10 Days** | ✅ Done | Successfully migrated all microservices from local Docker to GKE Autopilot. Configured LoadBalancers and Artifact Registry pipelines. |
+| **Cloud Simulation** | **2 Days** | ✅ Done | Containerized the `fake-arduino` simulators and deployed them natively to GKE with internal DNS routing. |
+| **Emergency Recovery (DR)** | **1 Day** | ✅ Done | Created the `recreate_full_system.sh` master script for automated, zero-touch restoration of the entire GCP environment. |
+| **mTLS Service Mesh Pilot** | **3 Weeks** | 🟡 Active | Deploying Istio/Linkerd. Learning curve for configuring sidecar proxies. Piloting exclusively on `auth-ms` -> `orchestrator-ms`. |
+| **Advanced Observability HQ** | **2 Weeks** | ⏳ Queue | Aggregating Promtail/Loki logs with Prometheus metrics. Building correlated Grafana dashboards. |
+| **CI/CD Maturity (Perf Tests)** | **2 Weeks** | ⏳ Queue | Integrating load-testing frameworks (e.g., K6) into GitHub Actions. |
 
 ### 🟠 Phase 3: Edge Intelligence & Fog Deployment (Est: 18 Weeks)
 Focus on decentralizing compute to the physical network edge to save cloud bandwidth bounds.

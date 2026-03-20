@@ -21,13 +21,14 @@
 14. **[Chapter 13: Engineering Excellence: TDD & CI/CD](#chapter-13)**
 15. **[Chapter 14: The Simulation Layer: Fake Arduino IoT](#chapter-14)**
 16. **[Chapter 15: Troubleshooting & Post-Mortems](#chapter-15)**
-19. **[Chapter 18: Deployment Guide — Getting the Application Up and Running](#chapter-18)**
-20. **[Chapter 19: Operational Troubleshooting — Real-World Post-Mortems](#chapter-19)**
-21. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
-22. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
-23. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
-24. **[Conclusion: The Horizon of IoT](#conclusion)**
-25. **[About the Author](#about-the-author)**
+17. **[Chapter 18: Deployment Guide — Getting the Application Up and Running](#chapter-18)**
+18. **[Chapter 19: Operational Troubleshooting — Real-World Post-Mortems](#chapter-19)**
+19. **[Chapter 20: Automated CI/CD Infrastructure with GitHub Actions](#chapter-20)**
+20. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
+21. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
+22. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
+23. **[Conclusion: The Horizon of IoT](#conclusion)**
+24. **[About the Author](#about-the-author)**
 
 ---
 
@@ -1119,6 +1120,30 @@ For persistent simulation that doesn't depend on your local machine, you can run
     ```
 5.  **Verify Flow**: Log in to the dashboard at [http://34.38.117.169/](http://34.38.117.169/) with the **testuser** or **Rocky** credentials to see real-time data flow inside the cluster.
 
+#### 18.9.6 Manual Cloud Mode Registration
+If you need to manually force a cloud IP update for a specific user without running the full recreation script:
+```bash
+CLOUD_MODE=true sh Scripts/register_fake_iot.sh [username]
+```
+This will ensure the microcontrollers are registered with the cluster's internal DNS (`fake-arduino-iot:80`) instead of `localhost`.
+
+### 18.10 Full System Recreation & Disaster Recovery
+For scenarios where you need to wipe the environment and start fresh (disaster recovery or environment drift), use the master recovery script.
+
+**Action**:
+```bash
+sh recreate_full_system.sh
+```
+
+**What this script automates:**
+1.  **Infrastructure Re-provisioning**: Re-runs `setup_gcp_infra.sh`.
+2.  **Manifest Synchronization**: Runs the Python tag updater for all services.
+3.  **Cross-Cloud Image Build**: Re-compiles all microservices and **Cloud Simulators** into Artifact Registry.
+4.  **K8s Deployment**: Re-applies all ConfigMaps, Secrets, and Production Manifests.
+5.  **Database Seeding**: Waits for MySQL to be ready and automatically registers the **`Rocky`** user with **Cloud Mode** simulators.
+
+**Result**: You will have a fully operational, end-to-end IoT system with active cloud telemetry in approximately 5–10 minutes.
+
 ---
 
 <a id="chapter-19"></a>
@@ -1144,6 +1169,67 @@ After rebuilding and pushing the image, the pod status should transition to `Run
 
 ---
 
+---
+
+<a id="chapter-20"></a>
+## 🚀 Chapter 20: Automated CI/CD Infrastructure with GitHub Actions
+
+To maintain high availability and a 100% test-passing requirement, the project utilizes **GitHub Actions** as its primary CI/CD engine. This chapter provides a detailed breakdown of the automated workflows that govern the build, test, and deployment phases.
+
+### 20.1 Continuous Integration Workflow (`ci.yml`)
+The `Continuous Integration` workflow is the "quality gate" of the repository. It is triggered on every **push** and **pull request** to the `main` branch.
+
+#### 20.1.1 Job Matrix & Parallelization
+To reduce developer feedback loops, the CI uses a **Job Matrix** approach, running tests in parallel across different environments:
+
+| Job | Responsibility | Language/Tool |
+|---|---|---|
+| `test-node` | Orchestrator, Measure, Microcontrollers, Publisher, & Fake IoT | Node.js 20 |
+| `test-python` | Stats-MS and AI-MS logic & forecasting | Python 3.10 |
+| `test-go` | Security & Authentication services | Go 1.23.0 |
+| `test-angular` | Frontend UI and End-to-End sanity | Node.js (ng test) |
+
+#### 20.1.2 Automated Simulation Tests
+The `test-node` job specifically includes the `fake-arduino-iot-pictures` simulator to ensure that even the mock hardware layer is verified for logical consistency before any cloud deployment.
+
+---
+
+### 20.2 Continuous Deployment Workflow (`deploy.yml`)
+The `CI/CD — Build & Deploy to GKE` workflow handles the complex task of migrating code from the repository to the production GKE cluster.
+
+#### 20.2.1 Smart Change Detection
+To optimize cloud costs and build times, the workflow implements **Detect Changed Services**. It only triggers Docker builds for the specific microservice folders that have been modified in the latest commit.
+
+```mermaid
+graph TD
+    A[Push to Main] --> B{Detect Changes}
+    B -->|auth-ms changed| C[Build auth-ms]
+    B -->|stats-ms changed| D[Build stats-ms]
+    C --> E[Push to Artifact Registry]
+    D --> E
+    E --> F[Update GKE Image Tags]
+    F --> G[Rollout to Cluster]
+```
+
+#### 20.2.2 Containerization to Google Artifact Registry
+All builds are authenticated via `google-github-actions/auth`. Images are tagged with both the **Git Commit SHA** and the **`latest`** tag, ensuring full traceability and easy rollback capability.
+
+#### 20.2.3 GitOps & Kubernetes Rollout
+Upon a successful build, the workflow:
+1.  Connects to the `iot-cluster` using the `gke-gcloud-auth-plugin`.
+2.  Executes `kubectl set image` to trigger a rolling update.
+3.  Verifies the rollout success via `kubectl rollout status`.
+
+---
+
+### 20.3 Deployment & Infrastructure Automation Scripts
+In addition to GitHub Actions, the project includes several local "recreation" scripts (detailed in **Appendix 3**) that harmonize with the CI/CD environment.
+
+*   **`recreate_full_system.sh`**: Mirrors the GitHub Action logic locally to restore a wiped cloud environment from zero.
+*   **`update_manifest_tags.py`**: A helper script that pre-syncs manifest files with the correct `europe-west1` GCP registry URLs.
+
+---
+
 <a id="appendix-3"></a>
 ## 🛠️ Appendix 3: DevOps & Automation — The Scripting Toolkit
 To maintain a high-velocity environment and ensure consistent deployments across Dev, QA, and GKE Production, we use a comprehensive suite of automation scripts. These are located in the root directory and the `/Scripts` folder.
@@ -1152,7 +1238,8 @@ To maintain a high-velocity environment and ensure consistent deployments across
 These scripts handle the lifecycle of the Google Cloud Platform (GCP) environment.
 - **`setup_gcp_infra.sh`**: Provisions the initial Artifact Registry, GKE Autopilot cluster, and IAM roles.
 - **`teardown_gcp.sh`**: Safely deprovisions all cloud resources to ensure zero-cost idling during development pauses.
-- **`recreate_all_gcp.sh`**: A "Nuclear Option" script that performs a full deprovisioning followed by a fresh provisioning to clear environment drift.
+- **`recreate_all_gcp.sh`**: A utility for infrastructure-only recreation.
+- **`recreate_full_system.sh`**: The **Master Recovery Script**. It performs infrastructure setup, tag syncing, image builds, K8s deployment, and automated cloud-mode device registration.
 - **`Check__Cost_Google_Cloud.sh`**: Queries the GCP Billing API to provide real-time cost transparency for the project.
 
 ### 2. Deployment & Registry Synchronization
