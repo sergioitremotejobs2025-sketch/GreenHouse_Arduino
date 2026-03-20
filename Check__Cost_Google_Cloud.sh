@@ -64,6 +64,26 @@ gcloud run services list --project=$PROJECT_ID --quiet >> "$OUTPUT_FILE" 2>&1
 echo '```' >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
+# 7. Estimated Daily Cost Calculation
+echo "Calculating estimated daily costs..."
+echo "## 💡 7. Estimated Daily Cost (europe-west1)" >> "$OUTPUT_FILE"
+echo "| Period | Compute (Autopilot) | Storage & Network | **Total Est.** |" >> "$OUTPUT_FILE"
+echo "|---|---|---|---|" >> "$OUTPUT_FILE"
+
+# Approximate calculations for the current right-sized state:
+# Total CPU: ~3.0 vCPU * $0.0585 = $0.175/hr
+# Total RAM: ~3.5 GiB * $0.0081 = $0.028/hr
+# Total LB & Storage: ~$0.046/hr
+# Total Daily: (~0.25/hr * 24) = ~$6.00
+
+echo "| Per hour | \$0.203 | \$0.046 | **\$0.25** |" >> "$OUTPUT_FILE"
+echo "| **Per day (24h)** | \$4.88 | \$1.10 | **\$5.98** |" >> "$OUTPUT_FILE"
+echo "| Per month (30d) | \$146.40 | \$33.00 | **~\$179** |" >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
+echo "> [!NOTE]" >> "$OUTPUT_FILE"
+echo "> Costs are estimates based on standard **europe-west1** Autopilot and SSD storage rates in March 2026. Actual costs may vary based on usage spikes or additional ingress traffic." >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
+
 # Finalize
 echo "Cost check script completed successfully!"
 echo "Please review ${OUTPUT_FILE} for details."

@@ -65,12 +65,12 @@ VALUES ('$USER', 'b55c8792d1ce458e279308835f8a97b580263503e76e1998e279703e35ad0c
 # ─── Microcontrollers ────────────────────────────────────────────────────────
 echo "📡 Registering microcontrollers..."
 
-run_sql "INSERT IGNORE INTO iot.microcontrollers VALUES ('$USER', 'host.docker.internal:3000', 'temperature', 'Fake Grove - Temperature');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers VALUES ('$USER', 'host.docker.internal:3001', 'humidity',    'Fake Grove - Moisture');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers VALUES ('$USER', 'host.docker.internal:3002', 'temperature', 'Fake Grove - Temperature');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers VALUES ('$USER', 'host.docker.internal:3003', 'humidity',    'Fake Grove - Moisture');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers VALUES ('$USER', 'host.docker.internal:3004', 'temperature', 'Fake Grove - Temperature');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers VALUES ('$USER', 'host.docker.internal:3005', 'pictures',   'Fake Camera');"
+run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3000', 'temperature', 'Fake Grove - Temperature');"
+run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3001', 'humidity',    'Fake Grove - Moisture');"
+run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3002', 'temperature', 'Fake Grove - Temperature');"
+run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3003', 'humidity',    'Fake Grove - Moisture');"
+run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3004', 'temperature', 'Fake Grove - Temperature');"
+run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3005', 'pictures',   'Fake Camera');"
 
 # ─── Summary ─────────────────────────────────────────────────────────────────
 echo ""

@@ -1062,6 +1062,50 @@ To simulate a real sensor sending data to your GKE cluster:
     ```
 3.  **Observation**: The simulator will generate random measurements and push them to the orchestrator. You should see these values update in real-time on your dashboard.
 
+### 18.9 Using Automation Scripts for Simulators
+To simplify the creation and registration of multiple simulated devices (Fake Arduinos), you can use the specialized scripts located in the `Scripts/` folder.
+
+#### 18.9.1 Mass-Registration of Devices (`Scripts/register_fake_iot.sh`)
+This script automates the process of adding 6 simulated devices to a specific user's registry in the GKE MySQL database.
+*   **Action**: `sh Scripts/register_fake_iot.sh [username]`
+*   **Result**: 
+    - Ensures the user exists (default: `testuser`).
+    - Associates 6 mock devices at `host.docker.internal:3000-3005` (representing temperature, humidity, and camera sensors).
+*   **Credentials**: Log in with `testuser` / `testpassword123`.
+
+#### 18.9.2 Starting the Multi-Device Cluster (`Scripts/start_fake_iot.sh`)
+Instead of starting simulators one by one, this script launches all your simulated hardware concurrently.
+*   **Action**: `sh Scripts/start_fake_iot.sh`
+*   **Result**: Starts 5 background Node.js processes on ports 3000–3004 and redirects their output to `fake_arduino_X.log` files in the root directory.
+
+#### 18.9.3 Stopping Simulators
+*   **Action**: `sh Scripts/stop_all_fake.sh`
+*   **Result**: Safely kills all active simulation processes on the local machine.
+
+#### 18.9.4 Recommended Testing Workflow
+To see data on the dashboard, you must run **both** scripts in this specific sequence:
+
+1.  **Configuration (`register_fake_iot.sh`)**: Run this **first and only once** to populate the database and link devices to your user.
+    ```bash
+    sh Scripts/register_fake_iot.sh Rocky
+    ```
+2.  **Execution (`start_fake_iot.sh`)**: Run this **second** each time you want to start a live simulation session.
+    ```bash
+    sh Scripts/start_fake_iot.sh
+    ```
+3.  **Validation**: Navigate to the [dashboard](http://34.38.117.169/) and log in with the user specified in the registration script (e.g., `Rocky` / `Rocky`).
+
+#### 18.9.5 Running Simulators in GKE (Cloud Mode)
+For persistent simulation that doesn't depend on your local machine, you can run the simulators as pods within your GKE cluster.
+
+1.  **Deployment**: The simulation layer (e.g., `fake-arduino-iot-pictures`) is already defined as a Deployment in `manifests-k8s/prod/`.
+2.  **Scaling**: You can scale the number of simulators running in the cloud to increase data ingestion pressure:
+    ```bash
+    kubectl scale deployment fake-arduino-iot-pictures --replicas=3
+    ```
+3.  **Cross-Pod Communication**: When simulators run as pods, they use internal Kubernetes DNS to communicate with the `orchestrator-ms`. Your local machine (via its dashboard) will fetch the data from the central database updated by these pods.
+4.  **Registering Cloud Pods**: You can still use the local registration script to register these cloud-based devices by pointing them to the internal service names in GKE.
+
 ---
 
 <a id="chapter-19"></a>
