@@ -5,7 +5,7 @@
       <li *ngIf="lastMeasure">
         <div class="measure-name">Último valor: </div>
         <span class="black measure-value">{{ lastMeasure.real_value }} {{ measureUnit }}</span>
-        <span>
+        <span *ngIf="lastMeasure.date">
           <mat-icon class="stats-arrow-icon">keyboard_arrow_right</mat-icon>
           {{ lastMeasure.date.substring(17, 25) }}
         </span>
@@ -13,7 +13,7 @@
       <li *ngIf="maxMeasure">
         <div class="measure-name">Máxima: </div>
         <span class="bg-light-red measure-value white">{{ maxMeasure.real_value }} {{ measureUnit }}</span>
-        <span>
+        <span *ngIf="maxMeasure.date">
           <mat-icon class="stats-arrow-icon">keyboard_arrow_right</mat-icon>
           {{ maxMeasure.date.substring(17, 25) }}
         </span>
@@ -21,7 +21,7 @@
       <li *ngIf="minMeasure">
         <div class="measure-name">Mínima: </div>
         <span class="bg-light-blue measure-value white">{{ minMeasure.real_value }} {{ measureUnit }}</span>
-        <span>
+        <span *ngIf="minMeasure.date">
           <mat-icon class="stats-arrow-icon">keyboard_arrow_right</mat-icon>
           {{ minMeasure.date.substring(17, 25) }}
         </span>
@@ -31,6 +31,6 @@
         <span class="bg-gray measure-value white">{{ avgMeasure }} {{ measureUnit }}</span>
       </li>
     </ul>
-    <span>{{ nSamples }}</span>
+    <span *ngIf="nSamples > 0">Muestras: {{ nSamples }}</span>
   </mat-card-content>
 </mat-card>
