@@ -1141,6 +1141,16 @@ The `ai-ms` microservice provides predictive analysis using LSTM (Long Short-Ter
 2.  Ensure `stats-ms` has the MongoDB connection variables configured in `docker-compose.test.yml`.
 3.  Allow time for at least 4 batches (of 5 items) to be processed by `stats-ms`.
 
+#### 22.3 Case Study: Ephemeral vs. Persistent AI Models
+**Symptom**: Model trains successfully (green message), but prediction fails with "Model not found" after a container restart or rebuild.
+**Cause**: The initial `ai-ms` Dockerfile used standard `COPY` instructions without volume mappings, saving `.h5` files into the container's ephemeral writable layer.
+**Resolution**: Modified `docker-compose.test.yml` to include a persistent volume mount:
+```yaml
+volumes:
+  - ./ai-ms/src/models:/app/src/models
+```
+This ensures models survive container recreations and are visible on the host filesystem for inspection.
+
 ---
 
 <a id="chapter-23"></a>

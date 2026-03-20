@@ -14,7 +14,7 @@ import { Microcontroller } from '@models/microcontroller.model'
 export class DashboardComponent implements OnInit {
 
   microcontrollers: Microcontroller[] = []
-  measure: String
+  measure: string
   recentValuesMap: Map<string, number[]> = new Map()
 
   constructor(
@@ -59,10 +59,9 @@ export class DashboardComponent implements OnInit {
     this.arduinoService.getPreviousMeasures(micro.ip, micro.measure, plural, undefined, undefined, 20)
       .subscribe((history: any[]) => {
         const key = `${micro.ip}_${micro.measure}`
-        // History is returned newest-first due to sort({timestamp:-1}). 
-        // LSTM expects chronological oldest -> newest.
-        const values = history.reverse().map(h => h.real_value)
-        this.recentValuesMap.set(key, values)
+        // History is newest-first. FlatMap correctly expands the real_values batches
+        const values = history.reverse().flatMap(h => h.real_values || [h.real_value])
+        this.recentValuesMap.set(key, values.slice(-20)) // Keep only the latest 20
       })
   }
 

@@ -61,6 +61,7 @@ def predict():
         
     model_path = f"models/{username}_{ip}_{measure}.h5"
     print(f"[ai-ms] PREDICT Request: {username} - {ip} - {measure} (path: {model_path})")
+    print(f"[ai-ms] Recent values: {recent_values}")
     
     if not os.path.exists(model_path):
         print(f"[ai-ms] ERROR: Model not found at {model_path}. Existing models: {os.listdir('models')}")
