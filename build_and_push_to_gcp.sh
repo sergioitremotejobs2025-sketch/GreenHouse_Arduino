@@ -11,6 +11,7 @@ SERVICES=(
   "ai-ms"
   "angular-ms"
   "auth-ms"
+  "fake-arduino-iot"
   "fake-arduino-iot-pictures"
   "measure-ms"
   "microcontrollers-ms"

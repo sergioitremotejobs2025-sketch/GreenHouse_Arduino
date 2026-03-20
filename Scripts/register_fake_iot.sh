@@ -35,6 +35,25 @@ USER="${1:-testuser}"
 DB_PASS="f001de9f90e1eae14f8eff7782c2f811"
 MYSQL_POD="mysql-0"
 
+# Set CLOUD_MODE=true to use internal cluster DNS instead of localhost
+CLOUD_MODE="${CLOUD_MODE:-false}"
+
+if [ "$CLOUD_MODE" = "true" ]; then
+  IP_TEMP="fake-arduino-iot:80"
+  IP_HUMID="fake-arduino-iot:80"
+  IP_PICT="fake-arduino-iot-pictures:80"
+  echo "☁️  Cloud Mode enabled: using cluster DNS for fake devices."
+else
+  IP_TEMP="host.docker.internal"
+  IP_HUMID="host.docker.internal"
+  IP_PICT="host.docker.internal"
+  # Add ports for local mode
+  PORT_TEMP=":3000"
+  PORT_HUMID=":3001"
+  PORT_PICT=":3005"
+  echo "🏠 Local Mode: using host.docker.internal for fake devices."
+fi
+
 # ─── Pre-flight checks ───────────────────────────────────────────────────────
 echo "🔍 Checking cluster connectivity..."
 if ! kubectl cluster-info &>/dev/null; then
@@ -65,12 +84,17 @@ VALUES ('$USER', 'b55c8792d1ce458e279308835f8a97b580263503e76e1998e279703e35ad0c
 # ─── Microcontrollers ────────────────────────────────────────────────────────
 echo "📡 Registering microcontrollers..."
 
-run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3000', 'temperature', 'Fake Grove - Temperature');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3001', 'humidity',    'Fake Grove - Moisture');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3002', 'temperature', 'Fake Grove - Temperature');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3003', 'humidity',    'Fake Grove - Moisture');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3004', 'temperature', 'Fake Grove - Temperature');"
-run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', 'host.docker.internal:3005', 'pictures',   'Fake Camera');"
+if [ "$CLOUD_MODE" = "true" ]; then
+  # In Cloud mode, we just point to the service names
+  run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', '$IP_TEMP', 'temperature', 'Cloud Temperature');"
+  run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', '$IP_HUMID', 'humidity',    'Cloud Moisture');"
+  run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', '$IP_PICT', 'pictures',   'Cloud Camera');"
+else
+  # In Local mode, we use the traditional port mapping
+  run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', '${IP_TEMP}:3000', 'temperature', 'Fake Grove - Temperature');"
+  run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', '${IP_HUMID}:3001', 'humidity',    'Fake Grove - Moisture');"
+  run_sql "INSERT IGNORE INTO iot.microcontrollers (username, ip, measure, sensor) VALUES ('$USER', '${IP_PICT}:3005', 'pictures',   'Fake Camera');"
+fi
 
 # ─── Summary ─────────────────────────────────────────────────────────────────
 echo ""
