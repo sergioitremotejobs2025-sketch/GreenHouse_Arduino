@@ -1073,10 +1073,15 @@ This script automates the process of adding 6 simulated devices to a specific us
     - Associates 6 mock devices at `host.docker.internal:3000-3005` (representing temperature, humidity, and camera sensors).
 *   **Credentials**: Log in with `testuser` / `testpassword123`.
 
-#### 18.9.2 Starting the Multi-Device Cluster (`Scripts/start_fake_iot.sh`)
-Instead of starting simulators one by one, this script launches all your simulated hardware concurrently.
-*   **Action**: `sh Scripts/start_fake_iot.sh`
-*   **Result**: Starts 5 background Node.js processes on ports 3000–3004 and redirects their output to `fake_arduino_X.log` files in the root directory.
+#### 18.9.2 Local Simulation Execution (`Scripts/start_fake_iot.sh`)
+To start a multi-device simulation session on your local development machine:
+1.  **Configure Target**: Ensure the `ORCHESTRATOR_MS_HOSTNAME` is pointing to your cloud endpoint (`34.38.117.169`).
+2.  **Run the script**:
+    ```bash
+    sh Scripts/start_fake_iot.sh
+    ```
+3.  **Result**: Starts 5 background Node.js processes on ports 3000–3004 and redirects their output to `fake_arduino_X.log` files in the root directory.
+4.  **Monitoring**: Real-time telemetry can be followed via `tail -f fake_arduino_3000.log`.
 
 #### 18.9.3 Stopping Simulators
 *   **Action**: `sh Scripts/stop_all_fake.sh`
@@ -1098,13 +1103,21 @@ To see data on the dashboard, you must run **both** scripts in this specific seq
 #### 18.9.5 Running Simulators in GKE (Cloud Mode)
 For persistent simulation that doesn't depend on your local machine, you can run the simulators as pods within your GKE cluster.
 
-1.  **Deployment**: The simulation layer (e.g., `fake-arduino-iot-pictures`) is already defined as a Deployment in `manifests-k8s/prod/`.
-2.  **Scaling**: You can scale the number of simulators running in the cloud to increase data ingestion pressure:
+**Step-by-Step Process for Cloud Simulation:**
+1.  **Verify Manifests**: Ensure you have run `python3 update_manifest_tags.py` so the simulators use your project-specific registry.
+2.  **Deploy Mock Hardware**: Apply the deployment to the cluster:
+    ```bash
+    kubectl apply -f manifests-k8s/prod/fake-arduino-iot-pictures.yaml
+    ```
+3.  **Confirm Readiness**: Ensure the pod is healthy and running:
+    ```bash
+    kubectl get pods -l app=fake-arduino-iot-pictures
+    ```
+4.  **Scaling**: Scale the data volume as needed for stress testing:
     ```bash
     kubectl scale deployment fake-arduino-iot-pictures --replicas=3
     ```
-3.  **Cross-Pod Communication**: When simulators run as pods, they use internal Kubernetes DNS to communicate with the `orchestrator-ms`. Your local machine (via its dashboard) will fetch the data from the central database updated by these pods.
-4.  **Registering Cloud Pods**: You can still use the local registration script to register these cloud-based devices by pointing them to the internal service names in GKE.
+5.  **Verify Flow**: Log in to the dashboard at [http://34.38.117.169/](http://34.38.117.169/) with the **testuser** or **Rocky** credentials to see real-time data flow inside the cluster.
 
 ---
 
