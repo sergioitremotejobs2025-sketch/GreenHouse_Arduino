@@ -22,7 +22,8 @@ chmod +x build_and_push_to_gcp.sh
 
 # 4. Deployment
 echo "⚙️  Step 4: Applying K8s Manifests..."
-kubectl apply -R -f manifests-k8s/config/
+# Apply configurations, but ignore SealedSecrets if the CRD isn't installed yet
+kubectl apply -R -f manifests-k8s/config/ --ignore-not-found=true || echo "Warning: Some config issues (like SealedSecrets) occurred, but continuing with regular secrets..."
 kubectl apply -f manifests-k8s/prod/
 
 # 5. Simulation & Data
