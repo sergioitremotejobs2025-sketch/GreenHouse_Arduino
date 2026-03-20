@@ -35,9 +35,9 @@ def metrics():
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 controllers = [
-    Humidity(QUEUE_HUMIDITY_NAME, 60),
-    Light(QUEUE_LIGHT_NAME, 60),
-    Temperature(QUEUE_TEMPERATURE_NAME, 60)
+    Humidity(QUEUE_HUMIDITY_NAME, 5),
+    Light(QUEUE_LIGHT_NAME, 5),
+    Temperature(QUEUE_TEMPERATURE_NAME, 5)
 ]
 
 def run_metrics(): # pragma: no cover

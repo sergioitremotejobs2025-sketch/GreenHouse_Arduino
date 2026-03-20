@@ -4,10 +4,14 @@ const digitalToReal = (digital, sensor) => {
   switch (sensor) {
     case 'Grove - Moisture':
     case 'Fake Grove - Moisture':
+    case 'Local Hum 1':
       return Number((digital * 100 / 950).toFixed(1))
     case 'Grove - Temperature':
     case 'Fake Grove - Temperature':
+    case 'Local Temp 1':
       return Number((1 / (Math.log(1023 / digital - 1) / B_TERMISTOR + 1 / 298.15) - 273.15).toFixed(1))
+    default:
+      return digital // Fallback if unknown sensor
   }
 }
 
@@ -27,7 +31,9 @@ const getMessage = (data, micro) => {
     case 'humidity':
     case 'temperature':
       message.real_value = digitalToReal(data[micro.measure], micro.sensor)
+      break
     case 'light':
+      break
   }
 
   return message

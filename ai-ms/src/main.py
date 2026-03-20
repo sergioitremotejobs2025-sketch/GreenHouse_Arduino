@@ -60,8 +60,11 @@ def predict():
         return jsonify({"error": "Missing parameters"}), 400
         
     model_path = f"models/{username}_{ip}_{measure}.h5"
+    print(f"[ai-ms] PREDICT Request: {username} - {ip} - {measure} (path: {model_path})")
+    
     if not os.path.exists(model_path):
-        return jsonify({"error": "Model not found. Train first."}), 404
+        print(f"[ai-ms] ERROR: Model not found at {model_path}. Existing models: {os.listdir('models')}")
+        return jsonify({"error": "Modelo no encontrado: entrénalo primero"}), 404
         
     try:
         model = load_model(model_path, compile=False)
@@ -76,7 +79,12 @@ def predict():
         # or better: we should have saved the scaler.
         
         # Let's assume the processor handles it (simplified)
-        processor.prepare_data(recent_values) # Just to fit the scaler
+        processor = DataProcessor()
+        
+        # FIT the scaler with these values first to avoid NotFittedError
+        # In a real app we'd save/load the scaler.
+        processor.scaler.fit(np.array(recent_values).reshape(-1, 1))
+        
         X_input = processor.transform_input(recent_values)
         
         prediction_scaled = model.predict(X_input)

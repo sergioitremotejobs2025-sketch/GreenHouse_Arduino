@@ -1,9 +1,15 @@
 const { main } = require('./app/app');
 
-main().then(() => {
-    console.log('Publisher-ms finished its run.');
-    process.exit(0);
-}).catch(err => {
-    console.error(err);
-    process.exit(1);
-});
+const start = async () => {
+    while (true) {
+        try {
+            await main();
+        } catch (err) {
+            console.error('Error in publisher loop:', err.message);
+            // Wait before retry if there was an error to avoid busy loop
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+};
+
+start();

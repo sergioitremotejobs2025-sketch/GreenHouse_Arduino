@@ -8,6 +8,7 @@ const measures = ['humidity', 'light', 'temperature']
 const publishMeasure = async measure => {
   const queue = new QueueModule(QUEUES_MEASURES[measure])
   try {
+    await queue.isReady()
     const micros = await getMicrocontrollers(measure)
     console.log(`[${measure}] Found ${micros.length} microcontrollers`)
 

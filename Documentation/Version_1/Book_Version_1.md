@@ -24,11 +24,14 @@
 17. **[Chapter 18: Deployment Guide — Getting the Application Up and Running](#chapter-18)**
 18. **[Chapter 19: Operational Troubleshooting — Real-World Post-Mortems](#chapter-19)**
 19. **[Chapter 20: Automated CI/CD Infrastructure with GitHub Actions](#chapter-20)**
-20. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
-21. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
-22. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
-23. **[Conclusion: The Horizon of IoT](#conclusion)**
-24. **[About the Author](#about-the-author)**
+20. **[Chapter 21: Local Engineering & Rapid Prototyping](#chapter-21)**
+21. **[Chapter 22: AI-Enhanced Monitoring & Model Training](#chapter-22)**
+22. **[Chapter 23: Troubleshooting Data Pipelining & Storage](#chapter-23)**
+23. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
+24. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
+25. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
+26. **[Conclusion: The Horizon of IoT](#conclusion)**
+27. **[About the Author](#about-the-author)**
 
 ---
 
@@ -715,12 +718,55 @@ To prove resilience against malicious actors, the **Orchestrator-MS Gateway** is
 <a id="chapter-14"></a>
 ## 🤖 Chapter 14: The Simulation Layer: Fake Arduino IoT
 
-How do you develop a massive IoT system without 1,000 physical Arduinos?
+Developing and testing a massive IoT system requires a reliable stream of high-frequency data. While physical hardware is the ultimate goal, the **Simulation Layer** provides a high-fidelity "Digital Twin" environment that allows for rigorous testing of ingestion pipelines, AI models, and UI responsiveness without needing 1,000 physical Arduinos.
 
-### 14.1 High-Fidelity Simulation
-The `fake-arduino-iot` services simulate real-world physics.
-*   **Random Walk**: Mimics natural temperature and humidity fluctuations.
-*   **Failure Injection**: Simulates "Dying Sensors" and network brownouts for reliability testing.
+### 14.1 High-Fidelity Physics Simulation
+The `fake-arduino-iot` service is not a simple static data generator; it is designed to mimic the erratic behavior of real-world physics and network conditions.
+
+*   **Algorithmic Random Walk**: Instead of purely random numbers, the simulator uses a "Random Walk" algorithm (similar to the Ornstein-Uhlenbeck process). This ensures that temperature and humidity values fluctuate naturally—for example, a reading of 22.5°C is likely to be followed by 22.6°C or 22.4°C, rather than jumping instantly to 40°C.
+*   **Failure Injection (Chaos Engineering)**: To test the resilience of the **Measure-MS** and **Stats-MS** services, the simulators can be configured to simulate "Dying Sensors" (sending `null` or `NaN` values), network timeouts (delayed responses), and periodic "Brownouts" where the device becomes unreachable for several minutes.
+*   **Media Mocking (Fake Camera)**: The `fake-arduino-iot-pictures` service simulates an ESP32-CAM module. It periodically serves pre-encoded base64 image strings to the `orchestrator-ms`, allowing the frontend to test the live-streaming and gallery features without a physical lens.
+
+### 14.2 Dual-Mode Execution: Local vs. Cloud
+To support the full developer lifecycle, the simulation layer supports two distinct modes of operation, toggled via the `CLOUD_MODE` environment variable.
+
+#### 14.2.1 Local Mode (Hardware Prototyping)
+In Local Mode, the simulators run on the developer's workstation (using `npm run start`). They listen on ports `3000` through `3005` and are registered in the system using the `host.docker.internal` bridge. This allows for rapid iteration when testing local microservice changes.
+
+#### 14.2.2 Cloud-Native Mode (GKE Simulation)
+When deployed to **Google Kubernetes Engine**, the simulators run as standard pods. 
+*   **Internal Discovery**: Instead of using IP addresses, the system uses **Kubernetes Service DNS** (`fake-arduino-iot:80`).
+*   **Zero-Cost Scaling**: Since the simulators are lightweight Node.js processes, they can be scaled to hundreds of replicas in GKE to perform massive stress tests on the RabbitMQ message broker and the AI inference engine.
+
+### 14.3 Simulation Topology
+The following diagram illustrates how the "Fake Arduinos" interact with the rest of the ecosystem in a Cloud-Native environment:
+
+```mermaid
+graph TD
+    subgraph "GKE Simulation Pods"
+        F1[Fake Temp Sensor]
+        F2[Fake Humidity Sensor]
+        F3[Fake Camera Mock]
+    end
+
+    subgraph "Central Orchestration"
+        O[Orchestrator-MS]
+        M[Measure-MS]
+    end
+
+    F1 -->|HTTP POST| M
+    F2 -->|HTTP POST| M
+    F3 -->|WebSocket/HTTP| O
+    
+    M -->|AMQP| R[RabbitMQ Cluster]
+    R -->|Stream| S[Stats-MS]
+    S -->|Feedback| O
+```
+
+### 14.4 Implementation Toolkit
+*   **`Scripts/start_fake_iot.sh`**: A master script that launches 6 background simulation processes and redirects their output to local log files.
+*   **`Scripts/register_fake_iot.sh`**: An idempotent registration script that populates the MySQL `microcontrollers` table with the correct IP/DNS entries for the simulated fleet.
+*   **`recreate_full_system.sh`**: Automatically deploys the simulators to GKE and performs the "Cloud Mode" registration, providing a "Zero-Touch" simulation environment.
 
 ---
 
@@ -773,6 +819,31 @@ The `fake-arduino-iot` services simulate real-world physics.
 **Incident**: Although the `mysql-0` pod reached a `Running` state, it failed its readiness probe indefinitely, reporting `connection refused`.
 **Discovery**: The container logs revealed an error during the initial database setup: `Column count doesn't match value count at row 1` in `initdb.sql`. The `INSERT` statement for the `microcontrollers` table was missing values for newer columns (`thresholdMin`, `thresholdMax`), causing the initialization to crash and restart the server process repeatedly.
 **Resolution**: Updated `mysql-iot/initdb.sql` to use explicit column-specific `INSERT` statements, ensuring robustness against future schema additions.
+
+#### 15.1.10 The GKE Rate-Limit Probe Paradox: Load Balancer & Proxy Shadowing
+**Incident**: After successful deployment to GKE, the `orchestrator-ms` pod entered a `CrashLoopBackOff`. Users reported immediate logouts and "429 Too Many Requests" errors even with single-user traffic.
+**Discovery**: The `kubectl describe pod` command revealed that the **Liveness Probe** was failing with `HTTP 429`. However, the root cause was deeper than simple probe frequency:
+1.  **Proxy Shadowing**: Without `app.set('trust proxy', 1)`, the Express app saw all client traffic (from all users world-wide) as originating from the **Google Cloud Load Balancer's internal IP**. This shared bucket quickly exhausted the 100-request quota.
+2.  **Middleware Capture**: Even when the `/health` route was moved above the rate-limiter, certain Express configurations or duplicate route definitions led to the probe being captured by the global throttle.
+**Resolution**:
+*   **Trust Proxy**: Enabled `trust proxy` to ensure the rate-limiter sees the unique **`X-Forwarded-For`** header from the actual end-user.
+*   **Explicit Skipping**: Used the `skip` callback in `express-rate-limit` to explicitly bypass `/health` and `/metrics` routes, mathematically ensuring Kubernetes infrastructure traffic is never throttled.
+*   **Quota Optimization**: Increased global thresholds to 1,000 requests per 15 minutes to support high-frequency IoT WebSocket signaling.
+
+#### 15.1.11 The "Secretless" Container Config Error
+**Incident**: Pods stayed in `CreateContainerConfigError` indefinitely during a full system recreation.
+**Discovery**: The automation script `recreate_full_system.sh` used an invalid flag (`--ignore-not-found`) for `kubectl apply`. This caused the command responsible for applying the core secrets and environment configurations to fail silently. Without the required `secrets` object, the dependent microservice containers could not be created by the GKE scheduler.
+**Resolution**: Fixed the script logic to use a robust `find ... -exec` pattern that skips specific problematic files (like `sealed-secrets.yaml` on fresh clusters) while ensuring all standard configuration manifests are applied successfully.
+
+#### 15.1.12 The Short-Lived Session Timeout
+**Incident**: Users reported being logged out of the dashboard every few minutes, even while actively interacting with the UI.
+**Discovery**: Analysis of `orchestrator-ms/src/config/jwt.config.js` revealed that `TOKEN_EXPIRATION_TIME` was set to **300 seconds (5 minutes)**. While a refresh mechanism existed, any minor network latency in the Cloud environment caused the background token-swap to fail, triggering the Angular app's security guards and forcing a full logout.
+**Resolution**: Extended the session life to **3600 seconds (1 hour)**. This drastically reduced the frequency of token-swaps and provided a significantly smoother monitoring experience for the end-user.
+
+#### 15.1.13 The Re-Auth Blockade (Global vs Route-Level Limits)
+**Incident**: After being logged out due to a rate-limit threshold, users were unable to log back in for up to 15 minutes, receiving "429" errors on the login screen.
+**Discovery**: The `globalLimiter` was placed at the very top of the Express middleware stack. When a user hit the monitoring request quota (e.g., via rapid dashboard refreshes), the global limiter blocked **all** subsequent requests from that IP—including the `/login` endpoint—before the dedicated authentication logic could even be reached.
+**Resolution**: Implemented a conditional `skip` policy in the global rate-limiter for `/login` and `/register` routes. This ensures that even if a user's monitoring quota is exhausted, they can always re-authenticate to restore their session.
 
 ---
 
@@ -1003,6 +1074,101 @@ gantt
 
 ---
 
+<a id="chapter-21"></a>
+### 🛠️ Chapter 21: Local Engineering & Rapid Prototyping
+
+When Cloud quotas (like GCP CPU limits) become a bottleneck, or when rapid iterative testing of gateway performance is required, the system can be transitioned to a **Local-First Development Model**. This allows for zero-cost execution and immediate feedback loops on Mac/Linux environments.
+
+#### 21.1 Hybrid Local Architecture
+The local setup uses a hybrid model for optimized developer experience:
+*   **Infrastructure & Backend**: Multi-container **Docker Compose** environment for databases (MySQL, MongoDB), message brokers (RabbitMQ), and all backend microservices.
+*   **Frontend**: Native **Node.js** execution for the Angular dashboard to support hot-reloading and direct debugging.
+*   **Simulation**: Native process execution for fake IoT sensors to simulate hardware interactions without container overhead.
+
+#### 21.2 The Boostrap Sequence
+To launch the complete ecosystem locally, follow this engineering sequence:
+
+1.  **Infrastructure Initialization**:
+    Ensure Docker Desktop is running and launch the containerized backend:
+    ```bash
+    docker-compose -f docker-compose.test.yml up -d
+    ```
+
+2.  **Schema Provisioning**:
+    Manually seed the local MySQL container if the automated init sequence is skipped:
+    ```bash
+    docker exec -i iot_mysql_test mysql -u root -pmy-secret-pw < mysql-iot/initdb.sql
+    ```
+
+3.  **Simulation Layer Activation**:
+    Start the environmental simulation processes. Note that ports are shifted to avoid conflicts with the main API Gateway:
+    ```bash
+    ./Scripts/start_fake_iot.sh        # Sensors on 3100-3104
+    ./Scripts/start_fake_iot_images.sh # Camera on 3005
+    ```
+
+4.  **Frontend Hot-Reload**:
+    Launch the Angular server in high-performance mode:
+    ```bash
+    cd angular-ms/iot-app && npm run start -- --port=4200
+    ```
+
+#### 21.3 Local Port Mapping Reference
+| Service | Local URL | Description |
+| :--- | :--- | :--- |
+| **Orchestrator (Gateway)** | `http://localhost:3000` | Main entry point for API calls |
+| **Angular Dashboard** | `http://localhost:4200` | Real-time monitoring UI |
+| **RabbitMQ Management** | `http://localhost:31567` | Message broker monitoring |
+| **MySQL Admin** | `127.0.0.1:33066` | Direct database access |
+
+---
+
+<a id="chapter-22"></a>
+### 🤖 Chapter 22: AI-Enhanced Monitoring & Model Training
+
+The `ai-ms` microservice provides predictive analysis using LSTM (Long Short-Term Memory) networks. For a model to be trained locally, the pipeline must be fully saturated with historical data.
+
+#### 22.1 AI Training Requirements
+- **Threshold**: At least 20 raw data points are required per (User, IP, Measure) tuple.
+- **Stats-ms Role**: Aggregates batch entries (default 60 points per batch, reduced to 5 for rapid local testing).
+- **Data Persistence**: Statistical summaries are stored in the `iot` database within MongoDB under collections like `temperatures` and `humidities`.
+
+#### 22.2 The "Insufficient Data" Error
+**Symptom**: `400 Bad Request` with message `Insufficient data (got X, need 20)`.
+**Cause**: The background polling service hasn't reached the flush threshold, or sensor signals are missing `real_value` mappings.
+**Resolution**:
+1.  Verify `publisher-ms` contains the correct sensor name mapping (e.g., `Local Temp 1`) in `message.module.js`.
+2.  Ensure `stats-ms` has the MongoDB connection variables configured in `docker-compose.test.yml`.
+3.  Allow time for at least 4 batches (of 5 items) to be processed by `stats-ms`.
+
+---
+
+<a id="chapter-23"></a>
+### 🛠️ Chapter 23: Troubleshooting Data Pipelining & Storage
+
+Operational stability depends on the seamless flow of data through three distinct database engines (MySQL, MongoDB, Redis) and the RabbitMQ broker.
+
+#### 23.1 MySQL 8.0 Authentication Protocol Mismatch
+**Error**: `ER_NOT_SUPPORTED_AUTH_MODE`.
+**Cause**: The legacy `mysql` Node.js client is incompatible with the default `caching_sha2_password` plugin in MySQL 8.0.
+**Fix**: 
+```sql
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
+FLUSH PRIVILEGES;
+```
+
+#### 23.2 RabbitMQ Multi-threading Crashes
+**Error**: `pika.exceptions.StreamLostError` in `stats-ms`.
+**Cause**: Sharing a single `BlockingConnection` across multiple consumer threads (Temperature, Humidity, Light).
+**Fix**: Implement a connection factory pattern where each ingestion worker thread establishes its own dedicated channel and connection.
+
+#### 23.3 Cross-Contamination of User Data
+**Error**: AI Training mixed data from different microcontrollers.
+**Cause**: Data buffers in `stats-ms` were keyed by IP address only.
+**Fix**: Composite keys (`username_IP`) are now used for all in-memory aggregation buffers.
+
+---
+
 <a id="chapter-18"></a>
 ## 🚀 Chapter 18: Deployment Guide — Getting the Application Up and Running
 
@@ -1168,6 +1334,46 @@ Modify the `Dockerfile` to call the main script explicitly using its relative pa
 After rebuilding and pushing the image, the pod status should transition to `Running` and the liveness probe `/health` should return a 200 OK.
 
 ---
+
+### 19.2 Case Study: MySQL 8.0 Authentication Protocol Mismatch (Local Dev)
+**Symptom**: 
+Local microservices (Node.js) failed to connect to the MySQL 8.0 container with the following error:
+`ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client`
+
+**Root Cause**:
+MySQL 8.0 defaults to the `caching_sha2_password` authentication plugin. However, the legacy `mysql` NPM library used in some services only supports the older `mysql_native_password` method.
+
+**Solution**:
+Degrade the authentication method for the root user within the local development container:
+```sql
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
+FLUSH PRIVILEGES;
+```
+
+### 19.3 Case Study: Batch-Logic in a Streaming Context (Publisher-MS)
+**Symptom**: 
+While running the system locally, environmental sensor data stopped appearing on the dashboard after exactly 5 seconds of execution.
+
+**Root Cause**:
+The `publisher-ms` entrypoint was originally designed as a single-run batch script. It executed its `main()` function once and immediately called `process.exit(0)`. While this worked in certain legacy cron-based environments, it failed in a persistent microservices architecture where continuous polling is required.
+
+**Solution**:
+Refactored the entrypoint (`src/index.js`) to implement an **Infinite Polling Loop** with error handling and a 5-second sleep interval. 
+
+**Code Transformation**:
+```javascript
+// From: single call
+main().then(() => process.exit(0));
+
+// To: infinite polling loop
+const start = async () => {
+    while (true) {
+        try { await main(); }
+        catch (err) { await new Promise(r => setTimeout(r, 5000)); }
+    }
+};
+start();
+```
 
 ---
 

@@ -13,9 +13,12 @@ app.set('trust proxy', 1);
 // Rate limiting
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 1000,
+    max: 5000,
     message: 'Too many requests from this IP, please try again after 15 minutes',
-    skip: (req) => req.url === '/health' || req.url === '/metrics'
+    skip: (req) => {
+        const url = req.url;
+        return url === '/health' || url === '/metrics' || url.startsWith('/login') || url.startsWith('/register');
+    }
 });
 
 const authLimiter = rateLimit({

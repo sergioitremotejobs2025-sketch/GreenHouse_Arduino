@@ -1,20 +1,19 @@
-CREATE DATABASE iot;
+CREATE DATABASE IF NOT EXISTS iot;
 
-CREATE TABLE iot.users (
+CREATE TABLE IF NOT EXISTS iot.users (
   username VARCHAR(256) NOT NULL PRIMARY KEY,
   password VARCHAR(256) NOT NULL,
   refresh_token VARCHAR(256) NOT NULL
 );
 
-CREATE TABLE iot.microcontrollers (
+CREATE TABLE IF NOT EXISTS iot.microcontrollers (
   username VARCHAR(256) NOT NULL,
   ip VARCHAR(256) NOT NULL,
   measure VARCHAR(256) NOT NULL,
   sensor VARCHAR(256) NOT NULL,
   thresholdMin DOUBLE DEFAULT 0,
   thresholdMax DOUBLE DEFAULT 0,
-  PRIMARY KEY (ip, measure),
-
+  PRIMARY KEY (username, ip, measure),
   FOREIGN KEY (username) REFERENCES iot.users(username)
 );
 
@@ -31,8 +30,8 @@ INSERT INTO iot.microcontrollers (username, ip, measure, sensor) VALUES (
   'Grove - Temperature'
 );
 
-CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'f001de9f90e1eae14f8eff7782c2f811';
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
-
-CREATE USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'f001de9f90e1eae14f8eff7782c2f811';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';
+FLUSH PRIVILEGES;

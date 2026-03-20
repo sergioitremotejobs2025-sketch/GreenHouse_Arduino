@@ -21,21 +21,22 @@ class Queue():
         def queue_callback(ch, method, properties, body):
             try:
                 data = json.loads(body.decode())
-                stream = streams.get(data['ip'])
+                key = f"{data['username']}_{data['ip']}"
+                stream = streams.get(key)
                 print(data, len(stream) if stream is not None else 0)
 
                 if stream is not None:
                     stream.append(data)
 
-                    if len(stream) == controller.max_items:
+                    if len(stream) >= controller.max_items:
                         stats = controller.calculate_stats(stream.copy())
                         stream.clear()
                         print(f'{stats}')
-                        print(f'************{stats.get("ip")}************')
+                        print(f'************{key}************')
                         print(f'------------{streams.keys()}------------')
                         controller.dao.insert_document(stats)
                 else:
-                    streams[data['ip']] = [ data ]
+                    streams[key] = [ data ]
                 
                 ch.basic_ack(delivery_tag=method.delivery_tag)
             except Exception as e:

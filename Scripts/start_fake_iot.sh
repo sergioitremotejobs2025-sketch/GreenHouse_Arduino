@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-BASE_PORT=3000
+BASE_PORT=3100
 COUNT=5
 IOT_DIR="fake-arduino-iot"
 
