@@ -26,15 +26,15 @@
   "scripts": {
     "dev": "nodemon src/index_dev.js",
     "start": "node src/index.js",
-    "test": "jest --coverage"
+    "test": "INTERNAL_API_KEY=testkey jest --coverage"
   },
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 10,
-        "functions": 10,
-        "lines": 10,
-        "statements": 10
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
       }
     }
   },

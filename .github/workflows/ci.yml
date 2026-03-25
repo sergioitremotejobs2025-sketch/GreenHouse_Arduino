@@ -77,4 +77,4 @@ jobs:
         run: |
           cd angular-ms/iot-app
           npm ci
-          npx ng test --watch=false --browsers=ChromeHeadless --code-coverage
+          npx ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage

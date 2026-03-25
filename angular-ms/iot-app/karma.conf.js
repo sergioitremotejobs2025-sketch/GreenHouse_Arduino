@@ -22,10 +22,10 @@ module.exports = function (config) {
             ],
             check: {
                 global: {
-                    statements: 10,
-                    branches: 10,
-                    functions: 10,
-                    lines: 10
+                    statements: 100,
+                    branches: 100,
+                    functions: 100,
+                    lines: 100
                 }
             }
         },
@@ -35,6 +35,12 @@ module.exports = function (config) {
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: ['Chrome'],
+        customLaunchers: {
+            ChromeHeadlessCI: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox', '--disable-gpu']
+            }
+        },
         singleRun: false,
         restartOnFileChange: true
     });

@@ -42,10 +42,24 @@ def test_rabbitmq_get_channel(mock_conn):
     assert ch == mock_channel
     mock_conn.assert_called_once()
     
-    # Test singleton behavior
+    # Test connection retries
+    mock_channel2 = MagicMock()
+    def side_effect_func(*args, **kwargs):
+        side_effect_func.calls += 1
+        if side_effect_func.calls <= 2:
+            raise Exception("error")
+        m = MagicMock()
+        m.channel.return_value = mock_channel2
+        return m
+    side_effect_func.calls = 0
+    mock_conn.side_effect = side_effect_func
+    
+    import amqp.rabbitmq as rabbitmq
+    rabbitmq.time.sleep = MagicMock()  # prevent sleeping
     ch2 = get_channel()
-    assert ch2 == mock_channel
-    assert mock_conn.call_count == 1
+    assert ch2 == mock_channel2
+    # mock_conn is called 1 time in the first test + 3 times in the second
+    assert mock_conn.call_count == 4
 
 @patch('amqp.queue.get_channel')
 def test_queue_processing(mock_get_channel):
@@ -80,11 +94,11 @@ def test_queue_processing(mock_get_channel):
     mock_props = MagicMock()
     
     # Test "stream is None" branch
-    body1 = json.dumps({'ip': '1.1.1.1', 'value': 10}).encode()
+    body1 = json.dumps({'ip': '1.1.1.1', 'value': 10, 'username': 'test'}).encode()
     cb(mock_channel, mock_method, mock_props, body1)
     
     # Test "stream is not None" branch and "len(stream) == controller.max_items"
-    body2 = json.dumps({'ip': '1.1.1.1', 'value': 20}).encode()
+    body2 = json.dumps({'ip': '1.1.1.1', 'value': 20, 'username': 'test'}).encode()
     cb(mock_channel, mock_method, mock_props, body2)
     
     mock_controller.calculate_stats.assert_called_once()

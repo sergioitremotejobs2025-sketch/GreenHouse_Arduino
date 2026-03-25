@@ -27,6 +27,17 @@ describe('request.module', () => {
         await expect(getMicrocontrollers('humidity')).rejects.toThrow('network');
     });
 
+    test('getMicrocontrollers calls endpoint without API key if not set', async () => {
+        const originalKey = process.env.INTERNAL_API_KEY;
+        delete process.env.INTERNAL_API_KEY;
+        
+        axios.get.mockResolvedValueOnce({ data: [] });
+        await getMicrocontrollers('temp');
+        expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('/temp'), {}); // no config headers
+        
+        process.env.INTERNAL_API_KEY = originalKey;
+    });
+
     test('requestMeasure returns transformed message on success', async () => {
         const micro = { ip: '1.2.3.4', measure: 'temp' };
         const apiResponse = { data: { value: 42 } };

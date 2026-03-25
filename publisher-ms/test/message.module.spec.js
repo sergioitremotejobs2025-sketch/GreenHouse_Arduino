@@ -34,4 +34,9 @@ describe('Message module', () => {
         expect(getMessage({ temperature: 500 }, fakeTemp).real_value).toBeDefined();
         expect(getMessage({ humidity: 500 }, fakeMoisture).real_value).toBe(52.6);
     });
+
+    test('getMessage for unknown sensors defaults to digital', () => {
+        const unknownSensor = { ...microTemp, sensor: 'Unknown Sensor' };
+        expect(getMessage({ temperature: 500 }, unknownSensor).real_value).toBe(500);
+    });
 });
