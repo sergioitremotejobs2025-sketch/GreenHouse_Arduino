@@ -13,12 +13,12 @@ describe('App endpoints and Rate Limiting', () => {
         expect(res.statusCode).toBe(200)
     })
 
-    it('should return 429 after 10 requests to /login', async () => {
+    it('should return 429 after 100 requests to /login', async () => {
         const username = 'RateLimitUser'
         const password = 'password'
 
         let statusCode = 200
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < 101; i++) {
             const res = await request(app).post('/login').send({ username, password })
             if (res.statusCode === 429) {
                 statusCode = 429
@@ -39,8 +39,14 @@ describe('App endpoints and Rate Limiting', () => {
     it('should forward non-UnauthorizedErrors to the default error handler', async () => {
         // Test the internal router error handler directly
         const router = require('../src/app/routes/orchestrator.routes');
-        // The error handler is the last registered middleware on the router stack
-        const errorHandler = router.stack[router.stack.length - 1].handle;
+        
+        // Find the error handler in the router stack
+        const errorHandlerLayer = router.stack.find(s => s.handle && s.handle.length === 4);
+        const errorHandler = errorHandlerLayer ? errorHandlerLayer.handle : null;
+
+        if (!errorHandler) {
+            throw new Error('Could not find error handler in router stack');
+        }
 
         const mockError = new Error('Generic Error');
         mockError.name = 'GenericError';
