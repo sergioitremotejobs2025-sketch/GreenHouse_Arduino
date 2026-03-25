@@ -9,6 +9,10 @@ gantt
     title IoT Microservices Implementation Timeline (Estimated)
     dateFormat  YYYY-MM-DD
     axisFormat  %b '%y
+    section Phase 0: Release & Artifact Publishing
+    GHCR Infrastructure Setup      :p0_1, 2026-03-25, 3d
+    v1.0.0 Official Release         :p0_2, after p0_1, 2d
+
     section Phase 1.5: Pipeline Health
     Workflow Stabilization          :done, p15_1, 2026-03-07, 2d
     Badge Monitoring                :done, p15_2, 2026-03-08, 1d
@@ -34,6 +38,14 @@ gantt
 ---
 
 ## 📅 Detailed Task Breakdown & Estimates
+### ⚪ Phase 0: Release & Artifact Publishing (To Do)
+Establishing the official distribution channels for the project's logic and container artifacts.
+
+| Task | Effort | Status | Description |
+| :--- | :--- | :--- | :--- |
+| **GHCR Infrastructure** | **3 Days** | ⏳ Queue | Configuring GitHub Actions to build and push Docker images to the GitHub Container Registry (ghcr.io) to eliminate local registry dependency. |
+| **v1.0.0 Official Release** | **2 Days** | ⏳ Queue | Preparing the tagging strategy and drafting the first official release notes, attaching the engineering manifesto PDF. |
+
 ### 🔵 Phase 1.5: GitHub Actions Pipeline Health (Completed)
 Focus on resolving pending errors and stabilizing the existing CI/CD pipelines before advancing further.
 

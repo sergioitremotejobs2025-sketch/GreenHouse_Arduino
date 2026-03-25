@@ -2,6 +2,11 @@
 
 Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documentation/Version_1/Book_Version_1.md), here is the structured list of tasks required to execute the next phases of the IoT project.
 
+## ⚪ Phase 0: Release & Artifact Publishing 
+*Status: Completed*
+- [x] **GitHub Container Registry (GHCR)**: Configure CI pipelines to automatically build and publish all microservice Docker images to GitHub Packages (ghcr.io).
+- [x] **Official Open-Source Release**: Draft and publish the official `v1.0.0` GitHub Release, attaching the architectural manifesto (`Book_Version_1.pdf` or `.md`) and automation scripts.
+
 ## 🟢 Phase 1: Strict Enforcement & Baseline Prep 
 *Status: Completed*
 - [x] **TDD Hard Block**: Enforce 100% branch and line coverage across all 10+ microservices as a prerequisite for CI/CD.

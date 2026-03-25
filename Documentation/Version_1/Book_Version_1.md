@@ -30,8 +30,9 @@
 23. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
 24. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
 25. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
-26. **[Conclusion: The Horizon of IoT](#conclusion)**
-27. **[About the Author](#about-the-author)**
+26. **[Chapter 18: Artifact Distribution & Official Release](#chapter-18-artifacts)**
+27. **[Conclusion: The Horizon of IoT](#conclusion)**
+28. **[About the Author](#about-the-author)**
 
 ---
 
@@ -1445,6 +1446,67 @@ In addition to GitHub Actions, the project includes several local "recreation" s
 *   **`update_manifest_tags.py`**: A helper script that pre-syncs manifest files with the correct `europe-west1` GCP registry URLs.
 
 ---
+
+<a id="chapter-18-artifacts"></a>
+## 📦 Chapter 18: Artifact Distribution & Official Release
+
+In March 2026, the project reached its first major maturity milestone: the transition from private development to a publicly-consumable open-source ecosystem. This required the implementation of a **Standardized Distribution Layer** using GitHub's native artifact suites.
+
+### 18.1 GitHub Container Registry (GHCR) Integration
+
+To eliminate the dependency on local registries and provide authenticated, high-speed image pulls for global GKE clusters, we transitioned our build pipeline to **GHCR (ghcr.io)**.
+
+#### 18.1.1 The Multi-Service Build Matrix
+We utilize a sophisticated GitHub Actions workflow (`ghcr-publish.yml`) that implements **Smart Change Detection**.
+*   **Selective Builds**: Only microservices with code changes in a push are rebuilt.
+*   **Metadata Tagging**: Every image is automatically tagged with the **Git SHA**, the **Semantic Version** (on tag push), and the `latest` identifier for the main branch.
+*   **Security**: Builds run in memory-isolated runners and push to the registry using the ephemeral `GITHUB_TOKEN`, ensuring zero credential leakage.
+
+### 18.2 Official Release Management (v1.0.0)
+
+The birth of the **v1.0.0 "Engineering Manifesto Edition"** marks the formal stabilization of the architectural API contracts.
+
+#### 18.2.1 Automated Release Orchestration
+We implemented an automated release workflow (`release.yml`) triggered by Git tags.
+1.  **Drafting**: The system generates a clean, markdown-based summary of core features (LSTM Forecasting, mTLS Pilot, 100% Coverage).
+2.  **Asset Attachment**: The system automatically bundles the **Architectural Manifesto (this book)** and the **Master Recovery Scripts** (`recreate_full_system.sh`) as binary assets for every release.
+3.  **Audit Trail**: Every release provides a immutable snapshot of the entire microservice ecosystem at that point in time.
+
+### 18.3 The Distribution Topology
+
+```mermaid
+graph TD
+    subgraph "Developer Environment"
+        D[Git Tag / Push]
+    end
+
+    subgraph "GitHub Actions Hub"
+        P[GHCR Workflow]
+        R[Release Workflow]
+    end
+
+    subgraph "Public Distribution (GHCR)"
+        I1[auth-ms:v1.0.0]
+        I2[stats-ms:v1.0.0]
+        I3[orchestrator-ms:v1.0.0]
+    end
+
+    subgraph "Release Assets"
+        B[Book Manifest PDF]
+        S[Recovery Scripts]
+    end
+
+    D -->|1. Trigger| P
+    D -->|2. Trigger| R
+    P -->|3. Push Images| I1
+    P --> I2
+    P --> I3
+    R -->|4. Attach| B
+    R -->|4. Attach| S
+```
+
+---
+
 
 <a id="appendix-3"></a>
 ## 🛠️ Appendix 3: DevOps & Automation — The Scripting Toolkit
