@@ -52,11 +52,13 @@ This project is built with a **Test-Driven Development (TDD)** first approach an
 - **Unit Tests**: `Jest` (Node), `Pytest` (Python), `Go internal` (Go).
 - **Coverage Summary**: **100%** Across all 10+ services (See [CURRENT_COVERAGE.md](CURRENT_COVERAGE.md)).
 - **Continuous Integration**: Powered by a unified **GitHub Actions Matrix**.
-  - **Status**: ✅ **Stable & Green** on `fix/pipeline-health`.
+  - **Status**: ✅ **Stable & Green** on `main`.
+  - **GHCR Integration**: Automated multi-architecture builds pushed to GitHub Container Registry (`ghcr.io`) on every push to `main`.
+  - **Automated Releases**: Official versioned releases (`v*`) are automatically generated with attached architectural manifests and recovery scripts.
   - **Performance**: High-speed dependency caching (npm/go) for < 60s feedback loops.
-  - **Regressions**: Integrated **K6 Load Testing** for latency-spike detection.
 - **Contract Verification**: Pact files are located in `orchestrator-ms/pacts/`.
 - **Quality Metrics**: [Timeline.md](Timeline.md) tracks the progress towards 100% coverage and advanced quality.
+
 
 ## 🛠 Tech Stack
 
