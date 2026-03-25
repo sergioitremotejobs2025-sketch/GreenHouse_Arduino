@@ -25,9 +25,10 @@ describe('MeasureStats', () => {
 
         expect(stats.nSamples).toBe(1);
         expect(stats.avgMeasure).toBe(20);
-        expect(stats.lastMeasure).toBe(measure);
-        expect(stats.maxMeasure).toBe(measure);
-        expect(stats.minMeasure).toBe(measure);
+        // Use toEqual for object deep comparison and verify properties added by unifiedMeasure
+        expect(stats.lastMeasure).toEqual(jasmine.objectContaining({ real_value: 20 }));
+        expect(stats.maxMeasure).toEqual(jasmine.objectContaining({ real_value: 20 }));
+        expect(stats.minMeasure).toEqual(jasmine.objectContaining({ real_value: 20 }));
     });
 
     it('should update stats correctly with multiple measures', () => {
@@ -48,5 +49,14 @@ describe('MeasureStats', () => {
         // (10 + 11) / 2 = 10.5
 
         expect(stats.avgMeasure).toBe(10.5);
+    });
+
+    it('should skip null or undefined values', () => {
+        stats.newMeasure({ real_value: 10 } as any);
+        stats.newMeasure({ real_value: null } as any);
+        stats.newMeasure({ real_value: undefined } as any);
+
+        expect(stats.nSamples).toBe(1);
+        expect(stats.avgMeasure).toBe(10);
     });
 });

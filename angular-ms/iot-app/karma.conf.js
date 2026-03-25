@@ -32,7 +32,7 @@ module.exports = function (config) {
         reporters: ['spec', 'coverage'],
         port: 9876,
         colors: true,
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG,
         autoWatch: true,
         browsers: ['Chrome'],
         customLaunchers: {
