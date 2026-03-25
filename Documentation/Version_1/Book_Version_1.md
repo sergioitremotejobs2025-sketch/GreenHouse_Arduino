@@ -458,12 +458,15 @@ RabbitMQ provides a **Durable Exchange** ensuring guaranteed delivery.
 *   **Acknowledgements**: Messages are only removed after successful processing.
 *   **Scaling**: Publisher instances can be scaled horizontally to handle tens of thousands of simultaneous sensors.
 
-### 8.2 The Publisher Logic
-A lightweight Node.js worker listens for "data ingested" events.
-1.  Connects with automatic retry logic.
-2.  Serializes objects to Buffers.
-3.  Publishes with `persistent: true`.
-4.  **Circular Buffer**: Caches messages if the broker is unreachable, flushing them once connectivity is restored.
+### 8.3 Management & Monitoring
+RabbitMQ includes a built-in **Management Plugin** for cluster monitoring. In local test environments, this dashboard is accessible for visualizing message throughput and queue health.
+*   **Local Management URL**: [http://localhost:31567](http://localhost:31567)
+*   **Standard Local Credentials**: 
+    *   **Username**: `user`
+    *   **Password**: `password`
+*   **Key Observables**: 
+    1.  **iot-exchange**: Visualizing the fan-out distribution to subscribers.
+    2.  **Queue Peaks**: Identifying ingestion bottlenecks in `stats-ms` or `orchestrator-ms`.
 
 ---
 
@@ -1446,6 +1449,95 @@ In addition to GitHub Actions, the project includes several local "recreation" s
 *   **`update_manifest_tags.py`**: A helper script that pre-syncs manifest files with the correct `europe-west1` GCP registry URLs.
 
 ---
+
+<a id="chapter-18-artifacts"></a>
+## 📦 Chapter 18: Artifact Distribution & Official Release
+
+In March 2026, the project reached its first major maturity milestone: the transition from private development to a publicly-consumable open-source ecosystem. This required the implementation of a **Standardized Distribution Layer** using GitHub's native artifact suites.
+
+### 18.1 GitHub Container Registry (GHCR) Integration
+
+To eliminate the dependency on local registries and provide authenticated, high-speed image pulls for global GKE clusters, we transitioned our build pipeline to **GHCR (ghcr.io)**.
+
+#### 18.1.1 The Multi-Service Build Matrix
+We utilize a sophisticated GitHub Actions workflow (`ghcr-publish.yml`) that implements **Smart Change Detection**.
+*   **Selective Builds**: Only microservices with code changes in a push are rebuilt.
+*   **Metadata Tagging**: Every image is automatically tagged with the **Git SHA**, the **Semantic Version** (on tag push), and the `latest` identifier for the main branch.
+*   **Security**: Builds run in memory-isolated runners and push to the registry using the ephemeral `GITHUB_TOKEN`, ensuring zero credential leakage.
+
+### 18.2 Official Release Management (v1.0.0)
+
+The birth of the **v1.0.0 "Engineering Manifesto Edition"** marks the formal stabilization of the architectural API contracts.
+
+#### 18.2.1 Automated Release Orchestration
+We implemented an automated release workflow (`release.yml`) triggered by Git tags.
+1.  **Drafting**: The system generates a clean, markdown-based summary of core features (LSTM Forecasting, mTLS Pilot, 100% Coverage).
+2.  **Asset Attachment**: The system automatically bundles the **Architectural Manifesto (this book)** and the **Master Recovery Scripts** (`recreate_full_system.sh`) as binary assets for every release.
+3.  **Audit Trail**: Every release provides a immutable snapshot of the entire microservice ecosystem at that point in time.
+
+### 18.3 The Distribution Topology
+
+```mermaid
+graph TD
+    subgraph "Developer Environment"
+        D[Git Tag / Push]
+    end
+
+    subgraph "GitHub Actions Hub"
+        P[GHCR Workflow]
+        R[Release Workflow]
+    end
+
+    subgraph "Public Distribution (GHCR)"
+        I1[auth-ms:v1.0.0]
+        I2[stats-ms:v1.0.0]
+        I3[orchestrator-ms:v1.0.0]
+    end
+
+    subgraph "Release Assets"
+        B[Book Manifest PDF]
+        S[Recovery Scripts]
+    end
+
+    D -->|1. Trigger| P
+    D -->|2. Trigger| R
+    P -->|3. Push Images| I1
+    P --> I2
+    P --> I3
+    R -->|4. Attach| B
+    R -->|4. Attach| S
+```
+
+### 18.4 Verification & Testing Protocols
+
+To ensure the integrity of a release before major cluster deployment, the system supports a standardized verification suite that developers and SREs can execute in isolated environments.
+
+#### 18.4.1 Local Artifact Validation
+The release includes a pre-configured `docker-compose.test.yml` that mirrors the cloud environment.
+1.  **Orchestration**: Launching the backend via `docker-compose up -d`.
+2.  **Seeding**: Utilizing the `register_fake_iot.sh` asset to populate the registry.
+3.  **Telemetry Simulation**: Running `start_fake_iot.sh` to generate AMQP-driven sensor traffic.
+
+#### 18.4.2 TDD Mathematical Proof
+Verification is not complete without running the **"Zero-Tolerance"** test suites included in the release:
+*   **Auth-MS**: Running `go test ./...` to verify identity logic.
+*   **Measure-MS**: Running `npm test` to verify ingestion and MongoDB indexing.
+
+#### 18.4.3 The "Master Asset" Test
+For the highest level of assurance, the `recreate_full_system.sh` script is tested against a clean environment. A successful recreation proves that all image coordinates, secrets, and deployment manifests are perfectly synchronized in the release snapshot.
+
+#### 18.4.4 Launching the IoT Dashboard (Visual Verification)
+To visually confirm the end-to-end data flow, the Angular-based dashboard can be launched alongside the containerized backend:
+1.  **Dependencies**: Navigate to `angular-ms/iot-app` and execute `npm install`.
+2.  **Execution**: Run the development server with optimized flags:
+    ```bash
+    npm run start -- --port=4204 --host=0.0.0.0 --disable-host-check
+    ```
+3.  **Authentication**: Access [http://localhost:4204](http://localhost:4204) and use the standard TDD credentials (`Rocky` / `Rocky`).
+4.  **Live Monitoring**: Once logged in, the dashboard will establish a WebSocket connection to the `orchestrator-ms` (Port 3000), displaying real-time sensor metrics processed by the release environment.
+
+---
+
 
 <a id="chapter-18-artifacts"></a>
 ## 📦 Chapter 18: Artifact Distribution & Official Release
