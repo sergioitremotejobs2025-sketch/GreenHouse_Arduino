@@ -22,8 +22,10 @@ const requestMeasure = async micro => {
 const saveMeasure = async (measure, data) => {
   const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || ''
   const config = INTERNAL_API_KEY ? { headers: { 'x-internal-api-key': INTERNAL_API_KEY } } : {}
+  const url = `http://${MEASURE_MS}/${measure}`
+  console.log(`[publisher-ms] Saving to: ${url}`)
   try {
-    await axios.post(`http://${MEASURE_MS}/${measure}`, data, config)
+    await axios.post(url, data, config)
   } catch (error) {
     console.error(`[publisher-ms] Error saving ${measure} to measure-ms:`, error.message)
   }
