@@ -58,7 +58,7 @@ describe('request.module', () => {
         axios.post = jest.fn().mockResolvedValueOnce({ status: 201 });
         const data = { hum: 50 };
         await saveMeasure('humidity', data);
-        expect(axios.post).toHaveBeenCalledWith(expect.stringContaining('/humidity/measure'), data, expect.any(Object));
+        expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/humidity$/), data, expect.any(Object));
     });
 
     test('saveMeasure posts data without API key if not set', async () => {
