@@ -64,6 +64,21 @@ spec:
             configMapKeyRef:
               key: RABBITMQ_SERVICE_PORT
               name: env-configmap
+        - name: MEASURE_MS_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: MEASURE_MS_HOSTNAME
+              name: env-configmap
+        - name: MEASURE_MS_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: MEASURE_MS_SERVICE_PORT
+              name: env-configmap
+        - name: INTERNAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: INTERNAL_API_KEY
+              name: secrets
         resources:
           requests:
             cpu: 100m

@@ -1,7 +1,7 @@
 const { PING_TIMEOUT, QUEUES_MEASURES } = require('../config/config')
 const QueueModule = require('../modules/queue.module')
 
-const { getMicrocontrollers, requestMeasure } = require('../modules/request.module')
+const { getMicrocontrollers, requestMeasure, saveMeasure } = require('../modules/request.module')
 
 const measures = ['humidity', 'light', 'temperature']
 
@@ -17,7 +17,8 @@ const publishMeasure = async measure => {
         console.log(`[${measure}] Requesting http://${micro.ip}/${micro.measure}...`)
         const response = await requestMeasure(micro)
         if (response) {
-          console.log(`[${measure}] Got response from ${micro.ip}, publishing...`)
+          console.log(`[${measure}] Got response from ${micro.ip}, saving and publishing...`)
+          await saveMeasure(measure, response)
           await queue.publish(response)
         } else {
           console.log(`[${measure}] Failed to get response from ${micro.ip}`)

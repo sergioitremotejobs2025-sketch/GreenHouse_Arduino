@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Simple request logger
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - ${JSON.stringify(req.body)}`);
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Headers: ${JSON.stringify(req.headers)}`);
     next();
 });
 
