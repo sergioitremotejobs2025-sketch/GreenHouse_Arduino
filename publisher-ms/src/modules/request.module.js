@@ -13,7 +13,7 @@ const getMicrocontrollers = async measure => {
 const requestMeasure = async micro => {
   try {
     const response = await axios.get(`http://${micro.ip}/${micro.measure}`, { timeout: PING_TIMEOUT })
-    return getMessage(response.data, micro)
+    return response.data
   } catch (error) {
     // skip silent
   }
