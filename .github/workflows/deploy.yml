@@ -11,6 +11,7 @@ env:
   GKE_CLUSTER: iot-cluster
   GKE_REGION: europe-west1
   REGISTRY: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # ─────────────────────────────────────────────
