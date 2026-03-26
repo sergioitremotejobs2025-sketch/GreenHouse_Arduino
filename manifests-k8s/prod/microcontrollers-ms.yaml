@@ -59,6 +59,11 @@ spec:
             secretKeyRef:
               key: MYSQL_ROOT_USERNAME
               name: secrets
+        - name: INTERNAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: INTERNAL_API_KEY
+              name: secrets
         - name: PORT
           value: '80'
         image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/microcontrollers-ms:latest

@@ -41,6 +41,11 @@ spec:
               key: MONGO_INITDB_ROOT_PASSWORD
         - name: MONGO_DB
           value: "iot"
+        - name: INTERNAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: secrets
+              key: INTERNAL_API_KEY
         resources:
           limits:
             cpu: "1.0"

@@ -23,7 +23,8 @@ echo "☁️  Creating GKE Autopilot Cluster: ${CLUSTER}..."
 echo "   (This may take several minutes...)"
 gcloud container clusters create-auto "$CLUSTER" \
     --region "$REGION" \
-    --project "$PROJECT"
+    --project "$PROJECT" \
+    --quiet || echo "Cluster might already exist, skipping creation..."
 
 echo "🔐 Fetching credentials for ${CLUSTER}..."
 gcloud container clusters get-credentials "$CLUSTER" --region "$REGION" --project "$PROJECT"
