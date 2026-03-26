@@ -1,5 +1,5 @@
-const randomHumidity = () => Number((Math.random() * 950).toFixed())
-const randomTemperature = () => Number((Math.random() * 100 + 400).toFixed())
+const randomHumidity = () => Number((Math.random() * 100).toFixed(1))
+const randomTemperature = () => Number((Math.random() * 17 + 18).toFixed(1))
 const switchLight = status => status === 'on' ? 1 : 0
 
 module.exports = class Controller {

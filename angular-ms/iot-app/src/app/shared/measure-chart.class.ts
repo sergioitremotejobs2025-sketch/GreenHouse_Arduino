@@ -45,9 +45,9 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
     const unit = this.micro.measure === 'temperature' ? '°C' : this.micro.measure === 'humidity' ? '%' : '';
     const label = this.micro.measure === 'temperature' ? 'Temperatura' : this.micro.measure === 'humidity' ? 'Humedad' : this.micro.measure;
 
-    if (this.micro.thresholdMax !== undefined && value > this.micro.thresholdMax) {
+    if (typeof this.micro.thresholdMax === 'number' && value > this.micro.thresholdMax) {
       this.notificationService.notifyAlert(label, value, unit, this.micro.thresholdMax, true);
-    } else if (this.micro.thresholdMin !== undefined && value < this.micro.thresholdMin) {
+    } else if (typeof this.micro.thresholdMin === 'number' && value < this.micro.thresholdMin) {
       this.notificationService.notifyAlert(label, value, unit, this.micro.thresholdMin, false);
     }
   }
