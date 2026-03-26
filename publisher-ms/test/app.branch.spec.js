@@ -11,7 +11,13 @@ jest.mock('../src/config/config', () => ({
 // Mock modules before requiring app
 jest.mock('../src/modules/request.module', () => ({
     getMicrocontrollers: jest.fn(),
-    requestMeasure: jest.fn()
+    requestMeasure: jest.fn(),
+    saveMeasure: jest.fn()
+}));
+
+const mockTransformed = { payload: 'msg' };
+jest.mock('../src/modules/message.module', () => ({
+    getMessage: jest.fn().mockImplementation(() => mockTransformed)
 }));
 
 const mockPublish = jest.fn();
@@ -24,7 +30,8 @@ jest.mock('../src/modules/queue.module', () => {
 });
 
 const { main } = require('../src/app/app');
-const { getMicrocontrollers, requestMeasure } = require('../src/modules/request.module');
+const { getMicrocontrollers, requestMeasure, saveMeasure } = require('../src/modules/request.module');
+const { getMessage } = require('../src/modules/message.module');
 const QueueModule = require('../src/modules/queue.module');
 
 describe('publisher app branch coverage', () => {
@@ -44,8 +51,10 @@ describe('publisher app branch coverage', () => {
 
         measures.forEach(m => expect(getMicrocontrollers).toHaveBeenCalledWith(m));
         expect(requestMeasure).toHaveBeenCalledTimes(measures.length);
+        expect(saveMeasure).toHaveBeenCalledTimes(measures.length);
+        expect(getMessage).toHaveBeenCalledTimes(measures.length);
         expect(QueueModule).toHaveBeenCalledTimes(measures.length);
-        expect(mockPublish).toHaveBeenCalledWith({ payload: 'msg' });
+        expect(mockPublish).toHaveBeenCalledWith(mockTransformed);
     });
 
     test('main skips publishing when requestMeasure returns undefined (falsy branch)', async () => {
