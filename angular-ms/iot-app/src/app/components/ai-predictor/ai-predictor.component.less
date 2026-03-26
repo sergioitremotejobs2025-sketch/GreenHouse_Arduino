@@ -29,6 +29,7 @@
 
         button[mat-icon-button] {
             width: 40px !important;
+            overflow: visible !important;
         }
     }
 
@@ -89,15 +90,22 @@
 }
 
 .rotating {
-    animation: rotate 2s linear infinite;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    animation: rotate 2s linear infinite !important;
+    transform-origin: center center;
+    color: var(--color-primary) !important;
+    opacity: 1 !important;
+    backface-visibility: hidden;
 }
 
 @keyframes rotate {
     from {
-        transform: rotate(0deg);
+        transform: rotate(0deg) translateZ(0);
     }
 
     to {
-        transform: rotate(360deg);
+        transform: rotate(360deg) translateZ(0);
     }
 }

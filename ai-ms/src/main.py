@@ -59,12 +59,14 @@ def predict():
     if not all([username, ip, measure, recent_values]):
         return jsonify({"error": "Missing parameters"}), 400
         
-    model_path = f"models/{username}_{ip}_{measure}.h5"
+    model_dir = os.getenv('MODEL_DIR', 'models')
+    model_path = os.path.join(model_dir, f"{username}_{ip}_{measure}.h5")
     print(f"[ai-ms] PREDICT Request: {username} - {ip} - {measure} (path: {model_path})")
     print(f"[ai-ms] Recent values: {recent_values}")
     
     if not os.path.exists(model_path):
-        print(f"[ai-ms] ERROR: Model not found at {model_path}. Existing models: {os.listdir('models')}")
+        existing = os.listdir(model_dir) if os.path.exists(model_dir) else []
+        print(f"[ai-ms] ERROR: Model not found at {model_path}. Existing models in {model_dir}: {existing}")
         return jsonify({"error": "Modelo no encontrado: entrénalo primero"}), 404
         
     try:
@@ -110,7 +112,8 @@ def evaluate():
     if not all([username, ip, measure]):
         return jsonify({"error": "Missing parameters"}), 400
         
-    model_path = f"models/{username}_{ip}_{measure}.h5"
+    model_dir = os.getenv('MODEL_DIR', 'models')
+    model_path = os.path.join(model_dir, f"{username}_{ip}_{measure}.h5")
     if not os.path.exists(model_path):
         return jsonify({"error": "Model not found"}), 404
         

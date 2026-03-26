@@ -27,7 +27,7 @@ spec:
       containers:
       - name: fake-arduino-iot-pictures
         image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/fake-arduino-iot-pictures:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 3005
         env:

@@ -46,6 +46,8 @@ spec:
             secretKeyRef:
               name: secrets
               key: INTERNAL_API_KEY
+        - name: MODEL_DIR
+          value: "/app/data/models"
         resources:
           limits:
             cpu: "1.0"
@@ -53,6 +55,13 @@ spec:
           requests:
             cpu: "500m"
             memory: "512Mi"
+        volumeMounts:
+        - name: ai-models-volume
+          mountPath: /app/data/models
+      volumes:
+      - name: ai-models-volume
+        persistentVolumeClaim:
+          claimName: ai-models-pvc
 ---
 apiVersion: v1
 kind: Service

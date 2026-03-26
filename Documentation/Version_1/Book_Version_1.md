@@ -679,7 +679,7 @@ graph LR
 ### 13.2 The "Strict 100%" Coverage Mandate
 In March 2026, the project underwent a "Global Threshold Calibration" to enforce a **Hard 100% Coverage Rule**. 
 
-*   **Node.js Enforcement**: Every `package.json` now contains a `jest.coverageThreshold` block requiring 100% for lines, branches, functions, and statements.
+*   **Node.js Enforcement**: Every `package.json` now contains a `jest.coverageThreshold` block requiring 100% for lines, branches, functions, and statements. In March 2026, this was extended to the `publisher-ms` error handling blocks to ensure zero-fault ingestion resilience.
 *   **Python Enforcement**: Services utilize `pytest --cov-fail-under=100` to reject partial coverage.
 *   **Go Enforcement**: The `auth-ms` utilizes `go test -cover` with a custom script to ensure zero uncovered blocks.
 
@@ -848,6 +848,41 @@ graph TD
 **Incident**: After being logged out due to a rate-limit threshold, users were unable to log back in for up to 15 minutes, receiving "429" errors on the login screen.
 **Discovery**: The `globalLimiter` was placed at the very top of the Express middleware stack. When a user hit the monitoring request quota (e.g., via rapid dashboard refreshes), the global limiter blocked **all** subsequent requests from that IP—including the `/login` endpoint—before the dedicated authentication logic could even be reached.
 **Resolution**: Implemented a conditional `skip` policy in the global rate-limiter for `/login` and `/register` routes. This ensures that even if a user's monitoring quota is exhausted, they can always re-authenticate to restore their session.
+
+#### 15.1.14 The Measure-MS 404 Endpoint Mismatch
+**Incident**: `publisher-ms` reported "Request failed with status code 404" when attempting to save sensor measurements.
+**Discovery**: The publisher was hardcoded to call `http://measure-ms/humidity/measure`, but the actual route defined in `measure-ms/src/app/routes/measure.routes.js` was simply `POST /humidity`.
+**Resolution**: Updated the `saveMeasure` module in `publisher-ms` to target the correct root-level endpoints (`/humidity`, `/temperature`), eliminating the invalid `/measure` suffix.
+
+#### 15.1.15 The "Localhost Default" Environment Trap
+**Incident**: Even after fixing code, `publisher-ms` failed with "ECONNREFUSED 127.0.0.1:80" when attempting to reach `measure-ms`.
+**Discovery**: The `MEASURE_MS_HOSTNAME` environment variable was defined in `env-configmap` but was missing from the `publisher-ms.yaml` manifest. Consequently, the service defaulted to `localhost`, failing to resolve the internal Kubernetes service DNS.
+**Resolution**: Updated the K8s manifest to explicitly pull `MEASURE_MS_HOSTNAME` and `MEASURE_MS_SERVICE_PORT` from the ConfigMap and performed a manual `kubectl rollout restart` to force environment injection.
+
+#### 15.1.16 The Save-then-Publish Data Persistence Gap
+**Incident**: Training triggers in `ai-ms` consistently failed with "Insufficient data" despite the system running for hours.
+**Discovery**: `publisher-ms` was successfully sending data to RabbitMQ (for live dashboard updates) but was bypassing `measure-ms` for long-term storage. This meant the MongoDB collections remained empty, starving the AI training engine.
+**Resolution**: Implemented the "Save-then-Publish" pattern in `app.js`. The publisher now awaits a successful write to `measure-ms` before disseminating the event to the message broker, ensuring total data consistency between real-time views and historical archives.
+
+#### 15.1.17 The AI Persistence Reset
+**Incident**: Trained models were lost whenever the `ai-ms` pod restarted or redeployed, causing users to see "Model not found" errors intermittently.
+**Discovery**: The models were being saved to the ephemeral container filesystem inside the `/app/src/models` directory. Because this directory also contained Python source code, it couldn't be easily mounted as a volume without overriding the code itself.
+**Resolution**: Refactored the AI engine to save models to a dedicated data directory (`/app/data/models`) and implemented a GKE `PersistentVolumeClaim` (PVC) to ensure models survive pod lifecycles.
+
+#### 15.1.18 The "Vanishing Spinner" UI Bug
+**Incident**: When clicking "Entrenar," the UI became unresponsive and the icon disappeared instead of spinning.
+**Discovery**: A CSS conflict between Angular Material's `disabled` state and the custom `.rotating` class, compounded by clipping issues with `backdrop-filter` on the parent container, caused the animation to render off-screen or with zero opacity.
+**Resolution**: Updated the `.rotating` class to use hardware acceleration (`backface-visibility: hidden` and `translateZ(0)`) and explicitly set `overflow: visible` on the button container to prevent layout clipping.
+
+#### 15.1.19 The "Unpredictable Data" Training Blocker
+**Incident**: Even after stabilizing the pipeline and persistence, AI predictions remained erratic and Mean Absolute Error (MAE) values were unacceptably high.
+**Discovery**: The `fake-arduino-iot` simulation was generating data using pure `Math.random()`. Without a temporal pattern or trend (e.g., daily seasonality or oscillation), the LSTM model was essentially trying to "predict noise," resulting in a non-convergent training state.
+**Resolution**: Refactored the sensor simulation engine to generate values based on a time-indexed Sine wave with a 2-3 minute period. This provides a clear, periodic signal for the LSTM to learn, demonstrating the model's ability to track and forecast trends while still allowing for 5% stochastic noise.
+
+#### 15.1.20 The "Double Conversion" Calibration Error
+**Incident**: After introducing predictable patterns, the dashboard showed extreme, impossible temperature jumps (e.g., +/- 100°C) even though the source code specified a 20-30°C range.
+**Discovery**: The simulation engine was returning REAL values (Celsius), but the `publisher-ms` was still applying the hardware thermistor conversion formula (`digitalToReal`) intended for 10-bit raw ADC units. Applying a logarithmic thermistor formula to a literal Celsius value resulted in exponential calibration errors.
+**Resolution**: Implemented the "Inverse Thermistor" transformation in the simulation engine. The fake Arduino now encodes the desired REAL Celsius value into a simulated 10-bit DIGITAL voltage (`0-1023`), allowing the downstream pipeline to perform its standard conversion and yield the correct, stable Celsius reading.
 
 ---
 
@@ -1536,66 +1571,7 @@ To visually confirm the end-to-end data flow, the Angular-based dashboard can be
 3.  **Authentication**: Access [http://localhost:4204](http://localhost:4204) and use the standard TDD credentials (`Rocky` / `Rocky`).
 4.  **Live Monitoring**: Once logged in, the dashboard will establish a WebSocket connection to the `orchestrator-ms` (Port 3000), displaying real-time sensor metrics processed by the release environment.
 
----
 
-
-<a id="chapter-18-artifacts"></a>
-## 📦 Chapter 18: Artifact Distribution & Official Release
-
-In March 2026, the project reached its first major maturity milestone: the transition from private development to a publicly-consumable open-source ecosystem. This required the implementation of a **Standardized Distribution Layer** using GitHub's native artifact suites.
-
-### 18.1 GitHub Container Registry (GHCR) Integration
-
-To eliminate the dependency on local registries and provide authenticated, high-speed image pulls for global GKE clusters, we transitioned our build pipeline to **GHCR (ghcr.io)**.
-
-#### 18.1.1 The Multi-Service Build Matrix
-We utilize a sophisticated GitHub Actions workflow (`ghcr-publish.yml`) that implements **Smart Change Detection**.
-*   **Selective Builds**: Only microservices with code changes in a push are rebuilt.
-*   **Metadata Tagging**: Every image is automatically tagged with the **Git SHA**, the **Semantic Version** (on tag push), and the `latest` identifier for the main branch.
-*   **Security**: Builds run in memory-isolated runners and push to the registry using the ephemeral `GITHUB_TOKEN`, ensuring zero credential leakage.
-
-### 18.2 Official Release Management (v1.0.0)
-
-The birth of the **v1.0.0 "Engineering Manifesto Edition"** marks the formal stabilization of the architectural API contracts.
-
-#### 18.2.1 Automated Release Orchestration
-We implemented an automated release workflow (`release.yml`) triggered by Git tags.
-1.  **Drafting**: The system generates a clean, markdown-based summary of core features (LSTM Forecasting, mTLS Pilot, 100% Coverage).
-2.  **Asset Attachment**: The system automatically bundles the **Architectural Manifesto (this book)** and the **Master Recovery Scripts** (`recreate_full_system.sh`) as binary assets for every release.
-3.  **Audit Trail**: Every release provides a immutable snapshot of the entire microservice ecosystem at that point in time.
-
-### 18.3 The Distribution Topology
-
-```mermaid
-graph TD
-    subgraph "Developer Environment"
-        D[Git Tag / Push]
-    end
-
-    subgraph "GitHub Actions Hub"
-        P[GHCR Workflow]
-        R[Release Workflow]
-    end
-
-    subgraph "Public Distribution (GHCR)"
-        I1[auth-ms:v1.0.0]
-        I2[stats-ms:v1.0.0]
-        I3[orchestrator-ms:v1.0.0]
-    end
-
-    subgraph "Release Assets"
-        B[Book Manifest PDF]
-        S[Recovery Scripts]
-    end
-
-    D -->|1. Trigger| P
-    D -->|2. Trigger| R
-    P -->|3. Push Images| I1
-    P --> I2
-    P --> I3
-    R -->|4. Attach| B
-    R -->|4. Attach| S
-```
 
 ---
 

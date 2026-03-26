@@ -74,8 +74,9 @@ class Trainer:
         model.fit(X, y, epochs=20, batch_size=32, verbose=0)
         
         # Save model
-        model_path = f"models/{self.username}_{self.ip}_{self.measure}.h5"
-        os.makedirs("models", exist_ok=True)
+        model_dir = os.getenv('MODEL_DIR', 'models')
+        model_path = os.path.join(model_dir, f"{self.username}_{self.ip}_{self.measure}.h5")
+        os.makedirs(model_dir, exist_ok=True)
         model.save(model_path)
         print(f"Model saved to {model_path}")
         return True, "Training completed"
