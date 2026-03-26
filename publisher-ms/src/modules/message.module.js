@@ -5,10 +5,12 @@ const digitalToReal = (digital, sensor) => {
     case 'Grove - Moisture':
     case 'Fake Grove - Moisture':
     case 'Local Hum 1':
+    case 'Cloud Moisture':
       return Number((digital * 100 / 950).toFixed(1))
     case 'Grove - Temperature':
     case 'Fake Grove - Temperature':
     case 'Local Temp 1':
+    case 'Cloud Temperature':
       return Number((1 / (Math.log(1023 / digital - 1) / B_TERMISTOR + 1 / 298.15) - 273.15).toFixed(1))
     default:
       return digital // Fallback if unknown sensor
