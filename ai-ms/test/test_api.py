@@ -87,9 +87,11 @@ def test_train_failure(mock_trainer_class, client):
     res = client.post('/train', json={"username": "u", "ip": "i", "measure": "m"})
     assert res.status_code == 500
 
+@patch('os.listdir')
 @patch('os.path.exists')
-def test_predict_not_found(mock_exists, client):
+def test_predict_not_found(mock_exists, mock_listdir, client):
     mock_exists.return_value = False
+    mock_listdir.return_value = []
     res = client.post('/predict', json={"username": "u", "ip": "i", "measure": "m", "recent_values": [1]})
     assert res.status_code == 404
 
