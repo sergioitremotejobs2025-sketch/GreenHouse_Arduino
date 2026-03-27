@@ -111,33 +111,61 @@ gcloud container clusters delete "$CLUSTER_US" \
 echo "   ✅ All GKE clusters deleted."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 5: Delete Artifact Registry (all Docker images)
+# STEP 5: Delete ALL Artifact Registry repositories in all regions
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🐳 [5/8] Deleting Artifact Registry repository: ${REPO}..."
-gcloud artifacts repositories delete "$REPO" \
-  --location="$REGION" \
-  --project="$PROJECT" \
-  --quiet
-echo "   ✅ Artifact Registry and all images deleted."
+echo "🐳 [5/8] Deleting ALL Artifact Registry repositories..."
+REPOS=$(gcloud artifacts repositories list --project="$PROJECT" --format="value(name)" 2>/dev/null || true)
+while read -r r; do
+    if [ ! -z "$r" ]; then
+        echo "   Deleting repository: $r"
+        LOC=$(echo $r | rev | cut -d/ -f3 | rev)
+        REPO_NAME=$(echo $r | rev | cut -d/ -f1 | rev)
+        gcloud artifacts repositories delete "$REPO_NAME" --location="$LOC" --project="$PROJECT" --quiet || true
+    fi
+done <<< "$REPOS"
+echo "   ✅ Artifact Registry cleanup complete."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 6: Delete Cloud Build source staging bucket
+# STEP 6: Delete ALL Cloud Storage buckets
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🪣  [6/8] Deleting Cloud Build source bucket..."
-gsutil -m rm -r "gs://${PROJECT}_cloudbuild" 2>/dev/null || true
-echo "   ✅ Cloud Build bucket deleted."
+echo "🪣  [6/8] Deleting ALL Cloud Storage buckets..."
+BUCKETS=$(gcloud storage buckets list --project="$PROJECT" --format="value(name)" 2>/dev/null || true)
+while read -r b; do
+    if [ ! -z "$b" ]; then
+        echo "   Emptying and deleting bucket: $b"
+        gsutil -m rm -r "$b" 2>/dev/null || true
+    fi
+done <<< "$BUCKETS"
+echo "   ✅ Cloud Storage cleanup complete."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 7: Delete Service Account created for GitHub Actions
+# STEP 7: Delete Service Account & Orphaned Compute Resources (Disks/IPs)
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🔑 [7/8] Deleting Service Account: github-actions-sa..."
-gcloud iam service-accounts delete "$SA_EMAIL" \
-  --project="$PROJECT" \
-  --quiet 2>/dev/null || true
-echo "   ✅ Service Account deleted."
+echo "🔑 [7/8] Deleting Service Account & Sweeping Orphaned Resources..."
+gcloud iam service-accounts delete "$SA_EMAIL" --project="$PROJECT" --quiet 2>/dev/null || true
+
+# Final sweep of any orphaned disks that might have failed to delete with PVCs
+ORPHANED_DISKS=$(gcloud compute disks list --project="$PROJECT" --format="value(name,zone)" --filter="status:READY" 2>/dev/null || true)
+while read -r name zone; do
+    if [ ! -z "$name" ]; then
+        echo "   Deleting orphaned disk: $name in $zone"
+        gcloud compute disks delete "$name" --zone="$zone" --project="$PROJECT" --quiet || true
+    fi
+done <<< "$ORPHANED_DISKS"
+
+# Final sweep of any static IP addresses (unused ones)
+STATIC_IPS=$(gcloud compute addresses list --project="$PROJECT" --format="value(name,region)" --filter="status:RESERVED" 2>/dev/null || true)
+while read -r name region; do
+    if [ ! -z "$name" ]; then
+        echo "   Deleting idle static IP: $name in $region"
+        gcloud compute addresses delete "$name" --region="$region" --project="$PROJECT" --quiet || true
+    fi
+done <<< "$STATIC_IPS"
+
+echo "   ✅ Cleanup sweep complete."
 
 # ──────────────────────────────────────────────────────────────────────────
 # STEP 8: (OPTIONAL) Delete the entire GCP Project
