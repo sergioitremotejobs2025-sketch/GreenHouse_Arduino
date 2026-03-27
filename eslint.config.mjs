@@ -26,7 +26,8 @@ export default tseslint.config(
                 beforeEach: "readonly",
                 afterEach: "readonly",
                 Buffer: "readonly",
-                setTimeout: "readonly"
+                setTimeout: "readonly",
+                __ENV: "readonly"
             }
         }
     },
