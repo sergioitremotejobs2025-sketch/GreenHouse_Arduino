@@ -1047,8 +1047,14 @@ The final stage of evolution is the transition from a single specialized cluster
 
 #### 16.3.1 Cross-Cluster Replication (Cilium ClusterMesh)
 To eliminate regional single points of failure, we will connect independent Kubernetes clusters in North America, Europe, and Asia.
-*   **Global Service Discovery**: If a local instance of `auth-ms` is under heavy load, the Orchestrator can transparently route requests to a healthy cluster in another region via a high-speed private backbone.
 *   **Active-Active Disaster Recovery**: In the event of a catastrophic regional outage, the global Anycast Load Balancer automatically redirects sensor traffic to the nearest healthy cluster, ensuring 99.999% availability.
+*   **Global Service Discovery**: If a local instance of `auth-ms` is under heavy load or failing, the `orchestrator-ms` can transparently route requests to a healthy cluster in another continent.
+
+**Implementation Plan (Phase 4):**
+1.  **Non-Overlapping VPC Subnets**: Provision secondary GKE clusters (e.g., `us-central1`) with strict, explicitly defined Pod and Service CIDR ranges that do not conflict with the primary EU cluster.
+2.  **Cilium CNI Layer**: Replace or integrate with the default Google CNI to deploy the **Cilium Service Mesh** in order to utilize its secure, BGP-based `ClusterMesh` routing feature.
+3.  **Cross-Cluster TLS Peering**: Extract identities and exchange TLS peering certificates to allow secure, pod-to-pod communication across the global Google backbone.
+4.  **Global Endpoints**: Annotate core services with `io.cilium/global-service: "true"` to synchronize endpoint slices across all connected mesh participants.
 
 #### 16.3.2 Serverless Offloading (Knative)
 IoT workloads are characterized by unpredictable bursts (e.g., year-end reporting or sudden forensic audits). We will move from fixed-resource pods to **Knative Serverless** functions for high-compute tasks.
@@ -1652,7 +1658,9 @@ To maintain a high-velocity environment and ensure consistent deployments across
 
 ### 1. Global Infrastructure & Cloud Management
 These scripts handle the lifecycle of the Google Cloud Platform (GCP) environment.
-- **`setup_gcp_infra.sh`**: Provisions the initial Artifact Registry, GKE Autopilot cluster, and IAM roles.
+- **`setup_gcp_infra.sh`**: Provisions the initial primary cluster (`europe-west1`), Artifact Registry, and base IAM roles.
+- **`setup_gcp_infra_us.sh`**: Provisions the secondary North American cluster (`us-central1`) with explicit, non-overlapping CIDR blocks required for Phase 4 Cilium ClusterMesh multi-region routing.
+- **`setup_cicd_auth.sh`**: Provisions and rotates the dedicated `github-actions-sa` Service Account and generates JSON keys for CI/CD authentication recovery.
 - **`teardown_gcp.sh`**: Safely deprovisions all cloud resources to ensure zero-cost idling during development pauses.
 - **`recreate_all_gcp.sh`**: A utility for infrastructure-only recreation.
 - **`recreate_full_system.sh`**: The **Master Recovery Script**. It performs infrastructure setup, tag syncing, image builds, K8s deployment, and automated cloud-mode device registration.
