@@ -1532,7 +1532,22 @@ prometheus:
 This bypasses the pre-installation validation check, allowing Cilium to be deployed while deferring CRD resolution to the eventual Monitoring stack.
 
 **Result**: 
-The networking layer was successfully and consistently applied to both clusters, clearing the path for cross-cluster mesh peering.
+Verified that the CRD-trust flag allowed the Helm templates to render and reach the cluster, though it ultimately surfaced a fundamental ownership conflict with GKE's managed networking layer in the subsequent step.
+
+### 19.7 Case Study: GKE Autopilot / Cilium Conflict (Managed Dataplane V2)
+**Symptom**: 
+The `helm upgrade --install cilium` command failed on the primary cluster with:
+`Error: unable to continue with install: ServiceAccount "cilium" in namespace "kube-system" exists and cannot be imported into the current release...`.
+
+**Root Cause**:
+GKE Autopilot uses **Dataplane V2** (powered by Cilium) by default. It manages its own Cilium agents (called `anetd`) and associated ServiceAccounts in the `kube-system` namespace. Because GKE Autopilot strictly controls the `kube-system` namespace, the community Cilium Helm chart cannot take over or modify these managed resources. This prevents the traditional manual installation of the Cilium Service Mesh for `ClusterMesh` features on top of Autopilot.
+
+**Solution**:
+1.  **Architecture Pivot**: In GKE Autopilot, the native path for cross-cluster discovery is **GKE Multi-cluster Services (MCS)**. 
+2.  **Strategic Migration**: If full open-source Cilium Service Mesh is strictly required, the clusters must be migrated to **GKE Standard** to unlock unmanaged CNI control.
+
+**Result**: 
+Identified a fundamental technical constraint in GKE Autopilot's managed networking layer, leading to the selection of native GKE MCS for cross-cluster service reaching as the next execution priority.
 
 ---
 
