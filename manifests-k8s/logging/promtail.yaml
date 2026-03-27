@@ -28,9 +28,10 @@ spec:
         volumeMounts:
           - name: logs
             mountPath: /var/log
+            readOnly: true
           - name: promtail-config
             mountPath: /etc/promtail
-          - name: run
+          - name: positions
             mountPath: /run/promtail
       volumes:
         - name: logs
@@ -39,9 +40,8 @@ spec:
         - name: promtail-config
           configMap:
             name: promtail-config
-        - name: run
-          hostPath:
-            path: /run/promtail
+        - name: positions
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: ConfigMap

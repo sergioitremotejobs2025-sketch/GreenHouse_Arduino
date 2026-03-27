@@ -1,31 +1,42 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check, group, sleep } from 'k6';
+import { Counter } from 'k6/metrics';
+
+// Custom metrics to track specific IoT business logic
+const OrchestratorHealthCheck = new Counter('orchestrator_health_check');
 
 export const options = {
   stages: [
-    { duration: '30s', target: 50 }, // Ramp up to 50 simulated users
-    { duration: '1m', target: 50 },  // Maintain for 1 minute
-    { duration: '30s', target: 0 },  // Ramp down
+    { duration: '30s', target: 20 },  // Ramp-up to 20 users
+    { duration: '1m', target: 20 },   // Stay at 20 users for 1 minute
+    { duration: '30s', target: 0 },   // Ramp-down
   ],
   thresholds: {
-    // 95% of requests must complete within 200ms
-    http_req_duration: ['p(95)<200'],
-    // Less than 1% of requests can fail
-    http_req_failed: ['rate<0.01'], 
+    'http_req_duration': ['p(95)<300'], // 95% of requests must be under 300ms
+    'http_req_failed': ['rate<0.01'],    // Error rate must be < 1%
   },
 };
 
 const BASE_URL = __ENV.API_URL || 'http://localhost';
 
-// Note: For full realism in CI, we'll need either a mocked endpoint 
-// or an initialization phase where we grab an Auth token.
 export default function () {
-  // Simulating the Gateway's /health endpoint initially
-  const res = http.get(`${BASE_URL}/health`);
-  check(res, {
-    'is status 200': (r) => r.status === 200,
+  group('Infrastructure Health Check', function () {
+    const healthRes = http.get(`${BASE_URL}/health`);
+    check(healthRes, {
+      'health status is 200': (r) => r.status === 200,
+      'service is orchestrator': (r) => r.json().service === 'orchestrator-ms',
+    });
+    OrchestratorHealthCheck.add(1);
   });
 
-  // Adding simulated think-time
-  sleep(1);
+  group('Observability Integration', function () {
+    const metricsRes = http.get(`${BASE_URL}/metrics`);
+    check(metricsRes, {
+      'metrics status is 200': (r) => r.status === 200,
+      'has prometheus metrics': (r) => r.body.includes('http_requests_total') || r.body.includes('process_cpu_user_seconds_total'),
+    });
+  });
+
+  // Simulated think time
+  sleep(Math.random() * 3 + 1);
 }

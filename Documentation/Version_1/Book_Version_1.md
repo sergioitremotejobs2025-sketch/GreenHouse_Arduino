@@ -660,10 +660,13 @@ graph TD
 
 ### 12.1 Prometheus & Grafana
 We track the "Four Golden Signals": Latency, Traffic, Errors, and Saturation.
-*   **Grafana Dashboards**: Combine infrastructure health with business metrics (e.g., "Sensors Online %").
+*   **SRE Unified Dashboard**: A custom-provisioned Grafana dashboard that unifies Prometheus metrics (HTTP throughput, CPU/Memory) with Loki logs.
+*   **Metric Unification**: Consolidation of exporters across all services into a high-performance scraping pipeline.
 
 ### 12.2 Centralized Logging (Loki)
-Logs are aggregated via Promtail. We correlate events across services using a `request_id` header, allowing us to trace a single user login through the Orchestrator, Auth, and MySQL pods.
+Logs are aggregated via **Grafana Loki** and shipped using **Promtail**.
+*   **Autopilot Hardening**: The logging agent is configured with non-root, read-only `hostPath` mounts to comply with strict GKE Autopilot security policies.
+*   **Log Correlation**: Events are correlated across the mesh using a global `request_id`, enabling end-to-end tracing from the Orchestrator to the Edge.
 
 ---
 
@@ -1086,11 +1089,12 @@ The infrastructure has been hardened to support "Zero-Tolerance" CI/CD, resolvin
 *   **Performance Regression Baseline**: Integrated K6 load testing into the CI pipeline to catch latency degradations before they reach GKE.
 *   **Standardization**: Refactored `auth-ms` to a flat, standard Go structure, resolving long-standing dependency resolution issues.
 
-### 17.3 Phase 2: Observability & Security (Next 3 Months)
-The priority shifts to stabilizing the "Last Mile" of coverage and preparing for the Zero-Trust transition.
+### 17.3 Phase 2: Observability & CI/CD Maturity (Completed)
+The infrastructure successfully transitioned to a "Day 2 Operations" footing, with complete visibility and regression automation.
 
-*   **mTLS Pilot**: Implement mutual TLS specifically for the `auth-ms` and `orchestrator-ms` path to harden identity services.
-*   **Advanced Observability**: Integrate Grafana Loki and Prometheus metrics into a unified SRE dashboard.
+*   **Advanced Observability**: Integrated Grafana Loki and Prometheus metrics into a unified, single-pane SRE dashboard for real-time monitoring.
+*   **CI/CD Maturity (K6 Real-Targets)**: Finalized the performance regression suite. The `orchestrator-ms` is now exposed via extreme-scale **LoadBalancers** (34.79.19.242), allowing CI/CD runners to perform realistic throughput testing against the live cloud cluster.
+*   **mTLS Pilot (In Progress)**: PeerAuthentication and DestinationRule manifests have been drafted for the core identity path.
 
 ### 17.4 Phase 3: Edge Intelligence & Fog Deployment (Next 6 Months)
 Focus shifts to the physical "Edge," reducing cloud ingestion costs and improving local reflexes.

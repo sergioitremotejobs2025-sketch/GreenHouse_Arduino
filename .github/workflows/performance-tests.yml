@@ -26,22 +26,25 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node and Services (Mocked)
-        # Note: In a real pipeline, you would spin up Docker Compose here 
-        # to stand up your Gateway and Microservices. 
-        # e.g., run `docker-compose -f docker-compose.test.yml up -d`
+      - name: Setup Node and Services
+        env:
+          PERF_TEST_API_URL: ${{ secrets.PERF_TEST_API_URL }}
         run: |
-          echo "Starting mock or real services..."
-          # Mocking a trivial server on port 3000 for CI to pass immediately 
-          # before Docker is fully connected to the tests
-          npm init -y
-          npm install fastify
-          node -e "
-            const app = require('fastify')();
-            app.get('/health', async () => ({ status: 'ok' }));
-            app.listen({ port: 3000 }, () => console.log('Mock server is up'));
-          " &
-          sleep 5
+          if [ -z "$PERF_TEST_API_URL" ]; then
+            echo "⚠️ No PERF_TEST_API_URL secret found. Starting mock server for safety..."
+            npm init -y
+            npm install fastify
+            node -e "
+              const app = require('fastify')();
+              app.get('/health', async () => ({ status: 'ok' }));
+              app.listen({ port: 3000 }, () => console.log('Mock server is up'));
+            " &
+            sleep 5
+            echo "MOCK_URL=http://localhost:3000" >> $GITHUB_ENV
+          else
+            echo "🚀 Targeting real production endpoint: $PERF_TEST_API_URL"
+            echo "REAL_URL=$PERF_TEST_API_URL" >> $GITHUB_ENV
+          fi
 
       - name: Install k6
         run: |
@@ -53,5 +56,6 @@ jobs:
 
       - name: Run Performance Testing (K6)
         run: |
-          # Passing the internal CI URL to the k6 script
-          k6 run -e API_URL=http://localhost:3000 performance-tests/k6/load-test.js
+          # Use REAL_URL if assigned, otherwise fallback to MOCK_URL
+          TARGET_URL="${REAL_URL:-$MOCK_URL}"
+          k6 run -e API_URL="$TARGET_URL" performance-tests/k6/load-test.js

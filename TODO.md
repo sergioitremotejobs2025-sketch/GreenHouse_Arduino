@@ -27,12 +27,20 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 
 ## 🟡 Phase 2: Closing the Unit Gaps & Observability 
 *Status: In Progress*
-- [ ] **mTLS Pilot**: Implement mutual TLS (mTLS) via a Service Mesh (like Istio/Linkerd) specifically for the `auth-ms` to `orchestrator-ms` path to harden identity services.
-- [ ] **Advanced Observability**: Integrate Grafana Loki (Logs) and Prometheus (Metrics) into a unified, single-pane SRE dashboard.
-- [ ] **CI/CD Maturity**: Automate performance regression tests to detect latency spikes before deployment to production.
+- [/] **mTLS Pilot**: Implement mutual TLS (mTLS) via a Service Mesh (like Istio/Linkerd) specifically for the `auth-ms` to `orchestrator-ms` path to harden identity services.
+    - [x] Create Istio PeerAuthentication and DestinationRule manifests (`security/istio-mtls.yaml`)
+    - [ ] Apply Istio manifests to the cluster and verify sidecar injection.
+- [x] **Advanced Observability**: Integrate Grafana Loki (Logs) and Prometheus (Metrics) into a unified, single-pane SRE dashboard.
+    - [x] Configure Grafana dashboard provisioning (`monitoring/grafana.yaml`)
+    - [x] Create initial SRE Unified Dashboard JSON.
+    - [x] Deploy Loki, Promtail, Prometheus, and Grafana to GKE.
+    - [x] Verified Autopilot-compatible Promtail configuration.
+- [x] **CI/CD Maturity**: Automate performance regression tests to detect latency spikes before deployment to production.
     - [x] Create K6 load testing script (`load-test.js`)
     - [x] Create GitHub Actions workflow (`performance-tests.yml`)
-    - [x] Push to remote branch (`feature/perf-tests`) to verify in cloud runner
+    - [x] **Exposed Orchestrator-MS (LoadBalancer)**: Live at `34.79.19.242` for real-target performance testing.
+    - [x] Updated K6 script with JSON validation and Metrics integration.
+    - [x] Integrated `PERF_TEST_API_URL` secret support in CI/CD pipeline.
 
 ## 🟠 Phase 3: Edge Intelligence & Fog Deployment 
 *Timeline: Next 6 Months*
