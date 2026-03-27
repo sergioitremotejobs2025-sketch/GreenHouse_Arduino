@@ -1051,11 +1051,11 @@ To eliminate regional single points of failure, we will connect independent Kube
 *   **Global Service Discovery**: If a local instance of `auth-ms` is under heavy load or failing, the `orchestrator-ms` can transparently route requests to a healthy cluster in another continent.
 
 **Implementation Plan (Phase 4):**
-1.  **Non-Overlapping VPC Subnets**: Provision secondary GKE clusters (e.g., `us-central1`) with strict, explicitly defined Pod and Service CIDR ranges (using safe RFC 1918 `172.16.0.0/14` ranges) that do not conflict with the primary EU cluster or default VPC auto-subnets (which frequently pre-claim `10.x.x.x` blocks).
-2.  **Cilium CNI Layer**: Replace or integrate with the default Google CNI to deploy the **Cilium Service Mesh** in order to utilize its secure, BGP-based `ClusterMesh` routing feature.
-3.  **Cross-Cluster TLS Peering**: Execute cross-cluster peering using the automated **`deploy_cilium_mesh.sh`** script. This orchestrator sequentially deploys the Cilium CNI using localized Helm values (e.g., `cilium-values-eu.yaml`, `cilium-values-us.yaml`) to assign unique `cluster.id` identifiers, enables the mesh agents, and executes the final TLS handshake via `cilium clustermesh connect`.
-4.  **Global Endpoints**: Annotate core Kubernetes Services (e.g., `orchestrator-ms`, `auth-ms`) with `io.cilium/global-service: "true"` to synchronize endpoint slices across all connected mesh participants.
-    *   **Stateful Isolation Strategy**: We strictly exclude stateful infrastructure (MongoDB, MySQL, RabbitMQ) from being tagged as global endpoints. This isolates data commits geographically, preventing catastrophic cross-continent database latency and synchronization locks.
+1.  **Non-Overlapping VPC Subnets**: Provision secondary GKE clusters (e.g., `us-central1`) with safe RFC 1918 `172.16.0.0/14` ranges to avoid GCP auto-subnet collisions.
+2.  **GKE Fleet Registration**: Register both clusters to the Google Cloud Fleet to establish joint identity and networking trust.
+3.  **GKE Multi-cluster Services (MCS)**: Enable the native MCS feature to establish the cross-cluster control plane without unmanaged CNI conflicts.
+4.  **Service Exporting (setup_gke_mcs_exports.sh)**: Promote core microservices to the global Clusterset by creating **`ServiceExport`** objects. This enables global resolution via `<service-name>.<namespace>.svc.clusterset.local`.
+    *   **Stateful Isolation Strategy**: We strictly exclude stateful infrastructure (MongoDB, MySQL, RabbitMQ) from being exported. This isolates data commits geographically, preventing catastrophic cross-continent database latency.
 
 #### 16.3.2 Serverless Offloading (Knative)
 IoT workloads are characterized by unpredictable bursts (e.g., year-end reporting or sudden forensic audits). We will move from fixed-resource pods to **Knative Serverless** functions for high-compute tasks.
@@ -1713,12 +1713,12 @@ To maintain a high-velocity environment and ensure consistent deployments across
 ### 1. Global Infrastructure & Cloud Management
 These scripts handle the lifecycle of the Google Cloud Platform (GCP) environment.
 - **`setup_gcp_infra.sh`**: Provisions the initial primary cluster (`europe-west1`), Artifact Registry, and base IAM roles.
-- **`setup_gcp_infra_us.sh`**: Provisions the secondary North American cluster (`us-central1`) with explicit, non-overlapping CIDR blocks required for Phase 4 Cilium ClusterMesh multi-region routing.
+- **`setup_gcp_infra_us.sh`**: Provisions the secondary North American cluster (`us-central1`) with explicit, non-overlapping CIDR blocks required for Phase 4 GKE Multi-cluster Services (MCS) peering.
 - **`setup_cicd_auth.sh`**: Provisions and rotates the dedicated `github-actions-sa` Service Account and generates JSON keys for CI/CD authentication recovery.
-- **`teardown_gcp.sh`**: Safely deprovisions all cloud resources to ensure zero-cost idling during development pauses.
+- **`setup_gke_mcs_exports.sh`**: Automates the promotion of core microservices to the global GKE Fleet Clusterset, replacing Cilium ClusterMesh with native managed active-active routing.
+- **`teardown_gcp.sh`**: The master deprovisioning script. Refactored in Phase 4 to gracefully uninstall workloads across all regions, unregister GKE Fleet memberships, disable MCS APIs, and permanently purge both the primary (EU) and secondary (US) clusters to guarantee absolute $0.00 idle costs.
 - **`recreate_all_gcp.sh`**: A utility for infrastructure-only recreation.
 - **`recreate_full_system.sh`**: The **Master Recovery Script**. It performs infrastructure setup, tag syncing, image builds, K8s deployment, and automated cloud-mode device registration.
-- **`deploy_cilium_mesh.sh`**: Automates the multi-region deployment of the **Cilium Service Mesh** (Phase 4), establishing secure `ClusterMesh` BGP peering between the EU and US clusters.
 - **`Check__Cost_Google_Cloud.sh`**: Queries the GCP Billing API to provide real-time cost transparency for the project.
 
 ### 2. Deployment & Registry Synchronization
