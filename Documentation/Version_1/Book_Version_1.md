@@ -1496,6 +1496,22 @@ By leveraging the **`gh` CLI**, the new credentials were programmatically update
 gh secret set GCP_SA_KEY --repo sergioitremotejobs2025-sketch/GreenHouse_Arduino < gcp-sa-key.json
 ```
 
+### 19.5 Case Study: GCP CIDR Collision in Multi-Region Mesh
+**Symptom**: 
+During the Phase 4 initialization in Chapter 16, the provisioning of the secondary US GKE cluster failed with the following status in the GCP console:
+`ERROR: statusMessage: Requested CIDR 10.200.0.0/14 for pods is not available in network "default"`.
+
+**Root Cause**:
+The Google Cloud "Default" VPC automatically pre-populates small `/20` subnets for every GCP region in the `10.128.0.0` to `10.240.0.0` range. My original request for a large `10.200.0.0/14` block for the US cluster collided directly with existing auto-generated subnets in the `europe-west9` and `us-east5` regions. In a multi-region mesh, overlapping Pod CIDRs cause intractable BGP routing corruption.
+
+**Solution**:
+1.  **VPC Discovery**: Audited the existing VPC subnet map using `gcloud compute networks subnets list`.
+2.  **Range Migration**: Reconfigured the `setup_gcp_infra_us.sh` script to use a safe, distinct RFC 1918 range: **`172.16.0.0/14`** for Pods and **`172.20.0.0/20`** for Services.
+3.  **Clean Re-Provisioning**: Performed a full `gcloud container clusters delete` on the failed resource before re-attempting the deployment with the new non-conflicting addresses.
+
+**Result**: 
+The secondary cluster successfully entered the `PROVISIONING` state, guaranteeing a unique routing domain for global service discovery and cross-continent active-active failover.
+
 ---
 
 <a id="chapter-20"></a>
