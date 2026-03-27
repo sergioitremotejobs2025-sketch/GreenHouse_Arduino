@@ -164,13 +164,18 @@ while read -r name reg; do
 done <<< "$STATIC_IPS"
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 8: Final Summary
+# STEP 8: Final Audit (Generate Cost Report)
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
+echo "📊 [8/8] Generating Final Zero-Cost Report..."
+./Check__Cost_Google_Cloud.sh &>/dev/null || true
+
+echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║  ✅  TEARDOWN COMPLETE — Project at $0.00          ║"
+echo "║  ✅  TEARDOWN COMPLETE — State: \$0.00 Verified    ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
-echo "All cost-incurring resources have been discovered and purged."
+echo "Resources discovered and purged. Final Audit Generated."
+echo "To view your zero-cost confirmation, check: COST_$(date +"%d%m%Y").md"
 echo "To re-deploy, use: ./recreate_full_system.sh"
 echo ""

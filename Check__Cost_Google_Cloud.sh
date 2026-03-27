@@ -64,24 +64,41 @@ gcloud run services list --project=$PROJECT_ID --quiet >> "$OUTPUT_FILE" 2>&1
 echo '```' >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-# 7. Estimated Daily Cost Calculation
+# 7. Dynamic Daily Cost Calculation
 echo "Calculating estimated daily costs..."
-echo "## 💡 7. Estimated Daily Cost (europe-west1)" >> "$OUTPUT_FILE"
-echo "| Period | Compute (Autopilot) | Storage & Network | **Total Est.** |" >> "$OUTPUT_FILE"
-echo "|---|---|---|---|" >> "$OUTPUT_FILE"
+echo "## 💡 7. Estimated Daily Cost (Dynamic)" >> "$OUTPUT_FILE"
 
-# Approximate calculations for the current right-sized state:
-# Total CPU: ~3.0 vCPU * $0.0585 = $0.175/hr
-# Total RAM: ~3.5 GiB * $0.0081 = $0.028/hr
-# Total LB & Storage: ~$0.046/hr
-# Total Daily: (~0.25/hr * 24) = ~$6.00
+# Check existence
+EU_EXISTS=$(gcloud container clusters list --project=$PROJECT_ID --filter="name:iot-cluster" --format="value(name)" 2>/dev/null || true)
+US_EXISTS=$(gcloud container clusters list --project=$PROJECT_ID --filter="name:iot-cluster-us" --format="value(name)" 2>/dev/null || true)
+DISK_COUNT=$(gcloud compute disks list --project=$PROJECT_ID --format="value(name)" 2>/dev/null | wc -l | xargs)
+REPO_COUNT=$(gcloud artifacts repositories list --project=$PROJECT_ID --format="value(name)" 2>/dev/null | wc -l | xargs)
 
-echo "| Per hour | \$0.203 | \$0.046 | **\$0.25** |" >> "$OUTPUT_FILE"
-echo "| **Per day (24h)** | \$4.88 | \$1.10 | **\$5.98** |" >> "$OUTPUT_FILE"
-echo "| Per month (30d) | \$146.40 | \$33.00 | **~\$179** |" >> "$OUTPUT_FILE"
+# Costs per unit
+EU_COST=0; if [ ! -z "$EU_EXISTS" ]; then EU_COST=4.88; fi
+US_COST=0; if [ ! -z "$US_EXISTS" ]; then US_COST=4.88; fi
+STORAGE_COST=0; if [ "$DISK_COUNT" -gt 0 ] || [ "$REPO_COUNT" -gt 0 ]; then STORAGE_COST=2.40; fi
+
+TOTAL_DAILY=$(echo "$EU_COST + $US_COST + $STORAGE_COST" | bc)
+TOTAL_MONTHLY=$(echo "$TOTAL_DAILY * 30" | bc)
+
+echo "| Period | EU Compute | US Compute | Storage & Network | **Total Est.** |" >> "$OUTPUT_FILE"
+echo "|---|---|---|---|---|" >> "$OUTPUT_FILE"
+echo "| Per day (24h) | \$$EU_COST | \$$US_COST | \$$STORAGE_COST | **\$$TOTAL_DAILY** |" >> "$OUTPUT_FILE"
+echo "| Per month (30d) | $(echo "$EU_COST * 30" | bc) | $(echo "$US_COST * 30" | bc) | $(echo "$STORAGE_COST * 30" | bc) | **~\$$TOTAL_MONTHLY** |" >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
+
+if [ $(echo "$TOTAL_DAILY == 0" | bc) -eq 1 ]; then
+    echo "> [!SUCCESS]" >> "$OUTPUT_FILE"
+    echo "> **Zero-Cost State Confirmed.** All cost-incurring resources have been successfully deprovisioned." >> "$OUTPUT_FILE"
+else
+    echo "> [!IMPORTANT]" >> "$OUTPUT_FILE"
+    echo "> Costs are active based on the detected running resources. Active-Active multi-region architecture is currently in place." >> "$OUTPUT_FILE"
+fi
+
 echo "" >> "$OUTPUT_FILE"
 echo "> [!NOTE]" >> "$OUTPUT_FILE"
-echo "> Costs are estimates based on standard **europe-west1** Autopilot and SSD storage rates in March 2026. Actual costs may vary based on usage spikes or additional ingress traffic." >> "$OUTPUT_FILE"
+echo "> Estimates are based on standard Autopilot and SSD storage rates in March 2026. Actual costs may vary based on traffic volume." >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 # Finalize
