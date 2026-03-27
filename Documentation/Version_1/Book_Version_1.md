@@ -1045,7 +1045,7 @@ graph TD
 ### 16.3 Infrastructure 4.0: The Global Mesh
 The final stage of evolution is the transition from a single specialized cluster to a **Globally Federated Hive**. This architecture treats disparate cloud regions as a single, unified pool of resources.
 
-#### 16.3.1 Cross-Cluster Replication (Cilium ClusterMesh)
+#### 16.3.1 Cross-Cluster Replication (GKE Multi-cluster Services - MCS)
 To eliminate regional single points of failure, we will connect independent Kubernetes clusters in North America, Europe, and Asia.
 *   **Active-Active Disaster Recovery**: In the event of a catastrophic regional outage, the global Anycast Load Balancer automatically redirects sensor traffic to the nearest healthy cluster, ensuring 99.999% availability.
 *   **Global Service Discovery**: If a local instance of `auth-ms` is under heavy load or failing, the `orchestrator-ms` can transparently route requests to a healthy cluster in another continent.
@@ -1085,9 +1085,9 @@ graph TD
     IP -->|Geo-Routing| O2
     IP -->|Geo-Routing| O3
 
-    O1 <-.->|Cilium ClusterMesh| O2
-    O2 <-.->|Cilium ClusterMesh| O3
-    O3 <-.->|Cilium ClusterMesh| O1
+    O1 <-.->|GKE Multi-cluster Services| O2
+    O2 <-.->|GKE Multi-cluster Services| O3
+    O3 <-.->|GKE Multi-cluster Services| O1
 
     subgraph "On-Demand Compute"
         K[Knative Serverless: stats-ms]
@@ -1135,7 +1135,7 @@ Focus shifts to the physical "Edge," reducing cloud ingestion costs and improvin
 ### 17.5 Phase 4: Global Mesh & Infinite Scale (Next Year)
 The final phase achieves global federation and serverless efficiency.
 
-*   **Cross-Cluster Mesh**: Connect the EU and US clusters via Cilium ClusterMesh, enabling global identity sharing and failover.
+*   **Cross-Cluster Mesh**: Connect the EU and US clusters via **GKE Multi-cluster Services (MCS)**, enabling global identity sharing, active-active discovery, and failover.
 *   **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` to Knative, allowing the system to scale to zero during idle hours.
 *   **Sovereign Sharding**: Implement jurisdiction-aware routing to ensure data residency compliance in real-time.
 
