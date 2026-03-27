@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: orchestrator-ms
+  annotations:
+    io.cilium/global-service: "true"
 spec:
   type: LoadBalancer
   ports:

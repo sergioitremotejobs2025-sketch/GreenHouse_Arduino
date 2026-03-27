@@ -68,6 +68,8 @@ kind: Service
 metadata:
   name: ai-ms
   namespace: default
+  annotations:
+    io.cilium/global-service: "true"
 spec:
   selector:
     app: ai-ms

@@ -1053,8 +1053,8 @@ To eliminate regional single points of failure, we will connect independent Kube
 **Implementation Plan (Phase 4):**
 1.  **Non-Overlapping VPC Subnets**: Provision secondary GKE clusters (e.g., `us-central1`) with strict, explicitly defined Pod and Service CIDR ranges that do not conflict with the primary EU cluster.
 2.  **Cilium CNI Layer**: Replace or integrate with the default Google CNI to deploy the **Cilium Service Mesh** in order to utilize its secure, BGP-based `ClusterMesh` routing feature.
-3.  **Cross-Cluster TLS Peering**: Extract identities and exchange TLS peering certificates to allow secure, pod-to-pod communication across the global Google backbone.
-4.  **Global Endpoints**: Annotate core services with `io.cilium/global-service: "true"` to synchronize endpoint slices across all connected mesh participants.
+3.  **Cross-Cluster TLS Peering**: Execute cross-cluster peering using the automated **`deploy_cilium_mesh.sh`** script. This orchestrator sequentially deploys the Cilium CNI using localized Helm values (e.g., `cilium-values-eu.yaml`, `cilium-values-us.yaml`) to assign unique `cluster.id` identifiers, enables the mesh agents, and executes the final TLS handshake via `cilium clustermesh connect`.
+4.  **Global Endpoints**: Annotate core Kubernetes Services (e.g., `orchestrator-ms`, `auth-ms`) with `io.cilium/global-service: "true"` to synchronize endpoint slices across all connected mesh participants.
 
 #### 16.3.2 Serverless Offloading (Knative)
 IoT workloads are characterized by unpredictable bursts (e.g., year-end reporting or sudden forensic audits). We will move from fixed-resource pods to **Knative Serverless** functions for high-compute tasks.
@@ -1664,6 +1664,7 @@ These scripts handle the lifecycle of the Google Cloud Platform (GCP) environmen
 - **`teardown_gcp.sh`**: Safely deprovisions all cloud resources to ensure zero-cost idling during development pauses.
 - **`recreate_all_gcp.sh`**: A utility for infrastructure-only recreation.
 - **`recreate_full_system.sh`**: The **Master Recovery Script**. It performs infrastructure setup, tag syncing, image builds, K8s deployment, and automated cloud-mode device registration.
+- **`deploy_cilium_mesh.sh`**: Automates the multi-region deployment of the **Cilium Service Mesh** (Phase 4), establishing secure `ClusterMesh` BGP peering between the EU and US clusters.
 - **`Check__Cost_Google_Cloud.sh`**: Queries the GCP Billing API to provide real-time cost transparency for the project.
 
 ### 2. Deployment & Registry Synchronization

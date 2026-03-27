@@ -54,8 +54,12 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] Implemented `POST /pair` protocol and gateway-aware discovery with 100% test coverage.
 
 ## 🔴 Phase 4: Global Mesh & Infinite Scale 
-*Timeline: Next Year*
-- [ ] **Cross-Cluster Mesh**: Connect the EU and US Kubernetes clusters via **Cilium ClusterMesh**, enabling global service discovery, identity sharing, and active-active failover.
+*Status: In Progress*
+- [/] **Cross-Cluster Mesh**: Connect the EU and US Kubernetes clusters via **Cilium ClusterMesh**, enabling global service discovery, identity sharing, and active-active failover.
+    - [x] Draft the global cross-cluster architectural plan.
+    - [ ] Provision the US secondary GKE cluster (`iot-cluster-us`).
+    - [ ] Install and configure Cilium CNI on both EU and US clusters.
+    - [ ] Establish peer-to-peer ClusterMesh peering and verify cross-cluster service discovery.
 - [ ] **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` to **Knative Serverless**, allowing the system to scale to zero during idle hours to save costs.
 - [ ] **Sovereign Sharding**: Implement jurisdiction-aware database routing (MongoDB Zone Sharding) to ensure data residency compliance (GDPR, CCPA) in real-time.
 
