@@ -10,6 +10,7 @@ router.use(requireInternalKey)
 
 router.get('/', microcontrollersController.getMicrocontrollers)
 router.get('/:measure', microcontrollersController.getMicrocontrollersFromMS)
+router.post('/pair', microcontrollersController.pairMicrocontroller)
 router.post('/', microcontrollersController.postMicrocontrollers)
 router.put('/', microcontrollersController.putMicrocontrollers)
 router.delete('/', microcontrollersController.deleteMicrocontrollers)

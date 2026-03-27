@@ -56,8 +56,29 @@ describe('Mysql DAO', () => {
         result.forEach(m => expect(m.username).toBe('Rocky'))
     })
 
+    test('findByGateway returns filtered microcontrollers', async () => {
+        const result = await dao.findByGateway('FOG_NODE_01')
+        expect(Array.isArray(result)).toBe(true)
+    })
+
+    test('pairMicrocontroller returns true on success', async () => {
+        const ok = await dao.pairMicrocontroller('1.2.3.4', 'temp', 'gateway-1')
+        expect(ok).toBe(true)
+    })
+
     test('insertMicrocontroller returns true on new entry', async () => {
         const ok = await dao.insertMicrocontroller({ ip: '1.2.3.4', measure: 'temperature', sensor: 's', username: 'u' })
+        expect(ok).toBe(true)
+    })
+
+    test('insertMicrocontroller with gatewayId returns true', async () => {
+        const ok = await dao.insertMicrocontroller({ 
+            ip: '1.2.3.4', 
+            measure: 'temp', 
+            sensor: 's', 
+            username: 'u',
+            gateway_id: 'fog-1'
+        })
         expect(ok).toBe(true)
     })
 
@@ -68,6 +89,18 @@ describe('Mysql DAO', () => {
 
     test('updateMicrocontroller returns true when existing', async () => {
         const ok = await dao.updateMicrocontroller({ ip: '1.2.3.5', measure: 'temperature', old_ip: '192.168.1.222', sensor: 's', username: 'u', thresholdMin: null, thresholdMax: null })
+        expect(ok).toBe(true)
+    })
+
+    test('updateMicrocontroller with gatewayId returns true', async () => {
+        const ok = await dao.updateMicrocontroller({ 
+            ip: '1.2.3.5', 
+            measure: 'temp', 
+            old_ip: '1.2.3.4', 
+            sensor: 's', 
+            username: 'u', 
+            gateway_id: 'fog-1' 
+        })
         expect(ok).toBe(true)
     })
 

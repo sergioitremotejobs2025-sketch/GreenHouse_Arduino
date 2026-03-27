@@ -9,7 +9,16 @@ const dao = new Dao()
 module.exports = class OrchestratorController {
 
   async getMicrocontrollers(req, res) {
-    const { username } = req.query
+    const { username, gateway_id } = req.query
+
+    if (gateway_id) {
+      let response = cache.get(`/gateway/${gateway_id}`)
+      if (response) return res.status(200).json(response)
+
+      response = await dao.findByGateway(gateway_id)
+      if (response.length) cache.set(`/gateway/${gateway_id}`, response)
+      return res.status(200).json(response)
+    }
 
     let response = cache.get(`/?username=${username}`)
     if (response) return res.status(200).json(response)
@@ -28,6 +37,24 @@ module.exports = class OrchestratorController {
     response = await dao.findByMeasure(measure)
     if (response.length) cache.set(`/${measure}`, response)
     return res.status(200).json(response)
+  }
+
+  async pairMicrocontroller(req, res) {
+    const { ip, measure, gateway_id } = req.body
+
+    if (!ip || !measure || !gateway_id) return res.sendStatus(400)
+
+    try {
+      const success = await dao.pairMicrocontroller(ip, measure, gateway_id)
+      if (!success) return res.sendStatus(404)
+
+      // Invalidate caches
+      cache.del([`/${measure}`, `/gateway/${gateway_id}`])
+      
+      return res.status(200).json({ status: 'paired', ip, gateway_id })
+    } catch (error) {
+      return res.sendStatus(500)
+    }
   }
 
   async postMicrocontrollers(req, res) {
