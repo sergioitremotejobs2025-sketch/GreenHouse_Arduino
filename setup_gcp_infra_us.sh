@@ -7,10 +7,9 @@ PROJECT="iot-microservices-gcp"
 CLUSTER="iot-cluster-us"
 REGION="us-central1"
 
-# Explicit non-overlapping CIDRs for ClusterMesh
-# Standard GKE defaults may overlap, so we explicitly define the US ranges
-POD_CIDR="10.200.0.0/14"
-SVC_CIDR="10.204.0.0/20"
+# Safe RFC 1918 non-overlapping CIDRs (Avoids GCP 'default' 10.x.x.x auto-subnet collisions)
+POD_CIDR="172.16.0.0/14"
+SVC_CIDR="172.20.0.0/20"
 
 set -e
 

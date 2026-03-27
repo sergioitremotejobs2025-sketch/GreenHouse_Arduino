@@ -1051,7 +1051,7 @@ To eliminate regional single points of failure, we will connect independent Kube
 *   **Global Service Discovery**: If a local instance of `auth-ms` is under heavy load or failing, the `orchestrator-ms` can transparently route requests to a healthy cluster in another continent.
 
 **Implementation Plan (Phase 4):**
-1.  **Non-Overlapping VPC Subnets**: Provision secondary GKE clusters (e.g., `us-central1`) with strict, explicitly defined Pod and Service CIDR ranges that do not conflict with the primary EU cluster.
+1.  **Non-Overlapping VPC Subnets**: Provision secondary GKE clusters (e.g., `us-central1`) with strict, explicitly defined Pod and Service CIDR ranges (using safe RFC 1918 `172.16.0.0/14` ranges) that do not conflict with the primary EU cluster or default VPC auto-subnets (which frequently pre-claim `10.x.x.x` blocks).
 2.  **Cilium CNI Layer**: Replace or integrate with the default Google CNI to deploy the **Cilium Service Mesh** in order to utilize its secure, BGP-based `ClusterMesh` routing feature.
 3.  **Cross-Cluster TLS Peering**: Execute cross-cluster peering using the automated **`deploy_cilium_mesh.sh`** script. This orchestrator sequentially deploys the Cilium CNI using localized Helm values (e.g., `cilium-values-eu.yaml`, `cilium-values-us.yaml`) to assign unique `cluster.id` identifiers, enables the mesh agents, and executes the final TLS handshake via `cilium clustermesh connect`.
 4.  **Global Endpoints**: Annotate core Kubernetes Services (e.g., `orchestrator-ms`, `auth-ms`) with `io.cilium/global-service: "true"` to synchronize endpoint slices across all connected mesh participants.
