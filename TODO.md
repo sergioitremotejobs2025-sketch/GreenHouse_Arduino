@@ -43,8 +43,11 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] Integrated `PERF_TEST_API_URL` secret support in CI/CD pipeline.
 
 ## 🟠 Phase 3: Edge Intelligence & Fog Deployment 
-*Timeline: Next 6 Months*
-- [ ] **Wasm Ingestion Prototypes**: Develop and deploy the first WebAssembly "Data Pruners" (using Wasmtime/Wasmer) to select pilot physical greenhouse sites to reduce cloud ingress traffic.
+*Status: In Progress*
+- [x] **Wasm Ingestion Prototypes**: Develop and deploy the first WebAssembly "Data Pruners" (using Wasmtime/Wasmer) to select pilot physical greenhouse sites to reduce cloud ingress traffic.
+    - [x] Create Go-based Wasm prototype (`edge-wasm/pruner.go`).
+    - [x] Compile successfully to `pruner.wasm`.
+    - [x] Implement Delta-Threshold pruning algorithm for efficient edge processing.
 - [ ] **Fog Node Integration**: Establish the first intermediate "Site Brains" to manage local database persistence (e.g., MongoDB Edge) and site-wide autonomous automation loops (survival logic).
 - [ ] **Device Registry V2**: Upgrade `microcontrollers-ms` to handle physical device-to-gateway pairing and local discovery protocols.
 
