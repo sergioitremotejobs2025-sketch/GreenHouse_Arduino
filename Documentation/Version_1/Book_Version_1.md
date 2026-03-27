@@ -1055,6 +1055,7 @@ To eliminate regional single points of failure, we will connect independent Kube
 2.  **Cilium CNI Layer**: Replace or integrate with the default Google CNI to deploy the **Cilium Service Mesh** in order to utilize its secure, BGP-based `ClusterMesh` routing feature.
 3.  **Cross-Cluster TLS Peering**: Execute cross-cluster peering using the automated **`deploy_cilium_mesh.sh`** script. This orchestrator sequentially deploys the Cilium CNI using localized Helm values (e.g., `cilium-values-eu.yaml`, `cilium-values-us.yaml`) to assign unique `cluster.id` identifiers, enables the mesh agents, and executes the final TLS handshake via `cilium clustermesh connect`.
 4.  **Global Endpoints**: Annotate core Kubernetes Services (e.g., `orchestrator-ms`, `auth-ms`) with `io.cilium/global-service: "true"` to synchronize endpoint slices across all connected mesh participants.
+    *   **Stateful Isolation Strategy**: We strictly exclude stateful infrastructure (MongoDB, MySQL, RabbitMQ) from being tagged as global endpoints. This isolates data commits geographically, preventing catastrophic cross-continent database latency and synchronization locks.
 
 #### 16.3.2 Serverless Offloading (Knative)
 IoT workloads are characterized by unpredictable bursts (e.g., year-end reporting or sudden forensic audits). We will move from fixed-resource pods to **Knative Serverless** functions for high-compute tasks.
