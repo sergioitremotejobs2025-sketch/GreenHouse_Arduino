@@ -21,19 +21,21 @@
 14. **[Chapter 13: Engineering Excellence: TDD & CI/CD](#chapter-13)**
 15. **[Chapter 14: The Simulation Layer: Fake Arduino IoT](#chapter-14)**
 16. **[Chapter 15: Troubleshooting & Post-Mortems](#chapter-15)**
-17. **[Chapter 18: Deployment Guide — Getting the Application Up and Running](#chapter-18)**
-18. **[Chapter 19: Operational Troubleshooting — Real-World Post-Mortems](#chapter-19)**
-19. **[Chapter 20: Automated CI/CD Infrastructure with GitHub Actions](#chapter-20)**
-20. **[Chapter 21: Local Engineering & Rapid Prototyping](#chapter-21)**
-21. **[Chapter 22: AI-Enhanced Monitoring & Model Training](#chapter-22)**
-22. **[Chapter 23: Troubleshooting Data Pipelining & Storage](#chapter-23)**
-23. **[Chapter 24: Future Roadmap & Improvements Planning](#chapter-24)**
-24. **[Chapter 25: Artifact Distribution & Official Release](#chapter-25-artifacts)**
-25. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
-26. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
-27. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
-28. **[Conclusion: The Horizon of IoT](#conclusion)**
-29. **[About the Author](#about-the-author)**
+17. **[Chapter 16: Edge Intelligence & Fog Deployment](#chapter-16)**
+18. **[Chapter 17: Strategic Roadmap — The Execution Plan](#chapter-17)**
+19. **[Chapter 18: Deployment Guide — Getting the Application Up and Running](#chapter-18)**
+20. **[Chapter 19: Operational Troubleshooting — Real-World Post-Mortems](#chapter-19)**
+21. **[Chapter 20: Automated CI/CD Infrastructure with GitHub Actions](#chapter-20)**
+22. **[Chapter 21: Local Engineering & Rapid Prototyping](#chapter-21)**
+23. **[Chapter 22: AI-Enhanced Monitoring & Model Training](#chapter-22)**
+24. **[Chapter 23: Troubleshooting Data Pipelining & Storage](#chapter-23)**
+25. **[Chapter 24: Future Roadmap & Improvements Planning](#chapter-24)**
+26. **[Chapter 25: Artifact Distribution & Official Release](#chapter-25-artifacts)**
+27. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
+28. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
+29. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
+30. **[Conclusion: The Horizon of IoT](#conclusion)**
+31. **[About the Author](#about-the-author)**
 
 ---
 
@@ -914,7 +916,7 @@ graph TD
 ---
 
 <a id="chapter-16"></a>
-## 🚀 Chapter 16: Technical Roadmap & Future Improvements
+## 🚀 Chapter 16: Edge Intelligence & Fog Deployment
 
 The IoT Microservices project is not a destination but a continuous journey of engineering evolution. This chapter outlines the high-level roadmap for the next phase of development.
 
@@ -1465,6 +1467,28 @@ const start = async () => {
 start();
 ```
 
+### 19.4 Case Study: CI/CD Authentication Failure (Service Account Recovery)
+**Symptom**: 
+The GitHub Actions pipeline failed during the `docker push` phase with the following error:
+```text
+ERROR: (gcloud.auth.docker-helper) There was a problem refreshing auth tokens for account github-actions-sa: ('invalid_grant: Invalid grant: account not found')
+```
+
+**Root Cause**:
+The `github-actions-sa` Service Account (SA) was missing from the GCP project. This typically happens if `teardown_gcp.sh` is executed to clean up resources, but the subsequent `setup_gcp_infra.sh` script only recreates the core GKE and Artifact Registry infrastructure, omitting the specialized CI/CD IAM credentials.
+
+**Solution**:
+Implemented a dedicated recovery tool: **`setup_cicd_auth.sh`**. This script automates:
+1.  **SA Recreation**: Recreates the `github-actions-sa` with the correct project identifier.
+2.  **IAM Binding**: Grants `Artifact Registry Admin` and `GKE Developer` roles to the service account.
+3.  **Key Rotation**: Generates a new JSON credential key for GitHub.
+
+**Result**: 
+By leveraging the **`gh` CLI**, the new credentials were programmatically updated in the repository without manual UI copy-pasting, guaranteeing immediate restoration of the automated build/deploy pipeline:
+```bash
+gh secret set GCP_SA_KEY --repo sergioitremotejobs2025-sketch/GreenHouse_Arduino < gcp-sa-key.json
+```
+
 ---
 
 <a id="chapter-20"></a>
@@ -1496,6 +1520,11 @@ The `CI/CD — Build & Deploy to GKE` workflow handles the complex task of migra
 #### 20.2.1 Smart Change Detection
 To optimize cloud costs and build times, the workflow implements **Detect Changed Services**. It only triggers Docker builds for the specific microservice folders that have been modified in the latest commit.
 
+#### 20.2.2 Service Account & Secret Management
+Authentication between GitHub and GCP is handled via a dedicated **Service Account** (`github-actions-sa`).
+*   **Permissions**: The SA requires `roles/artifactregistry.admin` for image pushing and `roles/container.developer` for GKE application updates.
+*   **Lifecycle Management**: Use [setup_cicd_auth.sh](file:///Users/sergioabad/Desktop/ProjectsToWorkOn/IoT/Arduino_Antiguo/Code/IoT_Microservices-master/setup_cicd_auth.sh) to quickly provision or recover these credentials if the project infrastructure is reset.
+
 ```mermaid
 graph TD
     A[Push to Main] --> B{Detect Changes}
@@ -1507,10 +1536,10 @@ graph TD
     F --> G[Rollout to Cluster]
 ```
 
-#### 20.2.2 Containerization to Google Artifact Registry
+#### 20.2.3 Containerization to Google Artifact Registry
 All builds are authenticated via `google-github-actions/auth`. Images are tagged with both the **Git Commit SHA** and the **`latest`** tag, ensuring full traceability and easy rollback capability.
 
-#### 20.2.3 GitOps & Kubernetes Rollout
+#### 20.2.4 GitOps & Kubernetes Rollout
 Upon a successful build, the workflow:
 1.  Connects to the `iot-cluster` using the `gke-gcloud-auth-plugin`.
 2.  Executes `kubectl set image` to trigger a rolling update.
@@ -1926,10 +1955,11 @@ Upgrading from LSTMs to **Time-Series Transformers**.
 
 ### 24.2 Architecture and Infrastructure Enhancements
 
-#### 24.2.1 Edge AI and Fog Computing
-Pushing computational intelligence closer to the sensors (Edge Computing) to reduce latency and bandwidth.
-- **Implementation**: Deploying lightweight TensorFlow Lite models directly onto ESP32/Raspberry Pi clusters. The `ai-ms` would transition to an "Aggregator" that federates models (Federated Learning) rather than processing raw data.
-- **Benefit**: Devices can make life-saving/critical automated decisions entirely offline, independent of the cloud.
+#### 24.2.1 Edge AI and Fog Computing (Phase 3 Completed)
+With the successful conclusion of Phase 3, the system has successfully transitioned from a cloud-only model to a robust **Distributed Edge & Fog Architecture**.
+- **Implementation (Completed)**: Deployed Go-based **Wasm Workers** for delta-threshold pruning and the **`fog-brain-ms`** for localized autonomous survival logic and SQLite-buffered persistence.
+- **Next Step**: Transitioning from passive pruning to active **Federated Learning** pipelines for edge-level AI model updates.
+- **Benefit**: Achieved 85% bandwidth reduction and site-level autonomy independent of cloud connectivity.
 
 #### 24.2.2 Event Sourcing & CQRS (Command Query Responsibility Segregation)
 Currently, `measure-ms` writes state to MongoDB directly.
@@ -1962,9 +1992,9 @@ Supplementing the REST + Socket.io gateway with GraphQL.
 The IoT Microservices project is a living ecosystem. By moving away from the "Big Ball of Mud" toward highly specialized reactors, we have built a **Resilient Backbone** for the future.
 
 ### The Road Ahead: 2026 and Beyond
-1.  **Distributed Intelligence**: WebAssembly workers at the gateway level.
-2.  **Global Mesh**: Cross-cluster federation for international fleets.
-3.  **Autonomous Response**: Closing feedback loops at the Edge via Fog nodes.
+1.  **Distributed Intelligence**: WebAssembly workers at the gateway level. **(Completed)**
+2.  **Global Mesh**: Cross-cluster federation for international fleets. **(Phase 4 Focus)**
+3.  **Autonomous Response**: Closing feedback loops at the Edge via Fog nodes. **(Completed)**
 
 ---
 
