@@ -25,6 +25,7 @@ prometheus:
   enabled: true
   serviceMonitor:
     enabled: true
+    trustCRDsExist: true
 
 # High Availability for the Cilium Operator
 operator:

@@ -1512,6 +1512,28 @@ The Google Cloud "Default" VPC automatically pre-populates small `/20` subnets f
 **Result**: 
 The secondary cluster successfully entered the `PROVISIONING` state, guaranteeing a unique routing domain for global service discovery and cross-continent active-active failover.
 
+### 19.6 Case Study: Cilium Helm Deployment: Service Monitor CRD Conflict
+**Symptom**: 
+During the execution of `./deploy_cilium_mesh.sh`, the `helm upgrade` command failed with the following error:
+`Error: execution error at (cilium/templates/validate.yaml:22:13): Service Monitor requires monitoring.coreos.com/v1 CRDs.`.
+
+**Root Cause**:
+The Cilium Helm chart has strict validation that checks for the existence of Prometheus Operator Custom Resource Definitions (CRDs) when `serviceMonitor.enabled` is set to `true`. Since the clusters were freshly provisioned without a pre-existing Prometheus Operator installation, the validation failed and blocked the deployment.
+
+**Solution**:
+Modified both `cilium-values-eu.yaml` and `cilium-values-us.yaml` to include:
+```yaml
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
+```
+This bypasses the pre-installation validation check, allowing Cilium to be deployed while deferring CRD resolution to the eventual Monitoring stack.
+
+**Result**: 
+The networking layer was successfully and consistently applied to both clusters, clearing the path for cross-cluster mesh peering.
+
 ---
 
 <a id="chapter-20"></a>
