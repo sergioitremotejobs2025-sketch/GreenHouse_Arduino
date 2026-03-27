@@ -7,7 +7,9 @@
 # ║  IoT Microservices migration. This action is IRREVERSIBLE.               ║
 # ║                                                                          ║
 # ║  Affected resources:                                                     ║
-# ║    - GKE Autopilot Cluster: iot-cluster                                  ║
+# ║    - GKE Autopilot Cluster: iot-cluster (EU)                             ║
+# ║    - GKE Autopilot Cluster: iot-cluster-us (US)                          ║
+# ║    - GKE Fleet Memberships & Multi-cluster Service Discovery Feature     ║
 # ║    - Artifact Registry: iot-repo (all 10+ Docker images)                 ║
 # ║    - Load Balancer & Forwarding Rules                                    ║
 # ║    - Persistent Disks (MySQL + MongoDB data)                             ║
@@ -23,6 +25,8 @@ set -e  # Exit on first error
 PROJECT="iot-microservices-gcp"
 CLUSTER="iot-cluster"
 REGION="europe-west1"
+CLUSTER_US="iot-cluster-us"
+REGION_US="us-central1"
 REPO="iot-repo"
 SA_EMAIL="github-actions-sa@${PROJECT}.iam.gserviceaccount.com"
 
@@ -45,7 +49,7 @@ gcloud config set project "$PROJECT"
 # STEP 1: Delete all Kubernetes resources (graceful cleanup before cluster deletion)
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "📦 [1/7] Deleting Kubernetes workloads..."
+echo "📦 [1/8] Deleting Kubernetes workloads from EU cluster..."
 gcloud container clusters get-credentials "$CLUSTER" --region "$REGION" --project "$PROJECT" || true
 
 kubectl delete --all deployments   -n default --ignore-not-found=true
@@ -57,14 +61,23 @@ kubectl delete --all pvc           -n default --ignore-not-found=true
 kubectl delete --all configmaps    -n default --ignore-not-found=true
 kubectl delete --all secrets       -n default --ignore-not-found=true
 
-echo "   ✅ Kubernetes resources deleted."
+echo "📦 [1.5/8] Deleting Kubernetes workloads from US cluster..."
+gcloud container clusters get-credentials "$CLUSTER_US" --region "$REGION_US" --project "$PROJECT" 2>/dev/null || true
+
+kubectl delete --all deployments   -n default --ignore-not-found=true || true
+kubectl delete --all services      -n default --ignore-not-found=true || true
+kubectl delete --all configmaps    -n default --ignore-not-found=true || true
+kubectl delete --all secrets       -n default --ignore-not-found=true || true
+
+echo "   ✅ Kubernetes resources deleted from all clusters."
 
 # ──────────────────────────────────────────────────────────────────────────
 # STEP 2: Uninstall Helm releases (NGINX Ingress)
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "📦 [2/7] Uninstalling Helm releases..."
+echo "📦 [2/8] Uninstalling Helm releases..."
 helm uninstall ingress-nginx -n ingress-nginx 2>/dev/null || true
+helm uninstall ingress-nginx -n ingress-nginx --kube-context gke_${PROJECT}_${REGION_US}_${CLUSTER_US} 2>/dev/null || true
 kubectl delete namespace ingress-nginx --ignore-not-found=true
 kubectl delete namespace dev           --ignore-not-found=true
 kubectl delete namespace prod          --ignore-not-found=true
@@ -74,20 +87,34 @@ echo "   ✅ Helm releases and namespaces deleted."
 # ──────────────────────────────────────────────────────────────────────────
 # STEP 3: Delete GKE Autopilot Cluster (this also removes the Load Balancer)
 # ──────────────────────────────────────────────────────────────────────────
+echo "🕸️  [3/8] Unregistering Fleet Memberships & disabling MCS..."
+gcloud container fleet memberships delete iot-cluster-eu --project "$PROJECT" --quiet 2>/dev/null || true
+gcloud container fleet memberships delete iot-cluster-us --project "$PROJECT" --quiet 2>/dev/null || true
+gcloud container fleet features disable multiclusterservicediscovery --project "$PROJECT" --quiet 2>/dev/null || true
+echo "   ✅ Fleet unregistration complete."
+
+# ──────────────────────────────────────────────────────────────────────────
+# STEP 4: Delete GKE Autopilot Clusters
+# ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "☁️  [3/7] Deleting GKE Autopilot Cluster: ${CLUSTER}..."
-echo "   (This will also delete the associated Load Balancer and networking)"
+echo "☁️  [4/8] Deleting Primary GKE Autopilot Cluster: ${CLUSTER}..."
 gcloud container clusters delete "$CLUSTER" \
   --region "$REGION" \
   --project "$PROJECT" \
   --quiet
-echo "   ✅ GKE cluster deleted."
+
+echo "☁️  [4.5/8] Deleting Secondary GKE Autopilot Cluster: ${CLUSTER_US}..."
+gcloud container clusters delete "$CLUSTER_US" \
+  --region "$REGION_US" \
+  --project "$PROJECT" \
+  --quiet || true
+echo "   ✅ All GKE clusters deleted."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 4: Delete Artifact Registry (all Docker images)
+# STEP 5: Delete Artifact Registry (all Docker images)
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🐳 [4/7] Deleting Artifact Registry repository: ${REPO}..."
+echo "🐳 [5/8] Deleting Artifact Registry repository: ${REPO}..."
 gcloud artifacts repositories delete "$REPO" \
   --location="$REGION" \
   --project="$PROJECT" \
@@ -95,30 +122,30 @@ gcloud artifacts repositories delete "$REPO" \
 echo "   ✅ Artifact Registry and all images deleted."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 5: Delete Cloud Build source staging bucket
+# STEP 6: Delete Cloud Build source staging bucket
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🪣  [5/7] Deleting Cloud Build source bucket..."
+echo "🪣  [6/8] Deleting Cloud Build source bucket..."
 gsutil -m rm -r "gs://${PROJECT}_cloudbuild" 2>/dev/null || true
 echo "   ✅ Cloud Build bucket deleted."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 6: Delete Service Account created for GitHub Actions
+# STEP 7: Delete Service Account created for GitHub Actions
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🔑 [6/7] Deleting Service Account: github-actions-sa..."
+echo "🔑 [7/8] Deleting Service Account: github-actions-sa..."
 gcloud iam service-accounts delete "$SA_EMAIL" \
   --project="$PROJECT" \
   --quiet 2>/dev/null || true
 echo "   ✅ Service Account deleted."
 
 # ──────────────────────────────────────────────────────────────────────────
-# STEP 7: (OPTIONAL) Delete the entire GCP Project
+# STEP 8: (OPTIONAL) Delete the entire GCP Project
 #         Uncomment the block below to also delete the GCP project itself.
 #         WARNING: This removes BILLING, IAM, and ALL remaining data.
 # ──────────────────────────────────────────────────────────────────────────
 echo ""
-echo "🗑️  [7/7] GCP Project deletion (OPTIONAL — currently commented out)..."
+echo "🗑️  [8/8] GCP Project deletion (OPTIONAL — currently commented out)..."
 echo "   To delete the entire project, uncomment lines 115-120 in this script."
 
 # UNCOMMENT THE BLOCK BELOW TO ALSO DELETE THE ENTIRE PROJECT:
@@ -136,9 +163,11 @@ echo "║  ✅  TEARDOWN COMPLETE                               ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 echo "Resources deleted:"
-echo "  ✅ GKE cluster: ${CLUSTER}"
+echo "  ✅ GKE cluster: ${CLUSTER} (EU)"
+echo "  ✅ GKE cluster: ${CLUSTER_US} (US)"
+echo "  ✅ GKE Fleet memberships & MCS features"
 echo "  ✅ Artifact Registry: ${REPO} (all Docker images)"
-echo "  ✅ Load Balancer (auto-deleted with cluster)"
+echo "  ✅ Load Balancers (auto-deleted with cluster)"
 echo "  ✅ Persistent Disks (auto-deleted with cluster PVCs)"
 echo "  ✅ Cloud Build source bucket"
 echo "  ✅ IAM Service Account: github-actions-sa"
