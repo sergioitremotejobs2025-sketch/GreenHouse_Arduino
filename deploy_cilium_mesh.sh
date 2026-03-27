@@ -16,10 +16,15 @@ echo "================================================="
 echo "🐝 Deploying Cilium Service Mesh (Phase 4)"
 echo "================================================="
 
-# Validate that the cilium CLI is installed
-if ! command -v cilium &> /dev/null
-then
-    echo "❌ Error: 'cilium' CLI could not be found. Please install via: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/"
+# Validate and set the cilium binary path
+if command -v cilium &> /dev/null; then
+    CILIUM_BIN="cilium"
+elif [ -f "./cilium" ]; then
+    CILIUM_BIN="./cilium"
+    chmod +x ./cilium
+else
+    echo "❌ Error: 'cilium' CLI could not be found in PATH or current directory."
+    echo "Please download it: https://github.com/cilium/cilium-cli/releases/latest"
     exit 1
 fi
 
@@ -37,7 +42,7 @@ helm upgrade --install cilium cilium/cilium \
   -f manifests-k8s/networking/cilium-values-eu.yaml
 
 # Enable ClusterMesh on EU
-cilium clustermesh enable --context "gke_${PROJECT}_${REGION_EU}_${CLUSTER_EU}"
+$CILIUM_BIN clustermesh enable --context "gke_${PROJECT}_${REGION_EU}_${CLUSTER_EU}"
 
 echo ""
 echo "🔗 [2/4] Installing Cilium on Secondary Cluster (US)..."
@@ -50,7 +55,7 @@ helm upgrade --install cilium cilium/cilium \
   -f manifests-k8s/networking/cilium-values-us.yaml
 
 # Enable ClusterMesh on US
-cilium clustermesh enable --context "gke_${PROJECT}_${REGION_US}_${CLUSTER_US}"
+$CILIUM_BIN clustermesh enable --context "gke_${PROJECT}_${REGION_US}_${CLUSTER_US}"
 
 echo ""
 echo "⏳ [3/4] Waiting for ClusterMesh Agents to become ready..."
@@ -60,7 +65,7 @@ sleep 60
 echo ""
 echo "🌐 [4/4] Establishing Cross-Cluster Peering..."
 # Connect EU to US
-cilium clustermesh connect \
+$CILIUM_BIN clustermesh connect \
   --context "gke_${PROJECT}_${REGION_EU}_${CLUSTER_EU}" \
   --destination-context "gke_${PROJECT}_${REGION_US}_${CLUSTER_US}"
 
@@ -69,6 +74,6 @@ echo "================================================="
 echo "✅ CILIUM CLUSTERMESH DEPLOYMENT COMPLETE!"
 echo "================================================="
 echo "Run the following command to verify the peering status:"
-echo "👉 cilium clustermesh status --context gke_${PROJECT}_${REGION_EU}_${CLUSTER_EU}"
+echo "👉 $CILIUM_BIN clustermesh status --context gke_${PROJECT}_${REGION_EU}_${CLUSTER_EU}"
 echo ""
 echo "Next step: Annotate your services with 'io.cilium/global-service: \"true\"' to enable global discovery."
