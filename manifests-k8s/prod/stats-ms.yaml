@@ -34,6 +34,13 @@ spec:
         app: stats-ms
         tier: backend
     spec:
+      nodeSelector:
+        cloud.google.com/gke-spot: "true"
+      tolerations:
+      - key: "cloud.google.com/gke-spot"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       containers:
       - env:
         - name: MONGO_DATABASE_NAME
@@ -108,7 +115,8 @@ spec:
             cpu: 250m
             memory: 64Mi
           requests:
-            memory: 16Mi
+            cpu: 100m
+            memory: 32Mi
         livenessProbe:
           httpGet:
             path: /health

@@ -40,3 +40,10 @@ spec:
           limits:
             cpu: 200m
             memory: 512Mi
+      nodeSelector:
+        cloud.google.com/gke-spot: "true"
+      tolerations:
+      - key: "cloud.google.com/gke-spot"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
