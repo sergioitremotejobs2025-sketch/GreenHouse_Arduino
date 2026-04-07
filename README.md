@@ -2,7 +2,7 @@
 
 [![Coverage: 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](CURRENT_COVERAGE.md)
 [![Continuous Integration](https://github.com/sergioitremotejobs2025-sketch/GreenHouse_Arduino/actions/workflows/ci.yml/badge.svg)](https://github.com/sergioitremotejobs2025-sketch/GreenHouse_Arduino/actions/workflows/ci.yml)
-[![Phase: 2 (Security)](https://img.shields.io/badge/Phase-2%20Security-blue.svg)](Timeline.md)
+[![Phase: 4 (Global Scale)](https://img.shields.io/badge/Phase-4%20Global%20Scale-red.svg)](Timeline.md)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
 A robust, enterprise-grade IoT ecosystem for remote monitoring and automation of smart greenhouses. This project leverages a microservices architecture to provide real-time sensing, AI-driven forecasting, and secure device management.
