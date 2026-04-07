@@ -1,88 +1,75 @@
 # ⏳ IoT Microservices: Strategic Execution Timeline
 
-This document outlines the estimated time and effort required to execute the remaining strategic tasks defined in `TODO.md`. The estimates are based on industry standards for implementing these architectural expansions in a microservices environment.
+This document outlines the actual progress and estimated time/effort required for the remaining architectural expansions.
 
 ## 📊 High-Level Gantt Chart Roadmap
 
 ```mermaid
 gantt
-    title IoT Microservices Implementation Timeline (Estimated)
+    title IoT Microservices Implementation Timeline (Current State)
     dateFormat  YYYY-MM-DD
     axisFormat  %b '%y
-    section Phase 0: Release & Artifact Publishing
-    GHCR Infrastructure Setup      :p0_1, 2026-03-25, 3d
-    v1.0.0 Official Release         :p0_2, after p0_1, 2d
+    
+    section Phase 1 & 1.5: Enforcement
+    TDD Hard Block (100% Coverage) :done, p1_1, 2026-03-01, 7d
+    GKE Migration & Cloud Simulation :done, p1_2, 2026-03-08, 10d
+    Workflow & Pipeline Health       :done, p1_3, 2026-03-18, 5d
 
-    section Phase 1.5: Pipeline Health
-    Workflow Stabilization          :done, p15_1, 2026-03-07, 2d
-    Badge Monitoring                :done, p15_2, 2026-03-08, 1d
-
-    section Phase 2: Observability & Scaling
-    GKE Cloud Migration (Phase 2.1) :done, p2_1, 2026-03-10, 10d
-    Cloud Simulation Implementation :done, p2_2, 2026-03-19, 2d
-    Disaster Recovery Scripting     :done, p2_3, 2026-03-20, 1d
-    mTLS Service Mesh Pilot         :active, p2_4, 2026-03-21, 21d
-    Advanced Observability (SRE)    :p2_5, after p2_4, 14d
+    section Phase 2: Observability & Security
+    Metrics & Log Unification (SRE) :done, p2_1, 2026-03-24, 4d
+    CI/CD Maturity (K6 Perf Tests)  :done, p2_2, 2026-03-25, 2d
+    mTLS Service Mesh (Istio)        :active, p2_3, 2026-03-26, 14d
 
     section Phase 3: Edge & Fog
-    Device Registry V2 Upgrade      :p3_1, 2026-05-20, 28d
-    Wasm Pruner Prototypes          :p3_2, after p3_1, 42d
-    Fog Node (Site Brain) Integration :p3_3, after p3_2, 56d
+    Wasm Pruners & Fog Brain MS    :done, p3_1, 2026-03-20, 14d
+    Device Registry V2 (Pairing)   :done, p3_2, 2026-03-22, 7d
 
     section Phase 4: Global Scale
-    Serverless Analytics (Knative)  :p4_1, 2026-09-23, 35d
-    Cross-Cluster Federation (Cilium) :p4_2, after p4_1, 42d
-    Sovereign Data Sharding         :p4_3, after p4_2, 42d
+    Multi-Region MCS (EU/US)       :done, p4_1, 2026-03-27, 3d
+    Serverless Analytics (Knative) :active, p4_2, 2026-03-28, 21d
+    Sovereign Data Sharding        :p4_3, after p4_2, 28d
 ```
 
 ---
 
-## 📅 Detailed Task Breakdown & Estimates
-### ⚪ Phase 0: Release & Artifact Publishing (To Do)
-Establishing the official distribution channels for the project's logic and container artifacts.
+## 📅 Detailed Task Breakdown & Progress
+
+### 🔵 Phase 1 & 1.5: Foundation & Pipeline (Completed)
+Establishing the baseline for 100% test coverage and cloud registry reliability.
+
+| Task | Status | Completion Date |
+| :--- | :--- | :--- |
+| **TDD Hard Block** | ✅ Done | 2026-03-07 |
+| **GKE Autopilot Migration** | ✅ Done | 2026-03-15 |
+| **Workflow Matrix Stabilization** | ✅ Done | 2026-03-22 |
+
+### 🟢 Phase 2: Observability & Hardening (In Progress)
+Transitioning into professional SRE operations and zero-trust identity.
 
 | Task | Effort | Status | Description |
 | :--- | :--- | :--- | :--- |
-| **GHCR Infrastructure** | **3 Days** | ⏳ Queue | Configuring GitHub Actions to build and push Docker images to the GitHub Container Registry (ghcr.io) to eliminate local registry dependency. |
-| **v1.0.0 Official Release** | **2 Days** | ⏳ Queue | Preparing the tagging strategy and drafting the first official release notes, attaching the engineering manifesto PDF. |
+| **Advanced Observability (SRE)**| **4 Days** | ✅ Done | Deployed Grafana, Loki (Logs), and Prometheus (Metrics) to GKE. |
+| **Perf/Load Testing (K6)** | **2 Days** | ✅ Done | Integrated K6 automated performance regressions into CI pipeline. |
+| **mTLS Service Mesh Pilot** | **2 Weeks**| 🟡 Active | Implementing Istio PeerAuthentication for auth-to-orchestrator path. |
+| **Security Audit & Hardening** | **1 Week** | 🟡 Active | Performing CIS GKE benchmarking and hardening IAM policies across EU/US. |
 
-### 🔵 Phase 1.5: GitHub Actions Pipeline Health (Completed)
-Focus on resolving pending errors and stabilizing the existing CI/CD pipelines before advancing further.
-
-| Task | Effort | Status | Description |
-| :--- | :--- | :--- | :--- |
-| **Workflow Stabilization** | **2 Days** | ✅ Done | Resolved PR #1 failures, flattened `auth-ms`, and consolidated CI into a unified matrix workflow. |
-| **Badge Monitoring** | **1 Day** | ✅ Done | Verified dynamic README badge correctly tracks CI status across all services. |
-
-### 🟢 Phase 2: Cloud Migration & Observability (In Progress)
-Focus on migrating workflows to GKE, internal security hardening, and expanding the SRE platform.
+### ✅ Phase 3: Edge & Fog Intelligence (Completed)
+Successfully decentralized compute and implemented local survival logic.
 
 | Task | Effort | Status | Description |
 | :--- | :--- | :--- | :--- |
-| **GKE Cloud Migration** | **10 Days** | ✅ Done | Successfully migrated all microservices from local Docker to GKE Autopilot. Configured LoadBalancers and Artifact Registry pipelines. |
-| **Cloud Simulation** | **2 Days** | ✅ Done | Containerized the `fake-arduino` simulators and deployed them natively to GKE with internal DNS routing. |
-| **Emergency Recovery (DR)** | **1 Day** | ✅ Done | Created the `recreate_full_system.sh` master script for automated, zero-touch restoration of the entire GCP environment. |
-| **mTLS Service Mesh Pilot** | **3 Weeks** | 🟡 Active | Deploying Istio/Linkerd. Learning curve for configuring sidecar proxies. Piloting exclusively on `auth-ms` -> `orchestrator-ms`. |
-| **Advanced Observability HQ** | **2 Weeks** | ⏳ Queue | Aggregating Promtail/Loki logs with Prometheus metrics. Building correlated Grafana dashboards. |
-| **CI/CD Maturity (Perf Tests)** | **2 Weeks** | ⏳ Queue | Integrating load-testing frameworks (e.g., K6) into GitHub Actions. |
+| **Wasm Ingestion Prototypes** | **2 Weeks** | ✅ Done | Deployed Go-based `pruner.wasm` edge data pruners. |
+| **Fog Node Integration** | **2 Weeks** | ✅ Done | Implemented `fog-brain-ms` with SQLite local persistence. |
+| **Device Registry V2** | **1 Week**  | ✅ Done | Upgraded pairing protocols and discovery logic. |
 
-### 🟠 Phase 3: Edge Intelligence & Fog Deployment (Est: 18 Weeks)
-Focus on decentralizing compute to the physical network edge to save cloud bandwidth bounds.
+### 🔴 Phase 4: Global Mesh & Infinite Scale (Active)
+Achieving global active-active federation and serverless cost-efficiency.
 
-| Task | Estimated Effort | Complexity | Description |
+| Task | Estimated | Status | Description |
 | :--- | :--- | :--- | :--- |
-| **Device Registry V2** | **4 Weeks** | Medium | Modifying `microcontrollers-ms` schema. Implementing zero-conf discovery protocols so physical hardware can automatically pair with local gateways. |
-| **Wasm Ingestion Prototypes** | **6 Weeks** | High | Writing Rust/C++ pruning logic. Compiling to `.wasm`. Deploying Wasmtime environments on physical site infrastructure. Validating data fidelity post-pruning. |
-| **Fog Node Integration** | **8 Weeks** | Very High | Building the "Site Brain". Implementing offline-survival logic for greenhouse automation. Syncing local caching databases with the central K8s cluster. |
-
-### 🔴 Phase 4: Global Mesh & Infinite Scale (Est: 17 Weeks)
-Focus on extreme geo-distribution, cost-efficiency, and global residency compliance.
-
-| Task | Estimated Effort | Complexity | Description |
-| :--- | :--- | :--- | :--- |
-| **Serverless Offloading** | **5 Weeks** | High | Rewriting `stats-ms` deployment manifests for Knative Serving. Setting up Eventing triggers so analytics pods scale to 0 when RabbitMQ queues are empty. |
-| **Cross-Cluster Mesh (Cilium)** | **6 Weeks** | Very High | Establishing secure IPSec/Wireguard tunnels between EU and US K8s clusters. Managing global DNS and BGP routing for active-active failover scenarios. |
-| **Sovereign Sharding** | **6 Weeks** | High | Transitioning MongoDB from a Replica Set to a Sharded Cluster. Configuring Zone Tags based on user geolocation attributes. Performing live data migrations safely. |
+| **Multi-Region MCS (EU/US)** | **3 Days** | ✅ Done | Federated EU-west1 and US-central1 clusters via GKE Fleet. Enabled MCS for global discovery. |
+| **Serverless Burst (Knative)** | **3 Weeks** | 🟡 Active | **Next Milestone**: Configuring scale-to-zero for stats-ms and ai-ms analytics. |
+| **Sovereign Sharding** | **4 Weeks** | ⏳ Queue | Implementing jurisdiction-aware MongoDB sharding (GDPR/CCPA compliance). |
 
 ---
-*Generated by AI Assistant on 2026-03-08*
+*Updated Technical Audit: March 27, 2026*
