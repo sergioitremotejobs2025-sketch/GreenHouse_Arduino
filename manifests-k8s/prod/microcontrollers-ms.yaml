@@ -6,7 +6,7 @@ metadata:
     io.cilium/global-service: "true"
 spec:
   ports:
-  - name: http-microcontrollers
+  - name: http-micro
     port: 80
     protocol: TCP
     targetPort: 3000
@@ -73,7 +73,7 @@ spec:
         imagePullPolicy: IfNotPresent
         name: microcontrollers-ms
         ports:
-        - name: http-microcontrollers
+        - name: http-micro
           containerPort: 3000
         securityContext:
           allowPrivilegeEscalation: false

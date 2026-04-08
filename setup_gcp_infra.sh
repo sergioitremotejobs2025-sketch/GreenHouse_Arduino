@@ -21,10 +21,10 @@ gcloud artifacts repositories create "$REPO" \
 
 echo "☁️  Creating GKE Autopilot Cluster: ${CLUSTER}..."
 echo "   (This may take several minutes...)"
+echo "   Note: Autopilot clusters have Network Policies enabled by default."
 gcloud container clusters create-auto "$CLUSTER" \
     --region "$REGION" \
     --project "$PROJECT" \
-    --enable-network-policy \
     --quiet || echo "Cluster might already exist, skipping creation..."
 
 echo "🔐 Fetching credentials for ${CLUSTER}..."

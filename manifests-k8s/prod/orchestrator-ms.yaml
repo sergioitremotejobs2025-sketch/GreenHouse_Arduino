@@ -7,7 +7,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - name: http-orchestrator
+  - name: http-orch
     port: 80
     protocol: TCP
     targetPort: 3000
@@ -124,7 +124,7 @@ spec:
         imagePullPolicy: IfNotPresent
         name: orchestrator-ms
         ports:
-        - name: http-orchestrator
+        - name: http-orch
           containerPort: 3000
         securityContext:
           allowPrivilegeEscalation: false

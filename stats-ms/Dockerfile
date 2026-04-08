@@ -1,15 +1,17 @@
 FROM python:3.9.2-alpine
 
+WORKDIR /app
+
 ENV PYTHONUNBUFFERED 1
 
-COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY --chown=appuser:appgroup requirements.txt ./
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-COPY src/ ./src/
+COPY --chown=appuser:appgroup src/ ./src/
 
 # Create a non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup && \
-    chown -R appuser:appgroup /src
+    chown -R appuser:appgroup /app
 
 USER appuser
 

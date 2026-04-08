@@ -74,11 +74,7 @@ spec:
         matchLabels:
           app: orchestrator-ms
     ports:
-    - name: http-auth
-      protocol: TCP
-      port: 3000
-    - name: http-orchestrator
-      protocol: TCP
+    - protocol: TCP
       port: 3000
   egress:
   - to:

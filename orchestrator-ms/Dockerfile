@@ -2,10 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /orchestrator-ms
 
-COPY *.json ./
-RUN npm install --production
+COPY --chown=node:node *.json ./
+RUN npm install --omit=dev
 
-COPY src src
+COPY --chown=node:node src src
 
 USER node
 

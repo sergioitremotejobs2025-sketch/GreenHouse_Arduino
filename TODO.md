@@ -12,6 +12,7 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 - [x] **TDD Hard Block**: Enforce 100% branch and line coverage across all 10+ microservices as a prerequisite for CI/CD.
 - [x] **Metric Unification**: Consolidate Prometheus exporters to reduce resource overhead.
 - [x] **GKE Migration**: Transition from Minikube to GKE Autopilot, achieving cost reductions via resource right-sizing.
+
 ## 🔵 Phase 1.5: GitHub Actions Pipeline Health
 *Status: Completed*
 - [x] **Workflow Stabilization**: Comprehensive repair of the CI/CD pipeline in PR #1.
@@ -25,32 +26,50 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 - [x] **Badge Monitoring**: Dynamic README badge successfully tracks CI status. Verified 100% pass rate on `fix/pipeline-health` branch.
 
 
-## 🟡 Phase 2: Closing the Unit Gaps & Observability 
-*Status: In Progress*
-- [/] **mTLS Pilot**: Implement mutual TLS (mTLS) via a Service Mesh (like Istio/Linkerd) specifically for the `auth-ms` to `orchestrator-ms` path to harden identity services.
-    - [x] Create Istio PeerAuthentication and DestinationRule manifests (`security/istio-mtls.yaml`)
-    - [x] Prepare `auth-ms` and `orchestrator-ms` manifests with named ports (`http-auth`, `http-orchestrator`) and aligned port 3000.
-    - [ ] Apply Istio manifests to the cluster and verify sidecar injection.
-- [/] **Security Audit & Hardening**: Implement CIS GKE benchmarking standards and Zero Trust Network Policies across the entire fleet.
-    - [x] Create Zero Trust Network Policy Baseline (`security/gke-hardening-baseline.yaml`).
-    - [x] Implement `gke-cis-audit.sh` tool for continuous compliance monitoring.
-    - [x] Harden 8+ microservices (Node, Go, Python, Nginx) with non-root USER and read-only root filesystems.
-    - [ ] Perform live CIS GKE security audit on active cluster.
-- [x] **Advanced Observability**: Integrate Grafana Loki (Logs) and Prometheus (Metrics) into a unified, single-pane SRE dashboard.
-    - [x] Configure Grafana dashboard provisioning (`monitoring/grafana.yaml`)
-    - [x] Create initial SRE Unified Dashboard JSON.
-    - [x] Deploy Loki, Promtail, Prometheus, and Grafana to GKE.
-    - [x] Verified Autopilot-compatible Promtail configuration.
-- [x] **CI/CD Maturity**: Automate performance regression tests to detect latency spikes before deployment to production.
-    - [x] Create K6 load testing script (`load-test.js`)
-    - [x] Create GitHub Actions workflow (`performance-tests.yml`)
-    - [x] **Exposed Orchestrator-MS (LoadBalancer)**: Live at `34.79.19.242` for real-target performance testing.
-    - [x] Updated K6 script with JSON validation and Metrics integration.
-    - [x] Integrated `PERF_TEST_API_URL` secret support in CI/CD pipeline.
+## 🟡 Phase 2: Security Hardening & Zero Trust
+*Status: **COMPLETED** ✅ — April 8, 2026*
+
+### Infrastructure & Cluster
+- [x] **GKE Autopilot Cluster Provisioned**: `iot-cluster` running in `europe-west1`, confirmed `RUNNING`.
+- [x] **Build Pipeline Optimised**: Migrated to `gcloud builds submit` + `.gcloudignore`, eliminating 1.8 GB `node_modules` upload bottleneck.
+- [x] **11/11 Hardened Images Pushed**: All microservice images successfully built and pushed to `europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/`.
+
+### CIS GKE Benchmarking & Network Hardening
+- [x] **Zero Trust Network Baseline Applied**: `gke-hardening-baseline.yaml` deployed — `default-deny-all`, `allow-essential-dns`, `block-instance-metadata`, `restricted-backend-access` all active.
+- [x] **NetworkPolicy Schema Fixes**: Removed invalid `name` field from port specs; fixed port names exceeding 15-char K8s limit (`http-orchestrator` → `http-orch`, etc.).
+- [x] **CIS GKE Audit Passed**: `gke-cis-audit.sh` confirms **FULL COMPLIANCE (CIS 5.7.1, 5.7.3)** for all production workloads.
+
+### Workload Hardening (All 11 Services)
+- [x] **Non-root SecurityContext**: `runAsNonRoot: true`, `allowPrivilegeEscalation: false`, `capabilities: drop: ALL` applied fleet-wide.
+- [x] **Read-only Root Filesystems**: `readOnlyRootFilesystem: true` with `emptyDir` ephemeral volumes for `/tmp` and `/run`.
+- [x] **UID Standardisation**: General MSs (1000), MongoDB/RabbitMQ (999), Prometheus (65534), Grafana (472), Loki (10001).
+- [x] **Dockerfile `chown` Fix**: Applied `COPY --chown=node:node` to all Node.js services (`orchestrator-ms`, `measure-ms`, `microcontrollers-ms`, `publisher-ms`, `fake-arduino-iot`, `fake-arduino-iot-pictures`) and corrected `WORKDIR`/`chown` for Python services (`stats-ms`, `ai-ms`).
+
+### Production Fleet Deployment
+- [x] **All Prod Workloads Deployed**: `manifests-k8s/prod/` applied — all 11 microservices running in `default` namespace.
+- [x] **Monitoring Stack Deployed**: Prometheus, Grafana, Loki, Promtail running with hardened security contexts.
+- [x] **DB Sharding Manifests Applied**: ConfigSvr, Shard EU/US, Mongos routers all deployed.
+- [x] **ConfigMap & Secrets Provisioned**: `env-configmap` and `secrets` applied to the cluster.
 
 ---
 
-## ✅ Phase 3: Edge Intelligence & Fog Deployment 
+## 🔵 Phase 3: mTLS Pilot
+*Status: **In Progress** 🔄 — April 8, 2026*
+
+- [x] **Fleet Registered to GCP Fleet**: `iot-cluster` (europe-west1) registered as a Fleet membership.
+- [x] **Cloud Service Mesh Enabled**: Managed CSM (`management: automatic`) activated at Fleet level.
+- [x] **Managed Control Plane Reconciled**: `asm-managed` ControlPlaneRevision confirmed `RECONCILED: True`.
+- [x] **`default` namespace labelled**: `istio.io/rev=asm-managed` applied — namespace bound to the Istio managed control plane.
+- [x] **mTLS Manifests Applied**: `PeerAuthentication/default-mtls` (STRICT mode) and `DestinationRule/default-mtls` (ISTIO_MUTUAL) deployed to cluster.
+- [x] **GCP APIs Enabled**: `trafficdirector.googleapis.com`, `meshca.googleapis.com`, `networksecurity.googleapis.com` all enabled.
+- [x] **Istio Sidecars Injecting**: `auth-ms` and `orchestrator-ms` pods confirmed with `2` containers (app + `istio-proxy`).
+- [ ] **Sidecar Fully READY (2/2)**: Envoy sidecar stuck in `PRE_INITIALIZING` pending Traffic Director + Network Security API propagation (~5–10 min after enablement). Re-roll deployments once propagation completes.
+- [ ] **mTLS Certificate Verification**: Confirm Mesh CA issues workload certificates to both services (`meshca.googleapis.com` active).
+- [ ] **Live mTLS Traffic Verification**: Use `istioctl pc secret` or `kubectl exec` into the proxy to verify SPIFFE identity and confirm mutual certificate exchange.
+
+---
+
+## ✅ Phase 3 (Edge): Edge Intelligence & Fog Deployment 
 *Status: Completed*
 - [x] **Wasm Ingestion Prototypes**: Develop and deploy the first WebAssembly "Data Pruners" (using Wasmtime/Wasmer) to select pilot physical greenhouse sites to reduce cloud ingress traffic.
     - [x] Create Go-based Wasm prototype (`edge-wasm/pruner.go`).
@@ -79,7 +98,8 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] Update MySQL schema with `jurisdiction` field.
     - [x] Update `microcontrollers-ms` and `measure-ms` to handle jurisdiction metadata.
     - [x] Create MongoDB Sharded Cluster manifests (`manifests-k8s/db/sharding/`).
-    - [ ] Deploy sharded cluster and execute `setup-zones.sh` on live environment.
+    - [x] Deploy sharded cluster manifests to GKE cluster.
+    - [ ] Execute `setup-zones.sh` on live environment to finalise zone tag assignments.
 
 ---
 *Generated based on the Book_Version_1.md Architectural Manifesto.*

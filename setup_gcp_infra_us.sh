@@ -24,6 +24,7 @@ echo "☁️  Creating GKE Autopilot Cluster: ${CLUSTER} in ${REGION}..."
 echo "   (This may take several minutes...)"
 echo "   Using Pod CIDR: ${POD_CIDR}"
 echo "   Using Service CIDR: ${SVC_CIDR}"
+echo "   Note: Autopilot clusters have Network Policies enabled by default."
 
 # Note: We must specify explicit IP ranges to avoid route collision with the EU cluster
 gcloud container clusters create-auto "$CLUSTER" \
@@ -31,7 +32,6 @@ gcloud container clusters create-auto "$CLUSTER" \
     --project "$PROJECT" \
     --cluster-ipv4-cidr="$POD_CIDR" \
     --services-ipv4-cidr="$SVC_CIDR" \
-    --enable-network-policy \
     --quiet || echo "Cluster might already exist, skipping creation..."
 
 echo ""
