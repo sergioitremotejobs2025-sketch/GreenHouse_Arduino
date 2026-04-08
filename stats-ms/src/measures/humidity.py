@@ -27,6 +27,7 @@ class Humidity(Measure):
         username = validated_data[0].get('username')
         ip = validated_data[0].get('ip')
         measure = validated_data[0].get('measure')
+        jurisdiction = validated_data[0].get('jurisdiction')
 
         stats = {
             'end_date': end_date,
@@ -43,7 +44,8 @@ class Humidity(Measure):
             'sensor': sensor,
             'std_deviation': round(std_deviation, 1),
             'time_span': time_span,
-            'username': username
+            'username': username,
+            'jurisdiction': jurisdiction
         }
 
         # Validate output stats

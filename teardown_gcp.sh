@@ -164,6 +164,57 @@ while read -r name reg; do
 done <<< "$STATIC_IPS"
 
 # ──────────────────────────────────────────────────────────────────────────
+# STEP 7.1: GKE MCS Networking Cleanup (Forwarding Rules, Target Proxies, URL Maps)
+# ──────────────────────────────────────────────────────────────────────────
+echo ""
+echo "🌐 [7.1/8] Cleaning up GKE MCS Global Networking resources..."
+
+# Forwarding Rules
+FW_RULES=$(gcloud compute forwarding-rules list --project="$PROJECT" --global --format="value(name)" 2>/dev/null || true)
+for fw in $FW_RULES; do
+    if [ ! -z "$fw" ]; then
+        echo "   Deleting Global Forwarding Rule: $fw"
+        gcloud compute forwarding-rules delete "$fw" --global --project="$PROJECT" --quiet &>/dev/null || true
+    fi
+done
+
+# Target HTTP Proxies
+THP=$(gcloud compute target-http-proxies list --project="$PROJECT" --format="value(name)" 2>/dev/null || true)
+for p in $THP; do
+    if [ ! -z "$p" ]; then
+        echo "   Deleting Target HTTP Proxy: $p"
+        gcloud compute target-http-proxies delete "$p" --project="$PROJECT" --quiet &>/dev/null || true
+    fi
+done
+
+# URL Maps
+URL_MAPS=$(gcloud compute url-maps list --project="$PROJECT" --format="value(name)" 2>/dev/null || true)
+for m in $URL_MAPS; do
+    if [ ! -z "$m" ]; then
+        echo "   Deleting URL Map: $m"
+        gcloud compute url-maps delete "$m" --project="$PROJECT" --quiet &>/dev/null || true
+    fi
+done
+
+# Backend Services
+BS=$(gcloud compute backend-services list --project="$PROJECT" --global --format="value(name)" 2>/dev/null || true)
+for b in $BS; do
+    if [ ! -z "$b" ]; then
+        echo "   Deleting Global Backend Service: $b"
+        gcloud compute backend-services delete "$b" --global --project="$PROJECT" --quiet &>/dev/null || true
+    fi
+done
+
+# Health Checks
+HC=$(gcloud compute health-checks list --project="$PROJECT" --format="value(name)" 2>/dev/null || true)
+for h in $HC; do
+    if [ ! -z "$h" ]; then
+        echo "   Deleting Health Check: $h"
+        gcloud compute health-checks delete "$h" --project="$PROJECT" --quiet &>/dev/null || true
+    fi
+done
+
+# ──────────────────────────────────────────────────────────────────────────
 # STEP 8: Final Audit (Generate Cost Report)
 # ──────────────────────────────────────────────────────────────────────────
 echo ""

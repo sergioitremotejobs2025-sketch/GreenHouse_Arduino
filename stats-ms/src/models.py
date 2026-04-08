@@ -10,6 +10,7 @@ class MeasureData(BaseModel):
     date: str
     real_value: Optional[float] = None
     digital_value: Optional[int] = None
+    jurisdiction: Optional[str] = 'EU'
 
 class BaseStats(BaseModel):
     end_date: str
@@ -22,6 +23,7 @@ class BaseStats(BaseModel):
     sensor: str
     time_span: int
     username: str
+    jurisdiction: Optional[str] = 'EU'
 
 class NumericStats(BaseStats):
     max_value: float

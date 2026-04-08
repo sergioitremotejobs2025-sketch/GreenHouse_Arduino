@@ -61,9 +61,13 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] Register clusters to GKE Fleet (Hub)
     - [x] Enable GKE Multi-cluster Services (MCS)
     - [x] Export core services for global discovery
-    - [ ] Deploy Knative for serverless analytical bursting
-- [ ] **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` to **Knative Serverless**, allowing the system to scale to zero during idle hours to save costs.
-- [ ] **Sovereign Sharding**: Implement jurisdiction-aware database routing (MongoDB Zone Sharding) to ensure data residency compliance (GDPR, CCPA) in real-time.
+    - [x] Deploy Knative for serverless analytical bursting
+- [x] **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` to **Knative Serverless**, allowing the system to scale to zero during idle hours to save costs.
+- [/] **Sovereign Sharding**: Implement jurisdiction-aware database routing (MongoDB Zone Sharding) to ensure data residency compliance (GDPR, CCPA) in real-time.
+    - [x] Update MySQL schema with `jurisdiction` field.
+    - [x] Update `microcontrollers-ms` and `measure-ms` to handle jurisdiction metadata.
+    - [x] Create MongoDB Sharded Cluster manifests (`manifests-k8s/db/sharding/`).
+    - [ ] Deploy sharded cluster and execute `setup-zones.sh` on live environment.
 
 ---
 *Generated based on the Book_Version_1.md Architectural Manifesto.*

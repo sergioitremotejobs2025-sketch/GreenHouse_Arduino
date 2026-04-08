@@ -44,7 +44,8 @@ module.exports = class MeasureModel {
       measure: micro.measure,
       sensor: micro.sensor,
       timestamp: date.getTime(),
-      username: micro.username
+      username: micro.username,
+      jurisdiction: micro.jurisdiction || 'EU'
     }
 
     switch (micro.measure) {

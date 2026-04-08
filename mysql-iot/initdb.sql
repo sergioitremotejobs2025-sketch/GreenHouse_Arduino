@@ -11,8 +11,11 @@ CREATE TABLE IF NOT EXISTS iot.microcontrollers (
   ip VARCHAR(256) NOT NULL,
   measure VARCHAR(256) NOT NULL,
   sensor VARCHAR(256) NOT NULL,
+  jurisdiction VARCHAR(10) DEFAULT 'EU',
   thresholdMin DOUBLE DEFAULT 0,
   thresholdMax DOUBLE DEFAULT 0,
+  gateway_id VARCHAR(256) DEFAULT NULL,
+  paired_at DATETIME DEFAULT NULL,
   PRIMARY KEY (username, ip, measure),
   FOREIGN KEY (username) REFERENCES iot.users(username)
 );

@@ -26,6 +26,7 @@ class Light(Measure):
         username = validated_data[0].get('username')
         ip = validated_data[0].get('ip')
         measure = validated_data[0].get('measure')
+        jurisdiction = validated_data[0].get('jurisdiction')
 
         stats = {
             'digital_values': digital_values,
@@ -39,7 +40,8 @@ class Light(Measure):
             'n_samples': n_samples,
             'sensor': sensor,
             'time_span': time_span,
-            'username': username
+            'username': username,
+            'jurisdiction': jurisdiction
         }
 
         # Validate output stats

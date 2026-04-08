@@ -61,17 +61,17 @@ module.exports = class Mysql {
   }
 
   async insertMicrocontroller(data) {
-    const { ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id } = data
+    const { ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id, jurisdiction } = data
     if (gateway_id !== undefined) {
       const result = await this.query(
-        'INSERT INTO microcontrollers(ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id, paired_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())',
-        [ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id]
+        'INSERT INTO microcontrollers(ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id, jurisdiction, paired_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())',
+        [ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id, jurisdiction || 'EU']
       )
       return !!result.affectedRows
     } else {
       const result = await this.query(
-        'INSERT INTO microcontrollers(ip, measure, sensor, username, thresholdMin, thresholdMax) VALUES (?, ?, ?, ?, ?, ?)',
-        [ip, measure, sensor, username, thresholdMin, thresholdMax]
+        'INSERT INTO microcontrollers(ip, measure, sensor, username, thresholdMin, thresholdMax, jurisdiction) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [ip, measure, sensor, username, thresholdMin, thresholdMax, jurisdiction || 'EU']
       )
       return !!result.affectedRows
     }
@@ -86,17 +86,17 @@ module.exports = class Mysql {
   }
 
   async updateMicrocontroller(data) {
-    const { ip, measure, old_ip, sensor, username, thresholdMin, thresholdMax, gateway_id } = data
+    const { ip, measure, old_ip, sensor, username, thresholdMin, thresholdMax, gateway_id, jurisdiction } = data
     if (gateway_id !== undefined) {
       const result = await this.query(
-        'UPDATE microcontrollers SET ip = ?, measure = ?, sensor = ?, username = ?, thresholdMin = ?, thresholdMax = ?, gateway_id = ? WHERE ip = ? AND measure = ?',
-        [ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id, old_ip, measure]
+        'UPDATE microcontrollers SET ip = ?, measure = ?, sensor = ?, username = ?, thresholdMin = ?, thresholdMax = ?, gateway_id = ?, jurisdiction = ? WHERE ip = ? AND measure = ?',
+        [ip, measure, sensor, username, thresholdMin, thresholdMax, gateway_id, jurisdiction || 'EU', old_ip, measure]
       )
       return !!result.affectedRows
     } else {
       const result = await this.query(
-        'UPDATE microcontrollers SET ip = ?, measure = ?, sensor = ?, username = ?, thresholdMin = ?, thresholdMax = ? WHERE ip = ? AND measure = ?',
-        [ip, measure, sensor, username, thresholdMin, thresholdMax, old_ip, measure]
+        'UPDATE microcontrollers SET ip = ?, measure = ?, sensor = ?, username = ?, thresholdMin = ?, thresholdMax = ?, jurisdiction = ? WHERE ip = ? AND measure = ?',
+        [ip, measure, sensor, username, thresholdMin, thresholdMax, jurisdiction || 'EU', old_ip, measure]
       )
       return !!result.affectedRows
     }

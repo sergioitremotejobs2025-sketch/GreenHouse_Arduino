@@ -648,6 +648,10 @@ Handles high-frequency readings.
 
 * **Indexes**: `timestamp: -1` and `{username: 1, ip: 1}` for microsecond query speeds.
 * **Sharding**: Prepared for massive scaling by distributing measurement documents across cluster nodes.
+* **Sovereign Sharding (Phase 4)**: Implement jurisdiction-aware database routing (Zone Sharding) to ensure data residency compliance.
+    * **Jurisdiction Tagging**: Every measurement includes a `jurisdiction` field (e.g., `EU`, `US`).
+    * **Zone Mapping**: Shards are assigned to zones, and data is automatically routed to the geographically appropriate shard based on the jurisdiction tag.
+    * **Compliance**: Ensures that EU data stays in EU-based shards and US data stays in US-based shards, meeting GDPR and CCPA requirements in real-time.
 
 ---
 
