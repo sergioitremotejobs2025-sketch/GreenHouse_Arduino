@@ -45,6 +45,20 @@ spec:
         name: rabbitmq
         ports:
         - containerPort: 5672
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
         resources:
           limits:
             cpu: 500m
@@ -63,3 +77,12 @@ spec:
             port: 5672
           initialDelaySeconds: 60
           periodSeconds: 10
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: rabbitmq-data
+        emptyDir: {}

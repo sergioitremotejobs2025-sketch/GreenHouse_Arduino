@@ -40,6 +40,22 @@ spec:
         - "--bind_ip_all"
         ports:
         - containerPort: 27017
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: run-volume
+          mountPath: /var/run/mongodb
+        - name: config-data
+          mountPath: /data/configdb
         resources:
           limits:
             cpu: "500m"
@@ -50,6 +66,15 @@ spec:
         volumeMounts:
         - name: config-data
           mountPath: /data/configdb
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: run-volume
+        emptyDir: {}
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       tolerations:

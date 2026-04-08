@@ -18,14 +18,35 @@ spec:
         image: grafana/grafana:9.5.2
         ports:
         - containerPort: 3000
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 472
         volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: grafana-storage
+          mountPath: /var/lib/grafana
         - name: grafana-datasources
           mountPath: /etc/grafana/provisioning/datasources
         - name: grafana-dashboards-provider
           mountPath: /etc/grafana/provisioning/dashboards
         - name: grafana-dashboards
           mountPath: /var/lib/grafana/dashboards
+      securityContext:
+        fsGroup: 472
+        runAsNonRoot: true
+        runAsUser: 472
       volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: grafana-storage
+        emptyDir: {}
       - name: grafana-datasources
         configMap:
           name: grafana-datasources
@@ -244,7 +265,7 @@ data:
                 "type": "loki",
                 "uid": "Loki"
               },
-              "expr": "{app=~\".*\"} |= \"error\"",
+              "expr": "{app=~\\".*\\"} |= \\"error\\"",
               "refId": "A"
             }
           ],

@@ -23,12 +23,29 @@ spec:
         ports:
           - containerPort: 3100
             name: http
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
         volumeMounts:
+          - name: tmp-volume
+            mountPath: /tmp
           - name: config
             mountPath: /etc/loki
           - name: storage
             mountPath: /tmp/loki
+      securityContext:
+        fsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
       volumes:
+        - name: tmp-volume
+          emptyDir: {}
         - name: config
           configMap:
             name: loki-config

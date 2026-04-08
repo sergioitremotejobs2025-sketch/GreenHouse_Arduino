@@ -37,6 +37,20 @@ spec:
         - "--bind_ip_all"
         ports:
         - containerPort: 27017
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: run-volume
+          mountPath: /var/run/mongodb
         resources:
           limits:
             cpu: "500m"
@@ -55,6 +69,15 @@ spec:
             secretKeyRef:
               name: secrets
               key: MONGO_INITDB_ROOT_PASSWORD
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: run-volume
+        emptyDir: {}
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       tolerations:

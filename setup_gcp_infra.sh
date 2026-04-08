@@ -24,6 +24,7 @@ echo "   (This may take several minutes...)"
 gcloud container clusters create-auto "$CLUSTER" \
     --region "$REGION" \
     --project "$PROJECT" \
+    --enable-network-policy \
     --quiet || echo "Cluster might already exist, skipping creation..."
 
 echo "🔐 Fetching credentials for ${CLUSTER}..."

@@ -45,6 +45,22 @@ spec:
         name: mongo
         ports:
         - containerPort: 27017
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: run-volume
+          mountPath: /var/run/mongodb
+        - name: mongo-persistent-storage
+          mountPath: /data/db
         resources:
           limits:
             cpu: 500m
@@ -65,7 +81,15 @@ spec:
         - mountPath: /data/db
           name: mongo-persistent-storage
       terminationGracePeriodSeconds: 10
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
       volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: run-volume
+        emptyDir: {}
       - name: mongo-persistent-storage
         persistentVolumeClaim:
           claimName: mongo-pv-claim

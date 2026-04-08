@@ -40,6 +40,22 @@ spec:
         - "--bind_ip_all"
         ports:
         - containerPort: 27017
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: run-volume
+          mountPath: /var/run/mongodb
+        - name: shard-eu-data
+          mountPath: /data/db
         resources:
           limits:
             cpu: "1000m"
@@ -47,9 +63,15 @@ spec:
           requests:
             cpu: "500m"
             memory: "1Gi"
-        volumeMounts:
-        - name: shard-eu-data
-          mountPath: /data/db
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: run-volume
+        emptyDir: {}
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       tolerations:
@@ -108,6 +130,22 @@ spec:
         - "--bind_ip_all"
         ports:
         - containerPort: 27017
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: run-volume
+          mountPath: /var/run/mongodb
+        - name: shard-us-data
+          mountPath: /data/db
         resources:
           limits:
             cpu: "1000m"
@@ -115,9 +153,15 @@ spec:
           requests:
             cpu: "500m"
             memory: "1Gi"
-        volumeMounts:
-        - name: shard-us-data
-          mountPath: /data/db
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: run-volume
+        emptyDir: {}
       nodeSelector:
         cloud.google.com/gke-spot: "true"
       tolerations:

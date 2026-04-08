@@ -51,7 +51,7 @@ Transitioning into professional SRE operations and zero-trust identity.
 | **Advanced Observability (SRE)**| **4 Days** | ✅ Done | Deployed Grafana, Loki (Logs), and Prometheus (Metrics) to GKE. |
 | **Perf/Load Testing (K6)** | **2 Days** | ✅ Done | Integrated K6 automated performance regressions into CI pipeline. |
 | **mTLS Service Mesh Pilot** | **2 Weeks**| 🟡 Active | Manifests aligned for `auth-ms` and `orchestrator-ms` (Port 3000 named). Ready for deployment. |
-| **Security Audit & Hardening** | **1 Week** | ✅ Prep Done | Fleet-wide hardening implemented (Non-root, Read-only FS). `gke-cis-audit` tool created. |
+| **Security Audit & Hardening** | **1 Week** | 🟡 In Progress / Deploying | 2026-04-08: Fleet-wide hardening implemented (Non-root, Read-only FS). `gke-cis-audit` tool created. |
 
 ### ✅ Phase 3: Edge & Fog Intelligence (Completed)
 Successfully decentralized compute and implemented local survival logic.

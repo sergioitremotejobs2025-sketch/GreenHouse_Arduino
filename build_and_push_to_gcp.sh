@@ -21,16 +21,12 @@ SERVICES=(
   "stats-ms"
 )
 
-echo "🚀 Starting concurrent Cloud Builds for Phase 2 image migration..."
+echo "🚀 Starting concurrent Cloud Builds (Optimized) for Phase 2 image migration..."
 
 for SERVICE in "${SERVICES[@]}"; do
-  echo "📦 Submitting build for $SERVICE to Artifact Registry (using tar workaround)..."
-  cp .gcloudignore ./$SERVICE/
-  tar -czf "$SERVICE.tar.gz" -C "./$SERVICE" .
-  gcloud builds submit "$SERVICE.tar.gz" --tag "$REGISTRY/$SERVICE:latest" --async --quiet
-  rm "$SERVICE.tar.gz"
+  echo "📦 Submitting build for $SERVICE to Artifact Registry (relying on .gcloudignore)..."
+  gcloud builds submit "./$SERVICE" --tag "$REGISTRY/$SERVICE:latest" --async --quiet
 done
 
-echo "✅ All build jobs have been submitted to Google Cloud Build!"
-echo "You can monitor the progress of these builds here:"
-echo "👉 https://console.cloud.google.com/cloud-build/builds?project=$PROJECT"
+echo "✅ All 11 optimized build jobs have been submitted to Google Cloud Build!"
+echo "Check progress here: https://console.cloud.google.com/cloud-build/builds?project=$PROJECT"

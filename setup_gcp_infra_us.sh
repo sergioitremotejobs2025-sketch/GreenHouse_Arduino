@@ -31,6 +31,7 @@ gcloud container clusters create-auto "$CLUSTER" \
     --project "$PROJECT" \
     --cluster-ipv4-cidr="$POD_CIDR" \
     --services-ipv4-cidr="$SVC_CIDR" \
+    --enable-network-policy \
     --quiet || echo "Cluster might already exist, skipping creation..."
 
 echo ""
