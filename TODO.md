@@ -31,9 +31,11 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] Create Istio PeerAuthentication and DestinationRule manifests (`security/istio-mtls.yaml`)
     - [x] Prepare `auth-ms` and `orchestrator-ms` manifests with named ports (`http-auth`, `http-orchestrator`) and aligned port 3000.
     - [ ] Apply Istio manifests to the cluster and verify sidecar injection.
-- [/] **Security Audit & Hardening**: Implement CIS GKE benchmarking standards and Zero Trust Network Policies.
+- [/] **Security Audit & Hardening**: Implement CIS GKE benchmarking standards and Zero Trust Network Policies across the entire fleet.
     - [x] Create Zero Trust Network Policy Baseline (`security/gke-hardening-baseline.yaml`).
-    - [ ] Perform CIS GKE security audit on live cluster.
+    - [x] Implement `gke-cis-audit.sh` tool for continuous compliance monitoring.
+    - [x] Harden 8+ microservices (Node, Go, Python, Nginx) with non-root USER and read-only root filesystems.
+    - [ ] Perform live CIS GKE security audit on active cluster.
 - [x] **Advanced Observability**: Integrate Grafana Loki (Logs) and Prometheus (Metrics) into a unified, single-pane SRE dashboard.
     - [x] Configure Grafana dashboard provisioning (`monitoring/grafana.yaml`)
     - [x] Create initial SRE Unified Dashboard JSON.
@@ -45,6 +47,8 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] **Exposed Orchestrator-MS (LoadBalancer)**: Live at `34.79.19.242` for real-target performance testing.
     - [x] Updated K6 script with JSON validation and Metrics integration.
     - [x] Integrated `PERF_TEST_API_URL` secret support in CI/CD pipeline.
+
+---
 
 ## ✅ Phase 3: Edge Intelligence & Fog Deployment 
 *Status: Completed*
@@ -69,6 +73,7 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 - [/] **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` and `ai-ms` to **Knative Serverless**, allowing the system to scale to zero during idle hours to save costs.
     - [x] Create Knative manifest for `stats-ms` (`serverless/stats-ms-knative.yaml`).
     - [x] Create Knative manifest for `ai-ms` (`serverless/ai-ms-knative.yaml`) with PVC persistence.
+    - [x] Standardized resource limits and SecurityContext for serverless workloads.
     - [ ] Deploy Knative services and verify scale-to-zero.
 - [/] **Sovereign Sharding**: Implement jurisdiction-aware database routing (MongoDB Zone Sharding) to ensure data residency compliance (GDPR, CCPA) in real-time.
     - [x] Update MySQL schema with `jurisdiction` field.
@@ -78,4 +83,4 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 
 ---
 *Generated based on the Book_Version_1.md Architectural Manifesto.*
-*Last technical audit: March 27, 2026*
+*Last technical audit: April 8, 2026*
