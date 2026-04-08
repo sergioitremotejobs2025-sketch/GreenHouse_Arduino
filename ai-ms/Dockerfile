@@ -12,6 +12,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Create a non-root user and set permissions
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser && \
+    chown -R appuser:appgroup /app
+
+USER appuser
+
 WORKDIR /app/src
 ENV PORT=5000
 ENV PYTHONPATH=/app/src

@@ -7,9 +7,10 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+  - name: http-orchestrator
+    port: 80
     protocol: TCP
-    targetPort: 80
+    targetPort: 3000
   selector:
     app: orchestrator-ms
     tier: backend
@@ -118,12 +119,25 @@ spec:
               key: INTERNAL_API_KEY
               name: secrets
         - name: PORT
-          value: '80'
+          value: '3000'
         image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/orchestrator-ms:latest
         imagePullPolicy: IfNotPresent
         name: orchestrator-ms
         ports:
-        - containerPort: 80
+        - name: http-orchestrator
+          containerPort: 3000
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
         resources:
           limits:
             cpu: 500m
@@ -134,12 +148,19 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 3000
           initialDelaySeconds: 60
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 3000
           initialDelaySeconds: 30
           periodSeconds: 15
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}

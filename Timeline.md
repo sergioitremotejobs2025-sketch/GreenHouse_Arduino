@@ -27,7 +27,7 @@ gantt
     section Phase 4: Global Scale
     Multi-Region MCS (EU/US)       :done, p4_1, 2026-03-27, 3d
     Serverless Analytics (Knative) :active, p4_2, 2026-03-28, 21d
-    Sovereign Data Sharding        :p4_3, after p4_2, 28d
+    Sovereign Data Sharding        :active, p4_3, 2026-04-08, 28d
 ```
 
 ---
@@ -50,7 +50,7 @@ Transitioning into professional SRE operations and zero-trust identity.
 | :--- | :--- | :--- | :--- |
 | **Advanced Observability (SRE)**| **4 Days** | ✅ Done | Deployed Grafana, Loki (Logs), and Prometheus (Metrics) to GKE. |
 | **Perf/Load Testing (K6)** | **2 Days** | ✅ Done | Integrated K6 automated performance regressions into CI pipeline. |
-| **mTLS Service Mesh Pilot** | **2 Weeks**| 🟡 Active | Implementing Istio PeerAuthentication for auth-to-orchestrator path. |
+| **mTLS Service Mesh Pilot** | **2 Weeks**| 🟡 Active | Manifests aligned for `auth-ms` and `orchestrator-ms` (Port 3000 named). Ready for deployment. |
 | **Security Audit & Hardening** | **1 Week** | 🟡 Active | Performing CIS GKE benchmarking and hardening IAM policies across EU/US. |
 
 ### ✅ Phase 3: Edge & Fog Intelligence (Completed)
@@ -69,7 +69,7 @@ Achieving global active-active federation and serverless cost-efficiency.
 | :--- | :--- | :--- | :--- |
 | **Multi-Region MCS (EU/US)** | **3 Days** | ✅ Done | Federated EU-west1 and US-central1 clusters via GKE Fleet. Enabled MCS for global discovery. |
 | **Serverless Burst (Knative)** | **3 Weeks** | 🟡 Active | **Next Milestone**: Configuring scale-to-zero for stats-ms and ai-ms analytics. |
-| **Sovereign Sharding** | **4 Weeks** | ⏳ Queue | Implementing jurisdiction-aware MongoDB sharding (GDPR/CCPA compliance). |
+| **Sovereign Sharding** | **4 Weeks** | 🟡 Active | **Phase 1 Complete**: CRUD models, MySQL Schema, and Sharded MongoDB manifests updated for Jurisdiction-aware routing. |
 
 ---
-*Updated Technical Audit: March 27, 2026*
+*Updated Technical Audit: April 8, 2026*

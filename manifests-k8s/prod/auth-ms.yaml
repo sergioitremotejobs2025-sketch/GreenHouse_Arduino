@@ -6,9 +6,10 @@ metadata:
     io.cilium/global-service: "true"
 spec:
   ports:
-  - port: 80
+  - name: http-auth
+    port: 80
     protocol: TCP
-    targetPort: 80
+    targetPort: 3000
   selector:
     app: auth-ms
     tier: backend
@@ -62,12 +63,25 @@ spec:
               key: MYSQL_ROOT_USERNAME
               name: secrets
         - name: PORT
-          value: '80'
+          value: '3000'
         image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/auth-ms:latest
         imagePullPolicy: IfNotPresent
         name: auth-ms
         ports:
-        - containerPort: 80
+        - name: http-auth
+          containerPort: 3000
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
         resources:
           limits:
             cpu: 100m
@@ -77,15 +91,22 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 3000
           initialDelaySeconds: 10
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 3000
           initialDelaySeconds: 5
           periodSeconds: 10
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
       initContainers:
       - command:
         - 'sh'

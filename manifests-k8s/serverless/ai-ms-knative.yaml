@@ -1,33 +1,21 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: serving.knative.dev/v1
+kind: Service
 metadata:
   name: ai-ms
   namespace: default
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: ai-ms
   template:
     metadata:
-      labels:
-        app: ai-ms
+      annotations:
+        # Scale to zero when idle
+        autoscaling.knative.dev/min-scale: "0"
+        autoscaling.knative.dev/max-scale: "3"
+        # Optional: Specify scaling based on concurrency
+        autoscaling.knative.dev/target: "10"
     spec:
+      containerConcurrency: 10
       containers:
-      - name: ai-ms
-        image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/ai-ms:latest
-
-
-
-
-
-
-        imagePullPolicy: Always
-
-        ports:
-        - containerPort: 5000
+      - image: europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo/ai-ms:latest
         env:
         - name: MONGO_URL
           value: "mongo"
@@ -50,6 +38,8 @@ spec:
               key: INTERNAL_API_KEY
         - name: MODEL_DIR
           value: "/app/data/models"
+        - name: PORT
+          value: "8080" # Knative expects 8080 by default
         resources:
           limits:
             cpu: "500m"
@@ -88,19 +78,3 @@ spec:
           claimName: ai-models-pvc
       - name: tmp-volume
         emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ai-ms
-  namespace: default
-  annotations:
-    io.cilium/global-service: "true"
-spec:
-  selector:
-    app: ai-ms
-  ports:
-  - protocol: TCP
-    port: 5000
-    targetPort: 5000
-  type: ClusterIP

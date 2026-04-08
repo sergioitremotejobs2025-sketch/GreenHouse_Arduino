@@ -7,4 +7,6 @@ RUN npm install --production
 
 COPY src src
 
+USER node
+
 CMD [ "npm", "start" ]
