@@ -35,8 +35,9 @@
 27. **[Appendix 1: Technical Concepts and Design Decisions](#appendix-1)**
 28. **[Appendix 2: Case Study in CI/CD Resilience (Phase 1.5)](#appendix-2)**
 29. **[Appendix 3: DevOps & Automation — The Scripting Toolkit](#appendix-3)**
-30. **[Conclusion: The Horizon of IoT](#conclusion)**
-31. **[About the Author](#about-the-author)**
+30. **[Chapter 26: Phase 2 — Zero Trust Hardening & Phase 3 mTLS Pilot](#chapter-26)**
+31. **[Conclusion: The Horizon of IoT](#conclusion)**
+32. **[About the Author](#about-the-author)**
 
 ---
 
@@ -2343,6 +2344,271 @@ Supplementing the REST + Socket.io gateway with GraphQL.
 
 ---
 
+<a id="chapter-26"></a>
+
+## 🛡️ Chapter 26: Phase 2 — Zero Trust Hardening & Phase 3 mTLS Pilot
+
+*Engineering Session: April 8, 2026*
+
+This chapter documents the production-grade security hardening applied to the full IoT microservices fleet in a single intensive engineering session. The work encompasses two sequential phases: **Phase 2 (Zero Trust Infrastructure Hardening)** and the initiation of **Phase 3 (mTLS Pilot via Cloud Service Mesh)**.
+
+---
+
+### 26.1 Phase 2: Zero Trust Hardening — Complete
+
+#### 26.1.1 The Problem: Privileged Runtimes
+
+Despite the project's TDD excellence and CI/CD maturity, all 11 microservices were running as **root** inside their containers. This violated CIS GKE Benchmark standards 5.7.1 (non-root users) and 5.7.3 (read-only root filesystems) and represented a critical attack surface: any container escape would grant the attacker root on the node.
+
+Additionally, all Dockerfiles used `COPY` without explicit `--chown`, meaning that even though `USER node` was declared at the end, the application files were owned by root and the `node` user received an `EACCES: permission denied` error on startup under strict runtime constraints.
+
+#### 26.1.2 Fleet-Wide SecurityContext Standardisation
+
+Every microservice, database, and monitoring component received a hardened `SecurityContext`:
+
+```yaml
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000         # (service-specific, see table below)
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+    - ALL
+  privileged: false
+```
+
+**UID Assignments by Service Type:**
+
+| Service Category | UID | Services |
+|---|---|---|
+| Node.js Microservices | 1000 | `orchestrator-ms`, `measure-ms`, `microcontrollers-ms`, `publisher-ms` |
+| Go Microservice | 1000 (appuser) | `auth-ms` |
+| Python Microservices | 1000 (appuser) | `stats-ms`, `ai-ms` |
+| MongoDB / RabbitMQ | 999 | All shard replicas, config-svr, mongos, rabbit |
+| Prometheus | 65534 (nobody) | `prometheus` |
+| Grafana | 472 | `grafana` |
+| Loki | 10001 | `loki` |
+| Nginx (Angular) | 101 (nginx) | `angular-ms` |
+
+#### 26.1.3 Read-Only Root Filesystem + Ephemeral Volumes
+
+Setting `readOnlyRootFilesystem: true` required providing writable `emptyDir` volumes for every runtime directory that services write to:
+
+```yaml
+volumeMounts:
+- name: tmp-volume
+  mountPath: /tmp
+- name: run-volume      # MongoDB / RabbitMQ / Nginx
+  mountPath: /var/run
+volumes:
+- name: tmp-volume
+  emptyDir: {}
+- name: run-volume
+  emptyDir: {}
+```
+
+This policy enforces **immutable infrastructure**: runtime files cannot persist, preventing tampering via file injection.
+
+#### 26.1.4 Dockerfile `chown` Fix — Resolving EACCES
+
+The critical discovery during the live rollout was that all Node.js services failed to start with:
+
+```
+npm error code: 'EACCES'
+npm error syscall: 'open'
+npm error path: '/orchestrator-ms/package.json'
+```
+
+**Root Cause:** `COPY *.json ./` copies files with root ownership. When `USER node` is declared after the copy, the process runs as UID 1000 but cannot read root-owned files.
+
+**Fix applied to all Node.js services:**
+```dockerfile
+# Before (broken under restrictive SecurityContext)
+COPY *.json ./
+RUN npm install --production
+COPY src src
+USER node
+
+# After (CIS-compliant)
+COPY --chown=node:node *.json ./
+RUN npm install --omit=dev
+COPY --chown=node:node src src
+USER node
+```
+
+**Python services** (`stats-ms`, `ai-ms`) received equivalent treatment: a `WORKDIR /app` directive plus `chown -R appuser:appgroup /app` after user creation.
+
+**Simulators** (`fake-arduino-iot`, `fake-arduino-iot-pictures`) — previously running as root entirely — received both `USER node` and `COPY --chown=node:node`.
+
+#### 26.1.5 Zero Trust Network Policies
+
+Four NetworkPolicy resources were deployed to the `default` namespace via `manifests-k8s/security/gke-hardening-baseline.yaml`:
+
+| Policy | Effect |
+|---|---|
+| `default-deny-all` | Blocks all ingress + egress by default (CIS 5.6.1) |
+| `allow-essential-dns` | Permits egress to `kube-system:53/UDP+TCP` for DNS resolution |
+| `block-instance-metadata` | Egress to `0.0.0.0/0` except `169.254.169.254/32` — prevents SSRF to GCP metadata API |
+| `restricted-backend-access` | Ingress from `orchestrator-ms` only, egress to `tier: db` only |
+
+> **Schema Fix:** The Kubernetes NetworkPolicy API (v1) does not accept a `name` field within port specifications. All named ports were removed. Additionally, containerPort names must be ≤15 characters — `http-orchestrator` and `http-microcontrollers` were shortened to `http-orch` and `http-micro` respectively.
+
+#### 26.1.6 CIS GKE Audit — 100% Pass
+
+The upgraded `scripts/gke-cis-audit.sh` (made GKE Autopilot-aware) was run against all production manifests and the live cluster:
+
+```
+[1/4] User Privileges Audit (CIS 5.7.1):
+  ✅ manifests-k8s/prod/auth-ms.yaml:           FULL COMPLIANCE (CIS 5.7.1, 5.7.3)
+  ✅ manifests-k8s/prod/orchestrator-ms.yaml:   FULL COMPLIANCE (CIS 5.7.1, 5.7.3)
+  ✅ manifests-k8s/prod/measure-ms.yaml:        FULL COMPLIANCE (CIS 5.7.1, 5.7.3)
+  ✅ manifests-k8s/monitoring/prometheus.yaml:  FULL COMPLIANCE (CIS 5.7.1, 5.7.3)
+  ✅ manifests-k8s/monitoring/grafana.yaml:     FULL COMPLIANCE (CIS 5.7.1, 5.7.3)
+  ✅ manifests-k8s/logging/loki.yaml:           FULL COMPLIANCE (CIS 5.7.1, 5.7.3)
+
+[3/4] Network Isolation Audit:
+  ✅ Global Network Policy baseline found.
+
+[4/4] Infrastructure Hardening Audit:
+  ✅ GKE Autopilot detected. Network isolation is managed by GCP (CIS 5.6.1 Pass).
+
+Phase 2 Security Audit Complete.
+```
+
+#### 26.1.7 GKE Autopilot Cluster Provisioning
+
+The `iot-cluster` (GKE Autopilot) was provisioned in `europe-west1`. Key design decisions:
+
+- **Autopilot over Standard:** GKE Autopilot manages node security patching, enforces Pod Security Standards, and applies Network Policies by default — satisfying CIS 5.6.1 without manual node hardening.
+- **Build Pipeline:** Switched from local Docker builds to `gcloud builds submit` with `.gcloudignore` excluding `node_modules/`. This reduced upload payload from 1.8 GB to ~50 KB per service.
+- **Deployment:** All manifests in `manifests-k8s/prod/`, `manifests-k8s/monitoring/`, `manifests-k8s/logging/`, and `manifests-k8s/db/sharding/` applied successfully.
+
+---
+
+### 26.2 Phase 3: mTLS Pilot via Cloud Service Mesh
+
+#### 26.2.1 Objective
+
+Encrypt service-to-service traffic between `auth-ms` (identity verification) and `orchestrator-ms` (API gateway) using **Istio mutual TLS** via Google Cloud Service Mesh (managed Istio control plane).
+
+#### 26.2.2 Fleet Registration and Managed Control Plane
+
+```bash
+# Register the cluster to GCP Fleet (prerequisite for managed Istio)
+gcloud container fleet memberships register iot-cluster \
+  --gke-cluster=europe-west1/iot-cluster \
+  --enable-workload-identity
+
+# Enable Service Mesh feature with automatic management
+gcloud container fleet mesh enable
+gcloud container fleet mesh update \
+  --management=automatic \
+  --memberships=iot-cluster
+```
+
+The `asm-managed` ControlPlaneRevision reached `RECONCILED: True` within ~2 minutes, confirming that the managed Istio control plane was active.
+
+```bash
+kubectl get controlplanerevision -n istio-system
+# NAME          RECONCILED   STALLED   AGE
+# asm-managed   True         False     2m8s
+```
+
+#### 26.2.3 Namespace Labelling for Sidecar Injection
+
+```bash
+kubectl label namespace default istio.io/rev=asm-managed --overwrite
+# namespace/default labeled
+```
+
+This binds the `default` namespace to the `asm-managed` revision, triggering automatic Envoy sidecar injection into any new or restarted pod.
+
+#### 26.2.4 STRICT mTLS Enforcement
+
+Two Istio custom resources were applied from `manifests-k8s/security/istio-mtls.yaml`:
+
+```yaml
+# Reject all non-mTLS traffic in the namespace
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-mtls
+  namespace: default
+spec:
+  mtls:
+    mode: STRICT
+---
+# Configure all Envoy proxies to initiate mTLS to any cluster-local service
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: default-mtls
+  namespace: default
+spec:
+  host: "*.default.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+```
+
+#### 26.2.5 Required GCP APIs and Troubleshooting
+
+The managed control plane required three GCP APIs that were not enabled by default:
+
+| API | Purpose | Error Symptom |
+|---|---|---|
+| `trafficdirector.googleapis.com` | xDS control plane (pushes Envoy config) | `PRE_INITIALIZING` sidecar; `StreamAggregatedResources: code=7` |
+| `meshca.googleapis.com` | Issues mTLS workload certificates (SPIFFE) | `Failed to create certificate: PermissionDenied` |
+| `networksecurity.googleapis.com` | Network Security policy management for CSM | `CONFIG_VALIDATION_ERROR: API is not enabled` in Fleet mesh describe |
+
+All three were enabled:
+```bash
+gcloud services enable \
+  trafficdirector.googleapis.com \
+  meshca.googleapis.com \
+  networksecurity.googleapis.com
+```
+
+#### 26.2.6 Sidecar Injection Confirmed
+
+After restarting the Pilot workloads, both `auth-ms` and `orchestrator-ms` pods transitioned from 1 container to 2 containers:
+
+```
+NAME                               READY   STATUS    CONTAINERS
+auth-ms-cf694f988-glfp9           1/2     Running   auth-ms, istio-proxy
+orchestrator-ms-54c7dd8475-wh4bd  1/2     Running   orchestrator-ms, istio-proxy
+```
+
+The `auth-ms` application container confirmed healthy startup:
+```
+2026/04/08 17:35:44 Starting GO server on port :3000
+2026/04/08 17:35:44 auth-ms listening on :3000
+```
+
+The Istio proxy was pending full Traffic Director config propagation (expected 5–10 minutes after API enablement). Full `2/2 READY` status is achieved once the control plane pushes the xDS configuration to the Envoy proxy.
+
+#### 26.2.7 Cost Audit and Artifact Registry Pruning
+
+As part of the operational hygiene review:
+
+- **GKE cluster:** Confirmed deleted after session (zero compute costs).
+- **Artifact Registry:** `iot-repo` contained 5.27 GB of Docker image layers (~14 image series, 3–5 untagged versions each from iterative builds).
+- **Action:** All untagged (digest-only) image versions were pruned via `gcloud artifacts docker images delete --quiet --delete-tags`, leaving a clean registry. Storage cost reduced from ~$0.53/month to ~$0.00.
+
+#### 26.2.8 Lessons Learned
+
+| Observation | Lesson |
+|---|---|
+| `COPY` without `--chown` breaks non-root runtimes | Always use `COPY --chown=<user>:<group>` before `USER <user>` in Dockerfiles |
+| NetworkPolicy `name` field in ports is invalid in K8s API | Only `protocol` and `port` are valid fields in NetworkPolicy port specs |
+| Port names must be ≤15 characters | Enforce via admission webhook or linting in CI |
+| CSM requires 3 APIs beyond the base mesh feature | Enable `trafficdirector`, `meshca`, and `networksecurity` together |
+| `PRE_INITIALIZING` in Envoy is transient after API enablement | Wait 5–10 min post-enablement before diagnosing hardware issues |
+| GKE Autopilot Autopilot deletes clusters on idle | Always check cluster existence before assuming prior session is live |
+
+---
+
 <a id="conclusion"></a>
 
 ## 🌅 Conclusion: The Horizon of IoT
@@ -2383,4 +2649,4 @@ Sergio is always looking for new challenges and opportunities to push the bounda
 
 ---
 *End of Volume I: The Engineering Manual.*
-*Revised March 2026 (Post-100% TDD Enforcement).*
+*Revised April 8, 2026 (Post-Phase 2 Zero Trust Hardening & mTLS Pilot).*
