@@ -36,8 +36,8 @@ describe('PicturesChartComponent', () => {
         })
             .compileComponents();
 
-        arduinoService = TestBed.get(ArduinoService) as jasmine.SpyObj<ArduinoService>;
-        router = TestBed.get(Router) as jasmine.SpyObj<Router>;
+        arduinoService = TestBed.inject(ArduinoService) as jasmine.SpyObj<ArduinoService>;
+        router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     }));
 
     beforeEach(() => {
@@ -60,8 +60,8 @@ describe('PicturesChartComponent', () => {
         tick();
 
         expect(component).toBeTruthy();
-        expect(component.lastPicture).toEqual(mockPic as any);
-        expect(component.history.length).toBe(1);
+        expect(component.lastPicture()).toEqual(mockPic as any);
+        expect(component.history().length).toBe(1);
         discardPeriodicTasks();
     }));
 
@@ -82,8 +82,8 @@ describe('PicturesChartComponent', () => {
         measureUpdateSubject.next(update);
         tick();
 
-        expect(component.lastPicture).toEqual(newPic as any);
-        expect(component.history.length).toBe(2);
+        expect(component.lastPicture()).toEqual(newPic as any);
+        expect(component.history().length).toBe(2);
         discardPeriodicTasks();
     }));
 
@@ -99,19 +99,19 @@ describe('PicturesChartComponent', () => {
 
     it('should pop history if greater than 10', () => {
         const mockPics = Array(10).fill(null).map((_, i) => ({ timestamp: i, url: '' } as any));
-        component.history = [...mockPics];
+        component.history.set([...mockPics]);
 
         component.drawData({ timestamp: 99, url: '' } as any);
 
-        expect(component.history.length).toBe(10);
-        expect(component.history[0].timestamp).toBe(99);
+        expect(component.history().length).toBe(10);
+        expect(component.history()[0].timestamp).toBe(99);
     });
     it('should select picture from history', () => {
         const pic1 = { timestamp: 1, url: 'url1' } as any;
         const pic2 = { timestamp: 2, url: 'url2' } as any;
-        component.history = [pic2, pic1];
+        component.history.set([pic2, pic1]);
         
         component.selectFromHistory(1); // index 1 is pic1
-        expect(component.selectedPicture).toEqual(pic1);
+        expect(component.selectedPicture()).toEqual(pic1);
     });
 });

@@ -2709,7 +2709,7 @@ To ensure the integrity of the mission-critical IoT infrastructure, we have inst
 2.  **GREEN**: Implement the minimal logic required to satisfy the specification. 
 3.  **REFACTOR**: Optimize the code and aesthetics while maintaining the passing state.
 
-This mandate has already been retrospecitively applied to the **Signal Migration** and **Chart.js** transitions, ensuring a robust and verified codebase.
+This mandate has already been retrospecitively applied to the **Signal Migration**, **Chart.js**, and **Pictures Chart** (Timeline Scrubbing) transitions, ensuring a robust and verified codebase.
 
 | Metric | Target | Achieved |
 | :--- | :--- | :--- |

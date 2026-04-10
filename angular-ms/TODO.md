@@ -53,6 +53,7 @@
     - [x] `DeviceHealthComponent`: Signal migration verified with RED state confirmation.
     - [x] `MeasureHistoryComponent`: Signal migration verified with RED state confirmation.
     - [x] `AnalyticsComponent`: Chart.js migration verified with RED state confirmation.
+    - [x] `PicturesChartComponent`: Signal migration verified with RED state confirmation.
     - [ ] Double check tests and TDD Red-Green-Refactor across all sub-components.
 - [ ] **Pending Modernization (TDD Mandate)**:
     - [ ] `SwitchComponent`: Transition to Signals (Red-Green-Refactor required).

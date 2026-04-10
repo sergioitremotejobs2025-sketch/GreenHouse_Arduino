@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AnimationOptions } from 'ngx-lottie';
+import { AnimationOptions, LottieComponent } from 'ngx-lottie';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-lottie-animation',
+  standalone: true,
+  imports: [CommonModule, LottieComponent],
   template: `
     <ng-lottie [options]="options" 
                [style.width]="width" 

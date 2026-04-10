@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, signal } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { ArduinoService } from '@services/arduino.service'
@@ -17,9 +17,9 @@ import { LightboxComponent } from '@shared/lightbox/lightbox.component'
 })
 export class PicturesChartComponent extends MeasureChart {
 
-    lastPicture: Pictures
-    selectedPicture: Pictures
-    history: Pictures[] = []
+    lastPicture = signal<Pictures | undefined>(undefined)
+    selectedPicture = signal<Pictures | undefined>(undefined)
+    history = signal<Pictures[]>([])
 
     constructor(
         private arduinoService: ArduinoService,
@@ -42,18 +42,24 @@ export class PicturesChartComponent extends MeasureChart {
     }
 
     drawData(picInfo: Pictures) {
-        this.lastPicture = picInfo
-        if (!this.selectedPicture) this.selectedPicture = picInfo
-        if (this.history.length === 0 || this.history[0].timestamp !== picInfo.timestamp) {
-            this.history.unshift(picInfo)
-            if (this.history.length > 20) this.history.pop() // More history for scrubbing
+        this.lastPicture.set(picInfo)
+        if (!this.selectedPicture()) this.selectedPicture.set(picInfo)
+        
+        const currentHistory = this.history()
+        if (currentHistory.length === 0 || currentHistory[0].timestamp !== picInfo.timestamp) {
+            this.history.update(h => {
+                const newHistory = [picInfo, ...h]
+                if (newHistory.length > 20) newHistory.pop()
+                return newHistory
+            })
         }
         this.isChartReady = true
     }
 
     selectFromHistory(index: number) {
-        if (this.history[index]) {
-            this.selectedPicture = this.history[index];
+        const pic = this.history()[index]
+        if (pic) {
+            this.selectedPicture.set(pic);
         }
     }
 

@@ -1,6 +1,6 @@
 <div class="pictures-container">
   <!-- Camera offline state -->
-  @if (!lastPicture && micro?.isInactive) {
+  @if (!lastPicture() && micro?.isInactive) {
     <div class="camera-offline glass">
       <mat-icon class="offline-icon">videocam_off</mat-icon>
       <p class="offline-msg">Cámara no disponible</p>
@@ -9,36 +9,36 @@
   }
 
   <!-- Loading state -->
-  @if (!lastPicture && !micro?.isInactive) {
+  @if (!lastPicture() && !micro?.isInactive) {
     <div class="camera-loading glass">
       <mat-spinner diameter="40"></mat-spinner>
       <p class="loading-msg">Conectando con la cámara…</p>
     </div>
   }
 
-  @if (selectedPicture) {
+  @if (selectedPicture()) {
     <div class="picture-layout">
       <div class="main-display card shadow-sm">
         <div class="display-header">
-          <div class="stage-badge" [attr.data-stage]="selectedPicture.stage">{{ selectedPicture.stage | titlecase }}</div>
+          <div class="stage-badge" [attr.data-stage]="selectedPicture()!.stage">{{ selectedPicture()!.stage | titlecase }}</div>
           <span class="elapsed-time text-muted">
             <mat-icon>timer</mat-icon>
-            {{ selectedPicture.elapsed_minutes }} min
+            {{ selectedPicture()!.elapsed_minutes }} min
           </span>
-          <span class="current-timestamp" *ngIf="selectedPicture.timestamp !== lastPicture?.timestamp">
+          <span class="current-timestamp" *ngIf="selectedPicture()?.timestamp !== lastPicture()?.timestamp">
             (Histórico)
           </span>
         </div>
-        <div class="img-frame" (click)="openLightbox(selectedPicture)" style="cursor: zoom-in;">
-          <img [src]="selectedPicture.image_url" alt="Plant growth stage" class="main-img">
+        <div class="img-frame" (click)="openLightbox(selectedPicture()!)" style="cursor: zoom-in;">
+          <img [src]="selectedPicture()!.image_url" alt="Plant growth stage" class="main-img">
           <div class="overlay">
             <mat-icon>zoom_in</mat-icon>
           </div>
         </div>
         
-        <div class="timeline-scrubber glass" *ngIf="history.length > 1">
-          <mat-slider min="0" [max]="history.length - 1" step="1" discrete>
-            <input matSliderThumb (valueChange)="selectFromHistory($any($event))" [value]="history.indexOf(selectedPicture)">
+        <div class="timeline-scrubber glass" *ngIf="history().length > 1">
+          <mat-slider min="0" [max]="history().length - 1" step="1" discrete>
+            <input matSliderThumb (valueChange)="selectFromHistory($any($event))" [value]="history().indexOf(selectedPicture()!)">
           </mat-slider>
           <div class="timeline-labels">
             <span>Pasado</span>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="display-footer">
-          <button mat-button color="primary" *ngIf="selectedPicture.timestamp !== lastPicture?.timestamp" (click)="selectedPicture = lastPicture">
+          <button mat-button color="primary" *ngIf="selectedPicture()?.timestamp !== lastPicture()?.timestamp" (click)="selectedPicture.set(lastPicture())">
              Volver al directo
           </button>
           <button mat-flat-button color="accent" (click)="goToHistory()">
@@ -57,11 +57,11 @@
         </div>
       </div>
 
-      @if (history.length > 0) {
+      @if (history().length > 0) {
         <div class="history-sidebar glass">
           <h4 class="sidebar-title">Actividad reciente</h4>
           <div class="history-scroll custom-scrollbar">
-            @for (item of history; track item.timestamp) {
+            @for (item of history(); track item.timestamp) {
               <div class="history-item" (click)="openLightbox(item)" style="cursor: pointer;">
                 <div class="thumb-frame">
                   <img [src]="item.image_url" class="thumb-img">

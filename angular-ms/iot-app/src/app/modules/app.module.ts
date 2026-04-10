@@ -61,7 +61,6 @@ registerLocaleData(localeEs, 'es')
         SkeletonComponent,
         ThreeDHoverDirective,
         AnalyticsComponent,
-        LottieAnimationComponent,
         LightboxComponent,
         DeviceHealthComponent
     ], imports: [AppRoutingModule,
@@ -79,7 +78,8 @@ registerLocaleData(localeEs, 'es')
           // or after 30 seconds (whichever comes first).
           registrationStrategy: 'registerWhenStable:30000'
         }),
-        BaseChartDirective
+        BaseChartDirective,
+        LottieAnimationComponent
     ], providers: [
         ArduinoService,
         AuthGuard,
