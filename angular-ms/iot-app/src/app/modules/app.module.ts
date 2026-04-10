@@ -26,6 +26,7 @@ import { LoginDialogComponent } from '@components/login/login-dialog.component'
 import { RegisterDialogComponent } from '@components/login/register-dialog.component'
 import { NavbarComponent } from '@components/navbar/navbar.component'
 import { ChangePasswordDialogComponent } from '@components/login/change-password-dialog.component'
+import { AlertInboxComponent } from '@components/alert-inbox/alert-inbox.component'
 
 registerLocaleData(localeEs, 'es')
 
@@ -40,7 +41,8 @@ registerLocaleData(localeEs, 'es')
     LoginDialogComponent,
     NavbarComponent,
     RegisterDialogComponent,
-    ChangePasswordDialogComponent
+    ChangePasswordDialogComponent,
+    AlertInboxComponent
   ],
   imports: [
     AppRoutingModule,

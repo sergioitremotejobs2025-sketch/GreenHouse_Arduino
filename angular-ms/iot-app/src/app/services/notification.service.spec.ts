@@ -1,17 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService } from './notification.service';
+import { AlertHistoryService } from './alert-history.service';
 
 describe('NotificationService', () => {
     let service: NotificationService;
     let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
+    let alertHistorySpy: jasmine.SpyObj<AlertHistoryService>;
 
     beforeEach(() => {
         snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
+        alertHistorySpy = jasmine.createSpyObj('AlertHistoryService', ['addAlert', 'getHistory']);
+        
         TestBed.configureTestingModule({
             providers: [
                 NotificationService,
-                { provide: MatSnackBar, useValue: snackBarSpy }
+                { provide: MatSnackBar, useValue: snackBarSpy },
+                { provide: AlertHistoryService, useValue: alertHistorySpy }
             ]
         });
         service = TestBed.inject(NotificationService);
@@ -21,9 +26,13 @@ describe('NotificationService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should call snackBar.open on notify', () => {
+    it('should call snackBar.open and alertHistory.addAlert on notify', () => {
         service.notify('Test message', 'success');
         expect(snackBarSpy.open).toHaveBeenCalledWith('Test message', 'Cerrar', jasmine.any(Object));
+        expect(alertHistorySpy.addAlert).toHaveBeenCalledWith(jasmine.objectContaining({
+            message: 'Test message',
+            type: 'success'
+        }));
     });
 
     it('should call notify on notifyAlert', () => {

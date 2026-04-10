@@ -4,13 +4,19 @@
   </button>
 
   <span class="nav-title metal-mania user-select-none">
-    <a routerLink="/" class="logo-link">IoT_Microservices</a>
+    <a routerLink="/" class="logo-link">{{ 'NAVBAR.TITLE' | translate }}</a>
   </span>
 
   <div class="nav-actions">
+    <button mat-button (click)="toggleLanguage()" matTooltip="Cambiar idioma">
+      {{ (lang$ | async) | uppercase }}
+    </button>
+
     <button mat-icon-button (click)="toggleTheme()" matTooltip="Cambiar tema">
       <mat-icon>{{ (theme$ | async) === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
     </button>
+
+    <app-alert-inbox></app-alert-inbox>
 
     <app-login></app-login>
 

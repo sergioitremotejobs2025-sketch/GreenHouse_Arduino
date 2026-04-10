@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core'
 
 import { MeasureViewPipe } from '@pipes/measure-view.pipe'
 import { MeasureIconPipe } from '@pipes/measure-icon.pipe'
+import { TranslatePipe } from '@pipes/translate.pipe'
 
 @NgModule({
   imports: [
@@ -10,11 +11,13 @@ import { MeasureIconPipe } from '@pipes/measure-icon.pipe'
   ],
   declarations: [
     MeasureViewPipe,
-    MeasureIconPipe
+    MeasureIconPipe,
+    TranslatePipe
   ],
   exports: [
     MeasureViewPipe,
-    MeasureIconPipe
+    MeasureIconPipe,
+    TranslatePipe
   ]
 })
 export class PipesModule { }
