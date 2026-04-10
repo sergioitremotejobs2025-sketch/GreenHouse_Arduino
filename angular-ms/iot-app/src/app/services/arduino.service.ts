@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 
 import { Observable, of } from 'rxjs'
@@ -11,6 +11,8 @@ import { Microcontroller } from '@models/microcontroller.model'
 
 import { Measure } from '@alias/measure.type'
 import { MeasureStats } from '@alias/measure-stats.type'
+import { Pictures } from '@models/pictures.model'
+import { ApiResponse } from '@models/api-response.model'
 
 @Injectable({
   providedIn: 'root'
@@ -49,13 +51,13 @@ export class ArduinoService {
     }
   }
 
-  postMicrocontroller(microcontroller: Microcontroller): Observable<any> {
-    return this.http.post<any>(`${environment.ORCHESTRATOR_MS}/microcontrollers`, microcontroller)
+  postMicrocontroller(microcontroller: Microcontroller): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${environment.ORCHESTRATOR_MS}/microcontrollers`, microcontroller)
       .pipe(tap(() => this.clearMicrocontrollers()))
   }
 
-  deleteMicrocontroller(microcontroller: Microcontroller): Observable<any> {
-    return this.http.delete<any>(
+  deleteMicrocontroller(microcontroller: Microcontroller): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(
       `${environment.ORCHESTRATOR_MS}/microcontrollers`, {
       params: {
         ip: microcontroller.ip,
@@ -66,13 +68,13 @@ export class ArduinoService {
       .pipe(tap(() => this.clearMicrocontrollers()))
   }
 
-  putMicrocontroller(updatedMicrocontroller: any): Observable<any> {
-    return this.http.put<any>(`${environment.ORCHESTRATOR_MS}/microcontrollers`, updatedMicrocontroller)
+  putMicrocontroller(updatedMicrocontroller: Partial<Microcontroller>): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(`${environment.ORCHESTRATOR_MS}/microcontrollers`, updatedMicrocontroller)
       .pipe(tap(() => this.clearMicrocontrollers()))
   }
 
   private getCurrentMeasures(measure: string): Observable<Measure[]> {
-    return this.http.get<any[]>(`${environment.ORCHESTRATOR_MS}/${measure}`)
+    return this.http.get<Measure[]>(`${environment.ORCHESTRATOR_MS}/${measure}`)
   }
 
   clearMicrocontrollers() {
@@ -105,13 +107,13 @@ export class ArduinoService {
     end_date?: string,
     limit?: number
   ): Observable<MeasureStats[]> {
-    const params: any = {
-      path: group,
-      ip
-    }
-    if (init_date) params.init_date = init_date
-    if (end_date) params.end_date = end_date
-    if (limit) params.limit = limit
+    let params = new HttpParams()
+        .set('path', group)
+        .set('ip', ip);
+        
+    if (init_date) params = params.set('init_date', init_date);
+    if (end_date) params = params.set('end_date', end_date);
+    if (limit) params = params.set('limit', limit.toString());
 
     return this.http.get<MeasureStats[]>(
       `${environment.ORCHESTRATOR_MS}/${measure}`,
@@ -123,8 +125,8 @@ export class ArduinoService {
     ip: string,
     init_date: string,
     end_date: string
-  ): Observable<any[]> {
-    return this.http.get<any[]>(
+  ): Observable<Pictures[]> {
+    return this.http.get<Pictures[]>(
       `${environment.ORCHESTRATOR_MS}/pictures`,
       {
         params: {

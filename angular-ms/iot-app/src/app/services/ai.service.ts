@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ApiResponse } from '@models/api-response.model';
 
 @Injectable({
     providedIn: 'root'
@@ -11,8 +12,8 @@ export class AiService {
 
     constructor(private http: HttpClient) { }
 
-    trainModel(ip: string, measure: string, limit?: number): Observable<any> {
-        return this.http.post(`${this.apiUrl}/ai/train`, { ip, measure, limit });
+    trainModel(ip: string, measure: string, limit?: number): Observable<ApiResponse> {
+        return this.http.post<ApiResponse>(`${this.apiUrl}/ai/train`, { ip, measure, limit });
     }
 
     predict(ip: string, measure: string, recentValues: number[]): Observable<{ prediction: number }> {

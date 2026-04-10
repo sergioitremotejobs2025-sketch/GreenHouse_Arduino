@@ -1,7 +1,8 @@
 import { registerLocaleData } from '@angular/common'
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import localeEs from '@angular/common/locales/es'
-import { LOCALE_ID, NgModule } from '@angular/core'
+import { isDevMode, LOCALE_ID, NgModule } from '@angular/core'
+import { ServiceWorkerModule } from '@angular/service-worker'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -70,7 +71,14 @@ registerLocaleData(localeEs, 'es')
         MatModule,
         MicrocontrollersModule,
         ReactiveFormsModule,
-        LottieModule.forRoot({ player: playerFactory })], providers: [
+        LottieModule.forRoot({ player: playerFactory }),
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: !isDevMode(),
+          // Register the ServiceWorker as soon as the application is stable
+          // or after 30 seconds (whichever comes first).
+          registrationStrategy: 'registerWhenStable:30000'
+        })
+    ], providers: [
         ArduinoService,
         AuthGuard,
         AuthService,

@@ -13,7 +13,7 @@ export class LanguageService {
   // Observable for backward compatibility if needed
   public lang$ = toObservable(this.currentLangSignal);
 
-  private translations: any = {
+  private translations: Record<string, Record<string, string>> = {
     'es': {
       'NAVBAR.TITLE': 'IoT_Microservices',
       'NAVBAR.ALERTS': 'Alertas recientes',
