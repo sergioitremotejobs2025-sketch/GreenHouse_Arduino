@@ -37,8 +37,8 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
 *Goal: Modernize the tech stack and improve codebase maintainability.*
 
 - [ ] **Angular v18 Upgrade Roadmap**:
-    - [x] Phase 1: Dependency stabilization and Node.js v20+ migration (Documentation created).
-    - [ ] Phase 2: Core Angular update (v15 -> v18 jump) - **In Progress**.
+    - [x] Phase 1: Dependency stabilization and Node.js v20+ migration (Complete).
+    - [ ] Phase 2: Core Angular update (v16 -> v17 jump) - **v16 code migrated, pushing to v17**.
     - [ ] Phase 3: Transition to Signals and Zoneless (optional but recommended for v18).
 - [ ] **State Management**: Evaluate `NgRx` or `Signals` (post-upgrade) to handle global microcontroller state more efficiently.
 - [ ] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.
