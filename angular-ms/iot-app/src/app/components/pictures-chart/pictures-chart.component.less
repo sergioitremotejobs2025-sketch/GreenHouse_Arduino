@@ -90,27 +90,76 @@
     }
   }
 
-  .img-frame {
-    flex: 1;
-    overflow: hidden;
-    border-radius: 12px;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .img-frame {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    .main-img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+        .main-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+
+            mat-icon {
+                color: white;
+                font-size: 48px;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        &:hover .overlay {
+            opacity: 1;
+        }
     }
-  }
 
-  .display-footer {
-    padding-top: 16px;
-    display: flex;
-    justify-content: center;
-  }
+    .timeline-scrubber {
+        margin-top: 16px;
+        padding: 8px 16px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        mat-slider {
+            width: 100%;
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    }
+
+    .display-footer {
+        padding-top: 16px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
 }
 
 .history-sidebar {

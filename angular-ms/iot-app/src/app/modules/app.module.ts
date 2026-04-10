@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common'
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import localeEs from '@angular/common/locales/es'
 import { LOCALE_ID, NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -38,53 +38,51 @@ import { SkeletonComponent } from '@components/skeleton/skeleton.component'
 import { ThreeDHoverDirective } from '../shared/three-d-hover.directive'
 import { AnalyticsComponent } from '@components/analytics/analytics.component'
 import { LottieAnimationComponent } from '../shared/lottie-animation/lottie-animation.component'
+import { LightboxComponent } from '../shared/lightbox/lightbox.component'
+import { DeviceHealthComponent } from '@components/device-health/device-health.component'
 
 registerLocaleData(localeEs, 'es')
 
-@NgModule({
-  bootstrap: [
-    AppComponent
-  ],
-  declarations: [
-    AppComponent,
-    IndexComponent,
-    LoginComponent,
-    LoginDialogComponent,
-    NavbarComponent,
-    RegisterDialogComponent,
-    ChangePasswordDialogComponent,
-    AlertInboxComponent,
-    CommandPaletteComponent,
-    SkeletonComponent,
-    ThreeDHoverDirective,
-    AnalyticsComponent,
-    LottieAnimationComponent
-  ],
-  imports: [
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    BrowserModule,
-    DashboardModule,
-    FormsModule,
-    HttpClientModule,
-    MatModule,
-    MicrocontrollersModule,
-    ReactiveFormsModule,
-    LottieModule.forRoot({ player: playerFactory })
-  ],
-  providers: [
-    ArduinoService,
-    AuthGuard,
-    AuthService,
-    {
-      provide: LOCALE_ID,
-      useValue: 'es'
-    },
-    {
-      multi: true,
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor
-    }
-  ]
-})
+@NgModule({ bootstrap: [
+        AppComponent
+    ],
+    declarations: [
+        AppComponent,
+        IndexComponent,
+        LoginComponent,
+        LoginDialogComponent,
+        NavbarComponent,
+        RegisterDialogComponent,
+        ChangePasswordDialogComponent,
+        AlertInboxComponent,
+        CommandPaletteComponent,
+        SkeletonComponent,
+        ThreeDHoverDirective,
+        AnalyticsComponent,
+        LottieAnimationComponent,
+        LightboxComponent,
+        DeviceHealthComponent
+    ], imports: [AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        DashboardModule,
+        FormsModule,
+        MatModule,
+        MicrocontrollersModule,
+        ReactiveFormsModule,
+        LottieModule.forRoot({ player: playerFactory })], providers: [
+        ArduinoService,
+        AuthGuard,
+        AuthService,
+        {
+            provide: LOCALE_ID,
+            useValue: 'es'
+        },
+        {
+            multi: true,
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

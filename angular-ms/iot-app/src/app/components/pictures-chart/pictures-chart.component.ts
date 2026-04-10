@@ -7,6 +7,8 @@ import { NotificationService } from '@services/notification.service'
 
 import { Pictures } from '@models/pictures.model'
 import { MeasureChart } from '@shared/measure-chart.class'
+import { MatDialog } from '@angular/material/dialog'
+import { LightboxComponent } from '@shared/lightbox/lightbox.component'
 
 @Component({
     selector: 'app-pictures-chart',
@@ -16,11 +18,13 @@ import { MeasureChart } from '@shared/measure-chart.class'
 export class PicturesChartComponent extends MeasureChart {
 
     lastPicture: Pictures
+    selectedPicture: Pictures
     history: Pictures[] = []
 
     constructor(
         private arduinoService: ArduinoService,
         private router: Router,
+        private dialog: MatDialog,
         protected override socketService: SocketService,
         protected override notificationService: NotificationService
     ) {
@@ -39,15 +43,34 @@ export class PicturesChartComponent extends MeasureChart {
 
     drawData(picInfo: Pictures) {
         this.lastPicture = picInfo
+        if (!this.selectedPicture) this.selectedPicture = picInfo
         if (this.history.length === 0 || this.history[0].timestamp !== picInfo.timestamp) {
             this.history.unshift(picInfo)
-            if (this.history.length > 10) this.history.pop()
+            if (this.history.length > 20) this.history.pop() // More history for scrubbing
         }
         this.isChartReady = true
     }
 
+    selectFromHistory(index: number) {
+        if (this.history[index]) {
+            this.selectedPicture = this.history[index];
+        }
+    }
+
     goToHistory() {
         this.router.navigate(['/dashboard/history-pictures', this.micro.ip])
+    }
+
+    openLightbox(picture: Pictures) {
+        this.dialog.open(LightboxComponent, {
+            data: {
+                url: picture.url,
+                title: `Captura: ${new Date(picture.timestamp).toLocaleString()}`
+            },
+            maxWidth: '95vw',
+            maxHeight: '95vh',
+            panelClass: 'glass-dialog'
+        });
     }
 
 }

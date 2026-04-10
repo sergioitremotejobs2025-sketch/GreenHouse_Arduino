@@ -1,12 +1,17 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LanguageService {
-  private currentLang = new BehaviorSubject<string>(localStorage.getItem('preferred_lang') || 'es');
-  public lang$ = this.currentLang.asObservable();
+  private currentLangSignal = signal<string>(localStorage.getItem('preferred_lang') || 'es');
+  
+  // Public signal for components to use
+  public currentLang = this.currentLangSignal.asReadonly();
+  
+  // Observable for backward compatibility if needed
+  public lang$ = toObservable(this.currentLangSignal);
 
   private translations: any = {
     'es': {
@@ -39,13 +44,13 @@ export class LanguageService {
 
   setLanguage(lang: string): void {
     if (this.translations[lang]) {
-      this.currentLang.next(lang);
+      this.currentLangSignal.set(lang);
       localStorage.setItem('preferred_lang', lang);
     }
   }
 
   getCurrentLang(): string {
-    return this.currentLang.value;
+    return this.currentLangSignal();
   }
 
   translate(key: string): string {

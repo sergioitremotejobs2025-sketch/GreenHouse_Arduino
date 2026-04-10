@@ -5,7 +5,8 @@ import { ChangePasswordDialogComponent } from './change-password-dialog.componen
 import { AuthService } from '@services/auth.service';
 import { NotificationService } from '@services/notification.service';
 import { TestModule } from '@modules/test.module';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ChangePasswordDialogComponent', () => {
     let component: ChangePasswordDialogComponent;
@@ -20,14 +21,16 @@ describe('ChangePasswordDialogComponent', () => {
         dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
         TestBed.configureTestingModule({
-            declarations: [ChangePasswordDialogComponent],
-            imports: [TestModule, HttpClientTestingModule],
-            providers: [
-                { provide: AuthService, useValue: authServiceSpy },
-                { provide: NotificationService, useValue: notificationServiceSpy },
-                { provide: MatDialogRef, useValue: dialogRefSpy }
-            ]
-        })
+    declarations: [ChangePasswordDialogComponent],
+    imports: [TestModule],
+    providers: [
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
             .compileComponents();
     }));
 

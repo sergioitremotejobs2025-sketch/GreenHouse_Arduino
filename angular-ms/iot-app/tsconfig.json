@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "declaration": false,
-    "downlevelIteration": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "lib": [

@@ -106,4 +106,12 @@ describe('PicturesChartComponent', () => {
         expect(component.history.length).toBe(10);
         expect(component.history[0].timestamp).toBe(99);
     });
+    it('should select picture from history', () => {
+        const pic1 = { timestamp: 1, url: 'url1' } as any;
+        const pic2 = { timestamp: 2, url: 'url2' } as any;
+        component.history = [pic2, pic1];
+        
+        component.selectFromHistory(1); // index 1 is pic1
+        expect(component.selectedPicture).toEqual(pic1);
+    });
 });

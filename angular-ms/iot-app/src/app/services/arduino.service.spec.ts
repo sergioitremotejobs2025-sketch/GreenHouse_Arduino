@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ArduinoService } from './arduino.service';
 import { environment } from 'src/environments/environment';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ArduinoService', () => {
   let service: ArduinoService;
@@ -9,9 +10,9 @@ describe('ArduinoService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ArduinoService]
-    });
+    imports: [],
+    providers: [ArduinoService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     service = TestBed.inject(ArduinoService);
     httpMock = TestBed.inject(HttpTestingController);
   });

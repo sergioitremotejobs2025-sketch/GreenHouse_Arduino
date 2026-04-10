@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DashboardComponent } from './dashboard.component';
 import { TestModule } from '@modules/test.module';
 import { of, throwError } from 'rxjs';
@@ -9,6 +9,7 @@ import { ArduinoService } from '@services/arduino.service';
 import { AuthService } from '@services/auth.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -23,19 +24,18 @@ describe('DashboardComponent', () => {
     urlSubject = new BehaviorSubject<UrlSegment[]>([]);
 
     TestBed.configureTestingModule({
-      declarations: [DashboardComponent],
-      imports: [
-        TestModule,
-        RouterTestingModule,
-        HttpClientTestingModule
-      ],
-      providers: [
+    declarations: [DashboardComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [TestModule,
+        RouterTestingModule],
+    providers: [
         { provide: ArduinoService, useValue: arduinoSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ActivatedRoute, useValue: { url: urlSubject.asObservable() } }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
+        { provide: ActivatedRoute, useValue: { url: urlSubject.asObservable() } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
       .compileComponents();
 
     arduinoService = TestBed.inject(ArduinoService) as jasmine.SpyObj<ArduinoService>;

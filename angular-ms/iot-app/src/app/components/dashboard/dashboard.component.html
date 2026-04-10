@@ -1,96 +1,115 @@
 <main class="container">
   <!-- Loading Skeletons -->
-  <div class="dashboard-loading" *ngIf="isLoading">
-    <div class="loading-card glass shadow-sm" *ngFor="let i of [1,2,3]">
-      <div class="skeleton-header">
-        <app-skeleton width="60px" height="60px" borderRadius="50%"></app-skeleton>
-        <div class="header-text">
-          <app-skeleton width="150px" height="24px"></app-skeleton>
-          <app-skeleton width="80px" height="16px"></app-skeleton>
+  @if (isLoading) {
+    <div class="dashboard-loading">
+      @for (i of [1,2,3]; track i) {
+        <div class="loading-card glass shadow-sm">
+          <div class="skeleton-header">
+            <app-skeleton width="60px" height="60px" borderRadius="50%"></app-skeleton>
+            <div class="header-text">
+              <app-skeleton width="150px" height="24px"></app-skeleton>
+              <app-skeleton width="80px" height="16px"></app-skeleton>
+            </div>
+          </div>
+          <div class="skeleton-body">
+            <div class="skeleton-chart">
+              <app-skeleton width="100%" height="200px"></app-skeleton>
+            </div>
+            <div class="skeleton-stats">
+              <app-skeleton width="100%" height="150px"></app-skeleton>
+            </div>
+          </div>
         </div>
+      }
+    </div>
+  }
+
+  @if (!isLoading && microcontrollers.length === 0) {
+    <div class="empty-state glass">
+      <div class="empty-icon shadow-lg">
+        <app-lottie-animation name="empty-state" width="120px" height="120px"></app-lottie-animation>
       </div>
-      <div class="skeleton-body">
-        <div class="skeleton-chart">
-          <app-skeleton width="100%" height="200px"></app-skeleton>
+      <h2>{{ 'DASHBOARD.EMPTY_STATE' | translate }}</h2>
+      <p class="text-muted">{{ 'DASHBOARD.EMPTY_SUB' | translate }}</p>
+      <button mat-flat-button color="primary" routerLink="/settings">{{ 'DASHBOARD.ADD_DEV' | translate }}</button>
+    </div>
+  }
+
+  @for (micro of microcontrollers; track micro.ip) {
+    <div class="measure-section" [hidden]="isLoading">
+      <div class="section-header">
+        <app-dashboard-microcontroller [isHistory]="false" [micro]="micro"></app-dashboard-microcontroller>
+      </div>
+
+      <!-- Humidity -->
+      @if (micro.measure === 'humidity') {
+        <div class="dashboard-grid">
+          <div class="card chart-card shadow-sm" appThreeDHover>
+            @if (humidityStats) {
+              <app-humidity-chart (inactivity)="changeActivity($event)"
+                (measure)="humidityStats.newMeasure($event); updateRecentValues(micro, $event)" [micro]="micro">
+              </app-humidity-chart>
+            }
+          </div>
+          <div class="card stats-card shadow-sm" appThreeDHover>
+            <app-humidity-stats #humidityStats></app-humidity-stats>
+          </div>
+          <div class="card ai-card shadow-sm" appThreeDHover>
+            <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
+              [recentValues]="getRecentValues(micro)"></app-ai-predictor>
+          </div>
         </div>
-        <div class="skeleton-stats">
-          <app-skeleton width="100%" height="150px"></app-skeleton>
+      }
+
+      <!-- Light -->
+      @if (micro.measure === 'light') {
+        <div class="dashboard-grid">
+          <div class="card chart-card shadow-sm" appThreeDHover>
+            @if (lightStats) {
+              <app-light-chart (inactivity)="changeActivity($event)"
+                (measure)="lightStats.newMeasure($event); updateRecentValues(micro, $event)" [micro]="micro">
+              </app-light-chart>
+            }
+          </div>
+          <div class="card stats-card shadow-sm" appThreeDHover>
+            <app-light-stats #lightStats></app-light-stats>
+          </div>
+          <div class="card ai-card shadow-sm" appThreeDHover>
+            <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
+              [recentValues]="getRecentValues(micro)"></app-ai-predictor>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+      }
 
-  <div class="empty-state glass" *ngIf="!isLoading && microcontrollers.length === 0">
-    <div class="empty-icon shadow-lg">
-      <app-lottie-animation name="empty-state" width="120px" height="120px"></app-lottie-animation>
-    </div>
-    <h2>{{ 'DASHBOARD.EMPTY_STATE' | translate }}</h2>
-    <p class="text-muted">{{ 'DASHBOARD.EMPTY_SUB' | translate }}</p>
-    <button mat-flat-button color="primary" routerLink="/settings">{{ 'DASHBOARD.ADD_DEV' | translate }}</button>
-  </div>
+      <!-- Temperature -->
+      @if (micro.measure === 'temperature') {
+        <div class="dashboard-grid">
+          <div class="card chart-card shadow-sm" appThreeDHover>
+            @if (temperatureStats) {
+              <app-temperature-chart (inactivity)="changeActivity($event)"
+                (measure)="temperatureStats.newMeasure($event); updateRecentValues(micro, $event)" [micro]="micro">
+              </app-temperature-chart>
+            }
+          </div>
+          <div class="card stats-card shadow-sm" appThreeDHover>
+            <app-temperature-stats #temperatureStats></app-temperature-stats>
+          </div>
+          <div class="card ai-card shadow-sm" appThreeDHover>
+            <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
+              [recentValues]="getRecentValues(micro)"></app-ai-predictor>
+          </div>
+        </div>
+      }
 
-  <div class="measure-section" *ngFor="let micro of microcontrollers" [hidden]="isLoading">
-    <div class="section-header">
-      <app-dashboard-microcontroller [isHistory]="false" [micro]="micro"></app-dashboard-microcontroller>
+      <!-- Pictures -->
+      @if (micro.measure === 'pictures') {
+        <div class="dashboard-grid full-width">
+          <div class="card picture-card shadow-sm" appThreeDHover>
+            <app-pictures-chart (inactivity)="changeActivity($event)" [micro]="micro">
+            </app-pictures-chart>
+          </div>
+        </div>
+      }
     </div>
-
-    <!-- Humidity -->
-    <div class="dashboard-grid" *ngIf="micro.measure === 'humidity'">
-      <div class="card chart-card shadow-sm" appThreeDHover>
-        <app-humidity-chart (inactivity)="changeActivity($event)"
-          (measure)="humidityStats.newMeasure($event); updateRecentValues(micro, $event)" [micro]="micro"
-          *ngIf="humidityStats">
-        </app-humidity-chart>
-      </div>
-      <div class="card stats-card shadow-sm" appThreeDHover>
-        <app-humidity-stats #humidityStats></app-humidity-stats>
-      </div>
-      <div class="card ai-card shadow-sm" appThreeDHover>
-        <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
-          [recentValues]="getRecentValues(micro)"></app-ai-predictor>
-      </div>
-    </div>
-
-    <!-- Light -->
-    <div class="dashboard-grid" *ngIf="micro.measure === 'light'">
-      <div class="card chart-card shadow-sm" appThreeDHover>
-        <app-light-chart (inactivity)="changeActivity($event)"
-          (measure)="lightStats.newMeasure($event); updateRecentValues(micro, $event)" [micro]="micro"
-          *ngIf="lightStats">
-        </app-light-chart>
-      </div>
-      <div class="card stats-card shadow-sm" appThreeDHover>
-        <app-light-stats #lightStats></app-light-stats>
-      </div>
-      <div class="card ai-card shadow-sm" appThreeDHover>
-        <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
-          [recentValues]="getRecentValues(micro)"></app-ai-predictor>
-      </div>
-    </div>
-
-    <!-- Temperature -->
-    <div class="dashboard-grid" *ngIf="micro.measure === 'temperature'">
-      <div class="card chart-card shadow-sm" appThreeDHover>
-        <app-temperature-chart (inactivity)="changeActivity($event)"
-          (measure)="temperatureStats.newMeasure($event); updateRecentValues(micro, $event)" [micro]="micro"
-          *ngIf="temperatureStats">
-        </app-temperature-chart>
-      </div>
-      <div class="card stats-card shadow-sm" appThreeDHover>
-        <app-temperature-stats #temperatureStats></app-temperature-stats>
-      </div>
-      <div class="card ai-card shadow-sm" appThreeDHover>
-        <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
-          [recentValues]="getRecentValues(micro)"></app-ai-predictor>
-      </div>
-    </div>
-
-    <!-- Pictures -->
-    <div class="dashboard-grid full-width" *ngIf="micro.measure === 'pictures'">
-      <div class="card picture-card shadow-sm" appThreeDHover>
-        <app-pictures-chart (inactivity)="changeActivity($event)" [micro]="micro">
-        </app-pictures-chart>
-      </div>
-    </div>
-  </div>
+  }
 </main>

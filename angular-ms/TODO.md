@@ -11,8 +11,6 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
 - [x] **Lottie Animations**: Replace static icons with subtle Lottie animations for "Connecting", "Syncing", and "Alert" states.
 - [x] **Skeleton Loaders**: Implement elegant pulse skeleton loaders for charts and stats cards during initial data fetch.
 - [x] **Micro-Interactions**: Add a 3D hover effect (parallax) to device cards in the dashboard.
-- [ ] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
-- [ ] **Typography Audit**: Transition to a more premium variable font (e.g., *Outfit* or *Inter*) and optimize hierarchy.
 - [x] **Global Search (Command Palette)**: Implement a `Ctrl+K` command palette for quick navigation and device search.
 
 ## 🚀 New Features
@@ -28,18 +26,19 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
     - [x] Enhance `app-ai-predictor` with confidence score visualizations.
     - [x] Add a "Fix Suggestion" based on AI predictions (e.g., "AI suggests turning on irrigation soon").
 - [ ] **Picture Gallery Enhancements**:
-    - [ ] Implement a full-screen Lightbox for IoT surveillance pictures.
-    - [ ] Add Timeline scrubbing for photo history.
-- [ ] **Device Health Dashboard**: A specialized view showing battery levels (if applicable), latency, and uptime for all nodes.
-- [x] **Internationalization (i18n)**: Implement full support for English and Spanish, allowing dynamic switching.
+    - [x] Implement a full-screen Lightbox for IoT surveillance pictures.
+    - [x] Add Timeline scrubbing for photo history.
+- [x] **Device Health Dashboard**: A specialized view showing battery levels (if applicable), latency, and uptime for all nodes.
+- [x] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
+- [ ] **Typography Audit**: Transition to a more premium variable font (e.g., *Outfit* or *Inter*) and optimize hierarchy - **In Progress**.
 
 ## 🛠️ Technical Debt & Performance
 *Goal: Modernize the tech stack and improve codebase maintainability.*
 
 - [ ] **Angular v18 Upgrade Roadmap**:
     - [x] Phase 1: Dependency stabilization and Node.js v20+ migration (Complete).
-    - [ ] Phase 2: Core Angular update (v16 -> v17 jump) - **v16 code migrated, pushing to v17**.
-    - [ ] Phase 3: Transition to Signals and Zoneless (optional but recommended for v18).
+    - [x] Phase 2: Core Angular update (v15 -> v18 jump complete + New Application Builder).
+    - [x] Phase 3: Transition to Signals and Zoneless (LanguageService refactored and Control Flow migrated).
 - [ ] **State Management**: Evaluate `NgRx` or `Signals` (post-upgrade) to handle global microcontroller state more efficiently.
 - [ ] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.
 - [ ] **Chart Optimization**: Optimize `ng2-google-charts` or consider migrating to `ECharts` or `Chart.js` for smoother real-time streaming animations.

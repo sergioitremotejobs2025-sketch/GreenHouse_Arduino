@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 
 import { RegisterDialogComponent } from './register-dialog.component';
 import { AuthService } from '@services/auth.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('RegisterDialogComponent', () => {
     let component: RegisterDialogComponent;
@@ -19,15 +20,17 @@ describe('RegisterDialogComponent', () => {
         const dialogSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
         await TestBed.configureTestingModule({
-            declarations: [RegisterDialogComponent],
-            imports: [ReactiveFormsModule, HttpClientTestingModule],
-            providers: [
-                { provide: AuthService, useValue: authSpy },
-                { provide: MatDialogRef, useValue: dialogSpy },
-                { provide: MAT_DIALOG_DATA, useValue: {} }
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
-        })
+    declarations: [RegisterDialogComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [ReactiveFormsModule],
+    providers: [
+        { provide: AuthService, useValue: authSpy },
+        { provide: MatDialogRef, useValue: dialogSpy },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
             .compileComponents();
 
         authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
