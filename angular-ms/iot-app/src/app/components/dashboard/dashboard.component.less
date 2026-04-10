@@ -33,11 +33,27 @@
 
     .skeleton-body {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
       gap: 24px;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas: "chart chart stats ai";
+
+      .skeleton-chart { grid-area: chart; }
+      .skeleton-stats { grid-area: stats; }
+      .skeleton-ai    { grid-area: ai; }
+
+      @media screen and (max-width: 1400px) {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas: 
+          "chart chart stats"
+          "chart chart ai";
+      }
 
       @media screen and (max-width: 1024px) {
         grid-template-columns: 1fr;
+        grid-template-areas: 
+          "chart"
+          "stats"
+          "ai";
       }
     }
   }
@@ -45,16 +61,37 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
   gap: 24px;
-  align-items: start;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas: 
+    "chart chart stats ai";
+  align-items: stretch;
+
+  .card {
+    &.chart-card { grid-area: chart; }
+    &.stats-card { grid-area: stats; }
+    &.ai-card    { grid-area: ai; }
+    &.picture-card { grid-area: chart; }
+  }
+
+  @media screen and (max-width: 1400px) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: 
+      "chart chart stats"
+      "chart chart ai";
+  }
 
   @media screen and (max-width: 1024px) {
     grid-template-columns: 1fr;
+    grid-template-areas: 
+      "chart"
+      "stats"
+      "ai";
   }
 
   &.full-width {
     grid-template-columns: 1fr;
+    grid-template-areas: "chart";
   }
 }
 

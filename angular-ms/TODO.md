@@ -40,7 +40,7 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
     - [x] Phase 2: Core Angular update (v15 -> v18 jump complete + New Application Builder).
     - [x] Phase 3: Transition to Signals and Zoneless (LanguageService refactored and Control Flow migrated).
 - [ ] **State Management**: Evaluate `NgRx` or `Signals` (post-upgrade) to handle global microcontroller state more efficiently.
-- [ ] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts - **In Progress**.
+- [x] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.
 - [x] **Chart Optimization**: Optimize `ng2-google-charts` or consider migrating to `Chart.js` for smoother real-time streaming animations.
 - [x] **Strict Typing**: Audit `src/app/models` and ensure `any` is eliminated from service response handlers.
 - [x] **PWA Support**: Add Progressive Web App capabilities for "Install to Home Screen" and offline viewing of cached history.
