@@ -7,6 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:vitest": "vitest",
+    "test:ui": "vitest --ui",
     "e2e": "cypress run",
     "cypress:open": "cypress open"
   },
@@ -16,7 +18,7 @@
     "@angular/cdk": "^18.2.14",
     "@angular/common": "^19.2.20",
     "@angular/compiler": "^19.2.20",
-    "@angular/core": "^18.2.14",
+    "@angular/core": "^19.2.20",
     "@angular/forms": "^19.2.20",
     "@angular/material": "^18.2.14",
     "@angular/platform-browser": "^19.2.20",
@@ -31,19 +33,26 @@
     "zone.js": "~0.14.10"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.21",
-    "@angular/cli": "~18.2.21",
+    "@analogjs/vite-plugin-angular": "^2.4.5",
+    "@analogjs/vitest-angular": "^2.4.5",
+    "@angular-devkit/build-angular": "^19.2.24",
+    "@angular/build": "^18.2.21",
+    "@angular/cli": "^19.2.24",
     "@angular/compiler-cli": "^19.2.20",
     "@types/jasmine": "~4.3.0",
     "@types/node": "^16.18.126",
+    "@vitest/browser": "^4.1.4",
+    "@vitest/ui": "^4.1.4",
     "cypress": "^15.11.0",
     "jasmine-core": "~4.5.0",
+    "jsdom": "^29.0.2",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "karma-spec-reporter": "^0.0.36",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "vitest": "^4.1.4"
   }
 }
