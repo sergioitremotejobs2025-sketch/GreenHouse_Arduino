@@ -63,7 +63,7 @@ describe('DashboardComponent', () => {
     arduinoService.getPreviousMeasures.and.returnValue(of([]));
 
     fixture.detectChanges();
-    expect(component.microcontrollers.length).toBe(2);
+    expect(component.microcontrollers().length).toBe(2);
 
     // Simulate route change to 'humidity'
     urlSubject.next([
@@ -71,9 +71,9 @@ describe('DashboardComponent', () => {
       new UrlSegment('humidity', {})
     ]);
 
-    expect(component.measure).toBe('humidity');
-    expect(component.microcontrollers.length).toBe(1);
-    expect(component.microcontrollers[0].measure).toBe('humidity');
+    expect(component.measure()).toBe('humidity');
+    expect(component.microcontrollers().length).toBe(1);
+    expect(component.microcontrollers()[0].measure).toBe('humidity');
   });
 
   it('should call removeTokens on error', () => {
@@ -85,10 +85,10 @@ describe('DashboardComponent', () => {
 
   it('should update microcontroller in changeActivity', () => {
     const micro = { ip: '1.1.1.1', measure: 'humidity', sensor: 'DHT11', username: 'alice', isInactive: false };
-    component.microcontrollers = [micro];
+    (component as any).microcontrollersSignal.set([micro]);
     const updatedMicro = { ...micro, isInactive: true };
     component.changeActivity(updatedMicro);
-    expect(component.microcontrollers[0].isInactive).toBe(true);
+    expect(component.microcontrollers()[0].isInactive).toBe(true);
   });
 
   it('should seed recent values with different measures', () => {

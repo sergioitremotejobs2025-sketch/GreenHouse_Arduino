@@ -1,6 +1,6 @@
 <main class="container">
   <!-- Loading Skeletons -->
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="dashboard-loading">
       @for (i of [1,2,3]; track i) {
         <div class="loading-card glass shadow-sm">
@@ -27,7 +27,7 @@
     </div>
   }
 
-  @if (!isLoading && microcontrollers.length === 0) {
+  @if (!isLoading() && microcontrollers().length === 0) {
     <div class="empty-state glass">
       <div class="empty-icon shadow-lg">
         <app-lottie-animation name="empty-state" width="120px" height="120px"></app-lottie-animation>
@@ -38,8 +38,8 @@
     </div>
   }
 
-  @for (micro of microcontrollers; track micro.ip) {
-    <div class="measure-section" [hidden]="isLoading">
+  @for (micro of microcontrollers(); track micro.ip) {
+    <div class="measure-section" [hidden]="isLoading()">
       <div class="section-header">
         <app-dashboard-microcontroller [isHistory]="false" [micro]="micro"></app-dashboard-microcontroller>
       </div>
