@@ -73,4 +73,24 @@ export class AiPredictorComponent implements OnInit {
             }
         });
     }
+
+    getConfidenceScore(): number {
+        if (!this.performance) return 0;
+        // Simple inverse relationship: MAE < 0.1 => ~95%, MAE > 5 => ~20%
+        const score = 100 - (this.performance.mae * 10);
+        return Math.max(0, Math.min(100, score));
+    }
+
+    getSuggestion(): string {
+        if (!this.prediction) return '';
+        
+        if (this.measure === 'temperature') {
+            if (this.prediction > 28) return '🔥 Sugerencia: Aumenta la ventilación.';
+            if (this.prediction < 15) return '❄️ Sugerencia: Enciende la calefacción.';
+        } else if (this.measure === 'humidity') {
+            if (this.prediction < 40) return '💧 Sugerencia: Activa el riego pronto.';
+            if (this.prediction > 80) return '☁️ Sugerencia: Reduce la humedad ambiental.';
+        }
+        return '✅ Todo parece estar bajo control.';
+    }
 }

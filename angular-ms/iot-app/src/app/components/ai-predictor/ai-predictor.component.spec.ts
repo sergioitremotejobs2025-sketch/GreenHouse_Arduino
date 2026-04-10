@@ -111,4 +111,15 @@ describe('AiPredictorComponent', () => {
         expect(component.loading).toBeFalse();
         expect(mockNotificationService.notify).toHaveBeenCalledWith('Modelo no encontrado. ¡Entrénalo primero!', 'error');
     }));
+    it('should calculate high confidence when MAE is low', () => {
+        component.performance = { mae: 0.1, sample_count: 100 };
+        expect(component.getConfidenceScore()).toBeGreaterThan(90);
+    });
+
+    it('should generate a suggestion when prediction is high', () => {
+        component.measure = 'temperature';
+        component.prediction = 35;
+        const suggestion = component.getSuggestion();
+        expect(suggestion).toContain('ventilación');
+    });
 });

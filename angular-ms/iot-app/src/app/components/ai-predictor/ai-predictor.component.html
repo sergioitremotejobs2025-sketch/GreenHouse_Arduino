@@ -22,6 +22,18 @@
         <div class="prediction-box" *ngIf="prediction !== null; else noPrediction">
             <span class="label">Próxima lectura estimada:</span>
             <span class="value">{{ prediction | number:'1.1-2' }}</span>
+            
+            <div class="confidence-container" *ngIf="performance">
+                <span class="conf-label">Confianza: {{ getConfidenceScore() }}%</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="getConfidenceScore()" 
+                         [style.background-color]="getConfidenceScore() > 70 ? '#4caf50' : '#ffa000'"></div>
+                </div>
+            </div>
+
+            <div class="ai-suggestion glass" *ngIf="prediction">
+                {{ getSuggestion() }}
+            </div>
         </div>
         <ng-template #noPrediction>
             <p class="hint">Analiza tendencias usando redes neuronales LSTM.</p>

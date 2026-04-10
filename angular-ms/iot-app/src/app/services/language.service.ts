@@ -18,7 +18,8 @@ export class LanguageService {
       'MEASURES.HUMIDITY': 'Humedad',
       'MEASURES.TEMPERATURE': 'Temperatura',
       'MEASURES.LIGHT': 'Bombilla inteligente',
-      'MEASURES.PICTURES': 'Cámara'
+      'MEASURES.PICTURES': 'Cámara',
+      'ANALYTICS.TITLE': 'Analítica Avanzada'
     },
     'en': {
       'NAVBAR.TITLE': 'IoT_Microservices',
@@ -29,7 +30,8 @@ export class LanguageService {
       'MEASURES.HUMIDITY': 'Humidity',
       'MEASURES.TEMPERATURE': 'Temperature',
       'MEASURES.LIGHT': 'Smart Bulb',
-      'MEASURES.PICTURES': 'Camera'
+      'MEASURES.PICTURES': 'Camera',
+      'ANALYTICS.TITLE': 'Advanced Analytics'
     }
   };
 

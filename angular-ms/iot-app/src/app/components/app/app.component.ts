@@ -1,5 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout'
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core'
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, HostListener } from '@angular/core'
+import { CommandPaletteService } from '../../services/command-palette.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,11 @@ export class AppComponent implements OnDestroy, OnInit {
 
   private _mobileQueryListener: () => void
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(
+    changeDetectorRef: ChangeDetectorRef, 
+    media: MediaMatcher,
+    private commandPaletteService: CommandPaletteService
+  ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)')
     this._mobileQueryListener = () => changeDetectorRef.detectChanges()
     this.mobileQuery.addListener(this._mobileQueryListener)
@@ -27,6 +32,14 @@ export class AppComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.mobileQuery.removeListener(this._mobileQueryListener)
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      this.commandPaletteService.toggle();
+    }
   }
 
   shouldRun = true

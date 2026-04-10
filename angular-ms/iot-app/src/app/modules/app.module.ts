@@ -5,6 +5,12 @@ import { LOCALE_ID, NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { LottieModule } from 'ngx-lottie';
+import player from 'lottie-web';
+
+export function playerFactory() {
+  return player;
+}
 
 import { DashboardModule } from '@modules/dashboard.module'
 import { MatModule } from '@modules/mat.module'
@@ -27,6 +33,11 @@ import { RegisterDialogComponent } from '@components/login/register-dialog.compo
 import { NavbarComponent } from '@components/navbar/navbar.component'
 import { ChangePasswordDialogComponent } from '@components/login/change-password-dialog.component'
 import { AlertInboxComponent } from '@components/alert-inbox/alert-inbox.component'
+import { CommandPaletteComponent } from '@components/command-palette/command-palette.component'
+import { SkeletonComponent } from '@components/skeleton/skeleton.component'
+import { ThreeDHoverDirective } from '../shared/three-d-hover.directive'
+import { AnalyticsComponent } from '@components/analytics/analytics.component'
+import { LottieAnimationComponent } from '../shared/lottie-animation/lottie-animation.component'
 
 registerLocaleData(localeEs, 'es')
 
@@ -42,7 +53,12 @@ registerLocaleData(localeEs, 'es')
     NavbarComponent,
     RegisterDialogComponent,
     ChangePasswordDialogComponent,
-    AlertInboxComponent
+    AlertInboxComponent,
+    CommandPaletteComponent,
+    SkeletonComponent,
+    ThreeDHoverDirective,
+    AnalyticsComponent,
+    LottieAnimationComponent
   ],
   imports: [
     AppRoutingModule,
@@ -53,7 +69,8 @@ registerLocaleData(localeEs, 'es')
     HttpClientModule,
     MatModule,
     MicrocontrollersModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LottieModule.forRoot({ player: playerFactory })
   ],
   providers: [
     ArduinoService,

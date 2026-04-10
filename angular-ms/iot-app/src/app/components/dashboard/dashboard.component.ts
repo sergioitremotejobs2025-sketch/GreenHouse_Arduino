@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   microcontrollers: Microcontroller[] = []
   measure: string
   recentValuesMap: Map<string, number[]> = new Map()
+  isLoading = true
 
   constructor(
     private route: ActivatedRoute,
@@ -28,9 +29,11 @@ export class DashboardComponent implements OnInit {
       .subscribe((url: UrlSegment[]) => {
         this.measure = url[1]?.path
 
+        this.isLoading = true;
         this.arduinoService.getMicrocontrollers()
           .subscribe(
             (response: Microcontroller[]) => {
+              this.isLoading = false
               this.microcontrollers = response
               this.microcontrollers.forEach((micro: Microcontroller) => {
                 micro.isInactive = false
@@ -48,7 +51,10 @@ export class DashboardComponent implements OnInit {
                 }
               })
             },
-            () => this.authService.removeTokens()
+            () => {
+              this.isLoading = false;
+              this.authService.removeTokens();
+            }
           )
       })
   }

@@ -7,31 +7,31 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
 ## 💎 UI/UX & Aesthetics (Premium Feel)
 *Goal: Transform the dashboard into a state-of-the-art, high-end monitoring interface.*
 
-- [ ] **Advanced Glassmorphism**: Refine the `.glass` class to use dynamic backdrop filters, subtle border gradients, and nested translucency layers.
-- [ ] **Lottie Animations**: Replace static icons with subtle Lottie animations for "Connecting", "Syncing", and "Alert" states.
-- [ ] **Skeleton Loaders**: Implement elegant pulse skeleton loaders for charts and stats cards during initial data fetch.
-- [ ] **Micro-Interactions**: Add a 3D hover effect (parallax) to device cards in the dashboard.
+- [x] **Advanced Glassmorphism**: Refine the `.glass` class (Integrated in new components).
+- [x] **Lottie Animations**: Replace static icons with subtle Lottie animations for "Connecting", "Syncing", and "Alert" states.
+- [x] **Skeleton Loaders**: Implement elegant pulse skeleton loaders for charts and stats cards during initial data fetch.
+- [x] **Micro-Interactions**: Add a 3D hover effect (parallax) to device cards in the dashboard.
 - [ ] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
 - [ ] **Typography Audit**: Transition to a more premium variable font (e.g., *Outfit* or *Inter*) and optimize hierarchy.
-- [ ] **Global Search (Command Palette)**: Implement a `Ctrl+K` command palette for quick navigation and device search.
+- [x] **Global Search (Command Palette)**: Implement a `Ctrl+K` command palette for quick navigation and device search.
 
 ## 🚀 New Features
 *Goal: Expand functionality to provide better intelligence and control.*
 
-- [ ] **Real-time Alert Notifications**:
-    - [ ] Integrate a Toast system (e.g., `ngx-toastr` or custom Material Snackbar) for critical IoT alerts (High Temp, Low Humidity).
-    - [ ] Add a notification "Inbox" in the navbar to track past alerts.
-- [ ] **Advanced Analytics Tab**:
-    - [ ] Create a dedicated "Trends" view using larger, multi-line charts.
-    - [ ] Comparison mode: Overlap charts from two different microcontrollers to compare environments.
-- [ ] **AI Integration Polish**:
-    - [ ] Enhance `app-ai-predictor` with confidence score visualizations.
-    - [ ] Add a "Fix Suggestion" based on AI predictions (e.g., "AI suggests turning on irrigation soon").
+- [x] **Real-time Alert Notifications**:
+    - [x] Integrate a Toast system (e.g., `ngx-toastr` or custom Material Snackbar) for critical IoT alerts.
+    - [x] Add a notification "Inbox" in the navbar to track past alerts.
+- [x] **Advanced Analytics Tab**:
+    - [x] Create a dedicated "Trends" view using larger, multi-line charts.
+    - [x] Comparison mode: Overlap charts from two different microcontrollers to compare environments.
+- [x] **AI Integration Polish**:
+    - [x] Enhance `app-ai-predictor` with confidence score visualizations.
+    - [x] Add a "Fix Suggestion" based on AI predictions (e.g., "AI suggests turning on irrigation soon").
 - [ ] **Picture Gallery Enhancements**:
     - [ ] Implement a full-screen Lightbox for IoT surveillance pictures.
     - [ ] Add Timeline scrubbing for photo history.
 - [ ] **Device Health Dashboard**: A specialized view showing battery levels (if applicable), latency, and uptime for all nodes.
-- [ ] **Internationalization (i18n)**: Implement full support for English and Spanish, allowing dynamic switching.
+- [x] **Internationalization (i18n)**: Implement full support for English and Spanish, allowing dynamic switching.
 
 ## 🛠️ Technical Debt & Performance
 *Goal: Modernize the tech stack and improve codebase maintainability.*
