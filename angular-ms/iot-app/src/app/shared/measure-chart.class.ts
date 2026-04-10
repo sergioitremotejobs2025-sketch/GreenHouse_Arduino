@@ -110,9 +110,9 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
       // Subscribe to real-time updates if socket service is available
       if (this.socketService) {
         this.socketSubscription = this.socketService.measureUpdate$.subscribe(update => {
-          if (update.measure === this.micro.measure && update.data.ip === this.micro.ip) {
+          if ((update as any).measure === this.micro.measure && (update as any).ip === this.micro.ip) {
             console.log(`Real-time update received for ${this.micro.measure} at ${this.micro.ip}`);
-            this.handleMeasure(update.data, false);
+            this.handleMeasure(update, false);
           }
         });
       }

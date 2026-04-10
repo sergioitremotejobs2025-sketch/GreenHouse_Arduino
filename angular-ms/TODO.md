@@ -1,6 +1,7 @@
 # 📝 TODO: Angular-MS UI & Feature Enhancements
 
-This document tracks the planned improvements for the **IoT Microservices Dashboard (Angular-MS)**. Focus is on premium aesthetics, real-time interactivity, and advanced data visualization.
+> [!IMPORTANT]
+> **TDD FIRST MANDATE**: All development MUST follow the strict **Red-Green-Refactor** cycle. No code is to be committed without a prior failing test and its subsequent passing state.
 
 ---
 
@@ -32,6 +33,22 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
 - [x] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
 - [x] **Typography Audit**: Transition to a more premium variable font (e.g., *Outfit* or *Inter*) and optimize hierarchy.
 
+## 🔴🟢🔵 TDD Red-Green-Refactor Enforcement
+*Goal: Institutionalize technical discipline across all architectural layers.*
+
+- [x] **Component Modernization (TDD Verified)**:
+    - [x] `DashboardComponent`: Signal migration verified with RED state confirmation.
+    - [x] `DeviceHealthComponent`: Signal migration verified with RED state confirmation.
+    - [x] `MeasureHistoryComponent`: Signal migration verified with RED state confirmation.
+    - [x] `AnalyticsComponent`: Chart.js migration verified with RED state confirmation.
+- [ ] **Pending Modernization (TDD Mandate)**:
+    - [ ] `SwitchComponent`: Transition to Signals (Red-Green-Refactor required).
+    - [ ] `SliderComponent`: Transition to Signals (Red-Green-Refactor required).
+    - [ ] `TimelineScrubber`: Performance optimization (Red-Green-Refactor required).
+- [ ] **Infrastructure TDD**:
+    - [ ] `Vitest Migration`: Automated conversion of Karma tests with failure validation first.
+    - [ ] `SocketService`: Dynamic event handling (Red-Green-Refactor required).
+
 ## 🛠️ Technical Debt & Performance
 *Goal: Modernize the tech stack and improve codebase maintainability.*
 
@@ -40,6 +57,9 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
     - [x] Phase 2: Core Angular update (v15 -> v18 jump complete + New Application Builder).
     - [x] Phase 3: Transition to Signals and Zoneless (LanguageService refactored and Control Flow migrated).
 - [ ] 🧪 **Testing Infrastructure**: Transition from legacy `Karma/Jasmine` to `Vitest` for ultra-fast TDD cycles and native Vite integration - **In Progress (Infrastructure Setup)**.
+    - [ ] RED phase: Define failing `vitest` config check.
+    - [ ] GREEN phase: Successful `vitest` execution on `arduino.service`.
+    - [ ] REFACTOR phase: Align all suite dependencies.
 - [x] 🧪 **Unit Tests Overhaul**: Align TDD suite with Angular v18/v19 Signals and Control Flow.
 - [x] **State Management**: Fully transitioned core Dashboard and Device Health components to **Angular Signals** for reactive telemetry.
 - [x] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.

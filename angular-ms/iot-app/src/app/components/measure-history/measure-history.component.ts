@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, signal } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { forkJoin, of } from 'rxjs';
@@ -29,6 +29,9 @@ interface Stat {
   templateUrl: './measure-history.component.html'
 })
 export class MeasureHistoryComponent implements OnInit {
+  micro = signal<Microcontroller | undefined>(undefined)
+  data = signal<any[]>([])
+  isLoading = signal<boolean>(true)
 
   header: string[]
   options: any = {
@@ -62,8 +65,6 @@ export class MeasureHistoryComponent implements OnInit {
     dataTable: [],
     options: this.options
   }
-  data: any[] = []
-  micro: Microcontroller
   historyForm: FormGroup
   stat = 'Media'
   stats: Stat[] = [
@@ -98,10 +99,14 @@ export class MeasureHistoryComponent implements OnInit {
     const measure = this.route.snapshot.paramMap.get('measure')
 
     try {
-      this.micro = await this.arduinoService.getMicrocontroller(ip, measure)
-      this.header = ['Tiempo', new MeasureViewPipe().transform(this.micro.measure)]
+      const result = await this.arduinoService.getMicrocontroller(ip, measure)
+      this.micro.set(result)
+      this.header = ['Tiempo', new MeasureViewPipe().transform(result.measure)]
       this.chart.dataTable = [this.header, [new Date(), 0]]
-    } catch (error) { }
+      this.isLoading.set(false)
+    } catch (error) {
+      this.isLoading.set(false)
+    }
   }
 
   selectChanged() {
@@ -109,7 +114,7 @@ export class MeasureHistoryComponent implements OnInit {
       stat.isSelected = this.currentStats.indexOf(stat.value) !== -1
     }
 
-    this.drawChart(this.data)
+    this.drawChart(this.data())
   }
 
   isOptionDisabled(micro: Microcontroller, stat: Stat): boolean {
@@ -121,24 +126,25 @@ export class MeasureHistoryComponent implements OnInit {
     const { init_date, end_date, compare_init_date, compare_end_date } = formValue;
 
     const obs1 = this.arduinoService.getPreviousMeasures(
-      this.micro.ip,
-      this.micro.measure,
-      this.makePlural(this.micro.measure),
+      this.micro().ip,
+      this.micro().measure,
+      this.makePlural(this.micro().measure),
       init_date.toJSON(),
       end_date.toJSON()
     );
 
     const obs2 = this.isComparing ? this.arduinoService.getPreviousMeasures(
-      this.micro.ip,
-      this.micro.measure,
-      this.makePlural(this.micro.measure),
+      this.micro().ip,
+      this.micro().measure,
+      this.makePlural(this.micro().measure),
       compare_init_date.toJSON(),
       compare_end_date.toJSON()
     ) : of(null);
 
     forkJoin([obs1, obs2]).subscribe(([measures1, measures2]) => {
-      this.data = measures1;
+      this.data.set(measures1);
       this.drawChart(measures1, measures2);
+      this.isLoading.set(false);
     });
   }
 

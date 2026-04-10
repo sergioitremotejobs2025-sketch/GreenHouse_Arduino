@@ -59,7 +59,7 @@ describe('MeasureHistoryComponent', () => {
     await fixture.whenStable();
 
     expect(component).toBeTruthy();
-    expect(component.micro).toEqual(mockMicro);
+    expect(component.micro()).toEqual(mockMicro);
     expect(component.header).toEqual(['Tiempo', 'Humedad']);
   });
 
@@ -79,7 +79,7 @@ describe('MeasureHistoryComponent', () => {
     component.getPreviousMeasures(component.historyForm.value);
 
     expect(arduinoService.getPreviousMeasures).toHaveBeenCalled();
-    expect(component.data.length).toBe(1);
+    expect(component.data().length).toBe(1);
     expect(component.chart.dataTable.length).toBeGreaterThan(1);
   });
 
@@ -113,7 +113,7 @@ describe('MeasureHistoryComponent', () => {
         expect(stat.isSelected).toBeFalse();
       }
     }
-    expect(component.drawChart).toHaveBeenCalledWith(component.data);
+    expect(component.drawChart).toHaveBeenCalledWith(component.data());
   });
 
   it('should handle isOptionDisabled', () => {
@@ -123,7 +123,7 @@ describe('MeasureHistoryComponent', () => {
 
     const mockMicroTemp = { ip: '1', measure: 'temperature', sensor: 't', username: 'x' };
     component.stats = [{ isSelected: true, value: 'v1' } as any, { isSelected: false, value: 'v2' } as any];
-    expect(component.isOptionDisabled(mockMicroTemp as any, component.stats[0])).toBeTrue(); // only one selected and it is selected -> disabled
+    expect(component.isOptionDisabled(mockMicroTemp as any, component.stats[0])).toBeTrue();
   });
 
   it('should fetch previous measures and comparing measures', async () => {
@@ -137,8 +137,8 @@ describe('MeasureHistoryComponent', () => {
     component.isComparing = true;
     component.getPreviousMeasures(component.historyForm.value);
 
-    expect(arduinoService.getPreviousMeasures).toHaveBeenCalledTimes(2); // once for data, once for compare
-    expect(component.data.length).toBe(1);
+    expect(arduinoService.getPreviousMeasures).toHaveBeenCalledTimes(2);
+    expect(component.data().length).toBe(1);
     expect(component.chart.dataTable.length).toBeGreaterThan(1);
   });
 
@@ -146,20 +146,14 @@ describe('MeasureHistoryComponent', () => {
     arduinoService.getMicrocontroller.and.returnValue(Promise.reject('error'));
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(component.micro).toBeUndefined();
+    expect(component.micro()).toBeUndefined();
   });
 
   it('should handle shadeColor with high/low values', () => {
-    // Test low values for '0' padding branch
     const darkColor = '#010101';
     const darkShaded = component.shadeColor(darkColor, 10);
-    expect(darkShaded).toBe('#010101'); // R=1*1.1 = 1, G=1*1.1=1, B=1*1.1=1. length=1 branch should trigger if it was even smaller.
-
-    // Testing logic for length === 1
-    // If color is #000000, R=0, G=0, B=0. 0*1.1 = 0. 0.toString(16) is '0'. Length is 1.
-    expect(component.shadeColor('#000000', 10)).toBe('#000000'); // This should trigger the '0' + padding branch.
-
-    // Test high values for 255 branch
+    expect(darkShaded).toBe('#010101');
+    expect(component.shadeColor('#000000', 10)).toBe('#000000');
     const lightColor = '#ffffff';
     const lighter = component.shadeColor(lightColor, 10);
     expect(lighter).toBe('#ffffff');
@@ -170,8 +164,8 @@ describe('MeasureHistoryComponent', () => {
     component.header = ['Time', 'Value'];
     component.chart.dataTable = [];
     component.chart.component = { draw: drawSpy } as any;
-    component.data = [{ init_date: new Date().toISOString(), mean_value: 50 }];
-    component.drawChart(component.data);
+    const measures = [{ init_date: new Date().toISOString(), mean_value: 50 }];
+    component.drawChart(measures);
     expect(drawSpy).toHaveBeenCalled();
   });
 
@@ -183,10 +177,8 @@ describe('MeasureHistoryComponent', () => {
 
     component.drawChart(measures1, measures2);
 
-    // row 1: measures1[0], measures2[0]
-    // row 2: measures1[1] (null), measures2[1]
-    expect(component.chart.dataTable.length).toBe(3); // header + 2 rows
-    expect(component.chart.dataTable[2][1]).toBeNull(); // measures1[1] is null
+    expect(component.chart.dataTable.length).toBe(3);
+    expect(component.chart.dataTable[2][1]).toBeNull();
     expect(component.chart.dataTable[1][2]).toBe(60);
   });
 
@@ -199,7 +191,6 @@ describe('MeasureHistoryComponent', () => {
     component.drawChart(measures1, measures2);
 
     expect(component.chart.dataTable.length).toBe(3);
-    // second row, 3rd column (compareMeasures[1]) is null
     expect(component.chart.dataTable[2][2]).toBeNull();
   });
 });

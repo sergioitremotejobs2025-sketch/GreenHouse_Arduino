@@ -2703,8 +2703,13 @@ The IoT surveillance suite was upgraded to provide a professional-grade investig
 *   **Reactive State with Signals**: Transitioned the core dashboard logic and **Device Health** suite to **Angular Signals**. Successfully implemented `signal`, `computed`, and `update` primitives for the microcontroller registry and telemetry maps, reducing change detection overhead and providing a granular, reactive backbone for the entire frontend monitoring infrastructure.
 *   **Testing Infrastructure Modernization (Vitest)**: Successfully established the architectural backbone for **Vitest** integration. By mapping the high-performance Vite engine directly to the Angular v19 testbed, we've provided an experimental, sub-second TDD pipeline that coexists with stable Karma/Jasmine suites, ensuring both innovation and reliability.
 
-### 28.4 Phase 5 Completion & Stabilization
-With the successful convergence of **Angular Signals**, **Chart.js**, and **CSS Grid**, Phase 5 has reached its structural conclusion. The ecosystem is now powered by a reactive core that eliminates change detection bottlenecks, visualized through GPU-accelerated telemetry, and hosted within an elite, adaptive dashboard. Future developments will leverage these high-performance foundations to scale the microservices infrastructure.
+### 28.4 The TDD First Mandate (Red-Green-Refactor)
+To ensure the integrity of the mission-critical IoT infrastructure, we have institutionalized a strict **TDD First Mandate**. All subsequent technical phases (Phase 6 and beyond) must follow this lifecycle:
+1.  **RED**: Define the technical objective through a failing automated test. 
+2.  **GREEN**: Implement the minimal logic required to satisfy the specification. 
+3.  **REFACTOR**: Optimize the code and aesthetics while maintaining the passing state.
+
+This mandate has already been retrospecitively applied to the **Signal Migration** and **Chart.js** transitions, ensuring a robust and verified codebase.
 
 | Metric | Target | Achieved |
 | :--- | :--- | :--- |
