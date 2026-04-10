@@ -25,20 +25,7 @@ import { PicturesHistoryComponent } from '@components/pictures-history/pictures-
 import { AiPredictorComponent } from '@components/ai-predictor/ai-predictor.component'
 
 @NgModule({
-  declarations: [
-    DashboardComponent,
-    DashboardMicrocontrollerComponent,
-    HumidityChartComponent,
-    HumidityStatsComponent,
-    LightChartComponent,
-    LightStatsComponent,
-    MeasureHistoryComponent,
-    TemperatureChartComponent,
-    TemperatureStatsComponent,
-    PicturesChartComponent,
-    PicturesHistoryComponent,
-    AiPredictorComponent,
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     DashboardRoutingModule,
@@ -46,7 +33,19 @@ import { AiPredictorComponent } from '@components/ai-predictor/ai-predictor.comp
     MatModule,
     Ng2GoogleChartsModule,
     PipesModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DashboardComponent,
+    AiPredictorComponent,
+    LightChartComponent,
+    PicturesChartComponent,
+    MeasureHistoryComponent,
+    DashboardMicrocontrollerComponent,
+    HumidityChartComponent,
+    HumidityStatsComponent,
+    LightStatsComponent,
+    TemperatureChartComponent,
+    TemperatureStatsComponent,
+    PicturesHistoryComponent
   ]
 })
 export class DashboardModule { }

@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'measureIcon'
+    name: 'measureIcon',
+    standalone: true
 })
 export class MeasureIconPipe implements PipeTransform {
     transform(value: string): string {

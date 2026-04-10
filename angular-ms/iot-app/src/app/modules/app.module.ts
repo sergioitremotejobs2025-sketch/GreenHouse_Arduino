@@ -2,11 +2,10 @@ import { registerLocaleData } from '@angular/common'
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import localeEs from '@angular/common/locales/es'
 import { isDevMode, LOCALE_ID, NgModule } from '@angular/core'
-import { ServiceWorkerModule } from '@angular/service-worker'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { LottieModule } from 'ngx-lottie';
+import { provideLottieOptions } from 'ngx-lottie';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import player from 'lottie-web';
 
@@ -48,22 +47,10 @@ registerLocaleData(localeEs, 'es')
 @NgModule({ bootstrap: [
         AppComponent
     ],
-    declarations: [
+    declarations: [],
+    imports: [
         AppComponent,
-        IndexComponent,
-        LoginComponent,
-        LoginDialogComponent,
-        NavbarComponent,
-        RegisterDialogComponent,
-        ChangePasswordDialogComponent,
-        AlertInboxComponent,
-        CommandPaletteComponent,
-        SkeletonComponent,
-        ThreeDHoverDirective,
-        AnalyticsComponent,
-        LightboxComponent,
-        DeviceHealthComponent
-    ], imports: [AppRoutingModule,
+        AppRoutingModule,
         BrowserAnimationsModule,
         BrowserModule,
         DashboardModule,
@@ -71,16 +58,24 @@ registerLocaleData(localeEs, 'es')
         MatModule,
         MicrocontrollersModule,
         ReactiveFormsModule,
-        LottieModule.forRoot({ player: playerFactory }),
-        ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: !isDevMode(),
-          // Register the ServiceWorker as soon as the application is stable
-          // or after 30 seconds (whichever comes first).
-          registrationStrategy: 'registerWhenStable:30000'
-        }),
+        ReactiveFormsModule,
         BaseChartDirective,
-        LottieAnimationComponent
-    ], providers: [
+        LottieAnimationComponent,
+        LightboxComponent,
+        IndexComponent,
+        LoginComponent,
+        LoginDialogComponent,
+        RegisterDialogComponent,
+        ChangePasswordDialogComponent,
+        NavbarComponent,
+        AlertInboxComponent,
+        CommandPaletteComponent,
+        SkeletonComponent,
+        ThreeDHoverDirective,
+        AnalyticsComponent,
+        DeviceHealthComponent
+    ],
+ providers: [
         ArduinoService,
         AuthGuard,
         AuthService,
@@ -94,6 +89,9 @@ registerLocaleData(localeEs, 'es')
             useClass: TokenInterceptor
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideCharts(withDefaultRegisterables())
+        provideCharts(withDefaultRegisterables()),
+        provideLottieOptions({
+            player: playerFactory
+        })
     ] })
 export class AppModule { }

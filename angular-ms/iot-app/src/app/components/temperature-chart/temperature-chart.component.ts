@@ -7,8 +7,22 @@ import { NotificationService } from '@services/notification.service'
 import { Temperature } from '@models/temperature.model'
 import { MeasureChart } from '@shared/measure-chart.class'
 
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { BaseChartDirective } from 'ng2-charts';
+
 @Component({
   selector: 'app-temperature-chart',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    BaseChartDirective
+  ],
   styleUrls: ['./temperature-chart.component.less'],
   templateUrl: './temperature-chart.component.html'
 })

@@ -7,8 +7,24 @@ import { NotificationService } from '@services/notification.service'
 import { Humidity } from '@models/humidity.model'
 import { MeasureChart } from '@shared/measure-chart.class'
 
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { BaseChartDirective } from 'ng2-charts';
+
 @Component({
   selector: 'app-humidity-chart',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    BaseChartDirective
+  ],
   styleUrls: ['./humidity-chart.component.less'],
   templateUrl: './humidity-chart.component.html'
 })

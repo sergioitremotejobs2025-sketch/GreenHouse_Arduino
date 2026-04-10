@@ -10,8 +10,28 @@ interface PaletteItem {
   type: 'nav' | 'device';
 }
 
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-command-palette',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatListModule,
+    FormsModule
+  ],
   templateUrl: './command-palette.component.html',
   styleUrls: ['./command-palette.component.less']
 })
@@ -36,7 +56,7 @@ export class CommandPaletteComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.arduinoService.allArduinos.subscribe(arduinos => {
       const devices = arduinos.map(a => ({
-        name: `Dispositivo: ${a.name} (${a.ip})`,
+        name: `Dispositivo: ${a.sensor} (${a.ip})`,
         link: '/', // In this app, we usually stay on dashboard since it's a SPA single view
         icon: 'memory',
         type: 'device' as const

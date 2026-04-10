@@ -58,7 +58,7 @@
             ],
             "scripts": [],
             "browser": "src/main.ts",
-            "serviceWorker": "src/ngsw-config.json"
+            "serviceWorker": false
           },
           "configurations": {
             "production": {

@@ -10,8 +10,24 @@ import { MeasureChart } from '@shared/measure-chart.class'
 import { MatDialog } from '@angular/material/dialog'
 import { LightboxComponent } from '@shared/lightbox/lightbox.component'
 
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterModule } from '@angular/router';
+
 @Component({
     selector: 'app-pictures-chart',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSliderModule,
+        MatProgressSpinnerModule,
+        RouterModule
+    ],
     styleUrls: ['./pictures-chart.component.less'],
     templateUrl: './pictures-chart.component.html'
 })
@@ -28,7 +44,7 @@ export class PicturesChartComponent extends MeasureChart {
         protected override socketService: SocketService,
         protected override notificationService: NotificationService
     ) {
-        super('Imágenes', 'Gauge', socketService, notificationService)
+        super('Imágenes', 'doughnut', socketService, notificationService)
     }
 
     async getCurrentMeasure(isFirstTime: boolean) {
@@ -70,7 +86,7 @@ export class PicturesChartComponent extends MeasureChart {
     openLightbox(picture: Pictures) {
         this.dialog.open(LightboxComponent, {
             data: {
-                url: picture.url,
+                url: picture.image_url,
                 title: `Captura: ${new Date(picture.timestamp).toLocaleString()}`
             },
             maxWidth: '95vw',

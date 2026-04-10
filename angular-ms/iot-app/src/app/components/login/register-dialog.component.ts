@@ -6,8 +6,26 @@ import { AuthService } from '@services/auth.service'
 
 import { MustMatch } from '@helpers/must-match.helper'
 
+import { CommonModule } from '@angular/common';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-register-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    ReactiveFormsModule
+  ],
   styleUrls: [ './login.component.less' ],
   templateUrl: './register-dialog.component.html'
 })

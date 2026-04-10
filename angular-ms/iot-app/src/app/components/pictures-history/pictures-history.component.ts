@@ -7,8 +7,36 @@ import { Microcontroller } from '@models/microcontroller.model'
 import { Pictures } from '@models/pictures.model'
 import { MustBeOrderedDates } from '@helpers/must-be-ordered-dates.helper'
 
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+import { DashboardMicrocontrollerComponent } from '@components/dashboard-microcontroller/dashboard-microcontroller.component';
+
 @Component({
     selector: 'app-pictures-history',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterModule,
+        DashboardMicrocontrollerComponent
+    ],
     styleUrls: ['./pictures-history.component.less'],
     templateUrl: './pictures-history.component.html'
 })

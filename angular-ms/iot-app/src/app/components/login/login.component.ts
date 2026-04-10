@@ -12,8 +12,27 @@ import { ChangePasswordDialogComponent } from '@components/login/change-password
 
 import { AuthGuard } from '@guards/auth.guard'
 
+import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    RouterModule,
+    LoginDialogComponent,
+    RegisterDialogComponent,
+    ChangePasswordDialogComponent
+  ],
   styleUrls: ['./login.component.less'],
   templateUrl: './login.component.html'
 })

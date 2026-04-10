@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostListener, Renderer2, OnInit } from '@angular/core';
 
 @Directive({
-  selector: '[appThreeDHover]'
+  selector: '[appThreeDHover]',
+  standalone: true
 })
 export class ThreeDHoverDirective implements OnInit {
   private readonly MAX_ROTATION = 10; // degrees

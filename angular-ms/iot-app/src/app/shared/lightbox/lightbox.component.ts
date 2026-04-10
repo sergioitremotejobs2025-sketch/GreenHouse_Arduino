@@ -1,8 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-lightbox',
+  standalone: true,
+  imports: [CommonModule, MatIconModule, MatButtonModule],
   template: `
     <div class="lightbox-container glass">
       <div class="lightbox-header">
@@ -35,19 +40,19 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
       justify-content: space-between;
       align-items: center;
       color: #fff;
-      h3 { margin: 0; font-weight: 300; letter-spacing: 1px; }
     }
+    .lightbox-header h3 { margin: 0; font-weight: 300; letter-spacing: 1px; }
     .lightbox-content {
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      img {
-        max-width: 100%;
-        max-height: 70vh;
-        border-radius: 8px;
-        object-fit: contain;
-      }
+    }
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 8px;
+      object-fit: contain;
     }
   `]
 })

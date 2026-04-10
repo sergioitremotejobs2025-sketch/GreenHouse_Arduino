@@ -11,17 +11,15 @@ import { MicrocontrollersComponent } from '@components/microcontrollers/microcon
 import { MicrocontrollersEditComponent } from '@components/microcontrollers-edit/microcontrollers-edit.component'
 
 @NgModule({
-  declarations: [
-    MicrocontrollersComponent,
-    MicrocontrollersEditComponent
-  ],
   imports: [
     CommonModule,
     FormsModule,
     MatModule,
     MicrocontrollersRoutingModule,
     PipesModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MicrocontrollersComponent,
+    MicrocontrollersEditComponent
   ]
 })
 export class MicrocontrollersModule { }

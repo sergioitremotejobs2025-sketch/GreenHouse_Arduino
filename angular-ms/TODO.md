@@ -49,19 +49,24 @@
 *Goal: Institutionalize technical discipline across all architectural layers.*
 
 - [x] **Component Modernization (TDD Verified)**:
-    - [x] `DashboardComponent`: Signal migration verified with RED state confirmation.
-    - [x] `DeviceHealthComponent`: Signal migration verified with RED state confirmation.
-    - [x] `MeasureHistoryComponent`: Signal migration verified with RED state confirmation.
-    - [x] `AnalyticsComponent`: Chart.js migration verified with RED state confirmation.
-    - [x] `PicturesChartComponent`: Signal migration verified with RED state confirmation.
-    - [ ] Double check tests and TDD Red-Green-Refactor across all sub-components.
-- [ ] **Pending Modernization (TDD Mandate)**:
-    - [ ] `SwitchComponent`: Transition to Signals (Red-Green-Refactor required).
-    - [ ] `SliderComponent`: Transition to Signals (Red-Green-Refactor required).
-    - [ ] `TimelineScrubber`: Performance optimization (Red-Green-Refactor required).
-- [ ] **Infrastructure TDD**:
-    - [ ] `Vitest Migration`: Automated conversion of Karma tests with failure validation first.
-    - [ ] `SocketService`: Dynamic event handling (Red-Green-Refactor required).
+    - [x] `DashboardComponent`: Signal migration verified.
+    - [x] `DeviceHealthComponent`: Signal migration verified.
+    - [x] `MeasureHistoryComponent`: Signal migration verified.
+    - [x] `AnalyticsComponent`: Chart.js migration verified.
+    - [x] `PicturesChartComponent`: Signal migration verified.
+    - [x] `NavbarComponent`: Standalone migration verified.
+    - [x] `LoginComponent`: Standalone migration verified.
+    - [x] `IndexComponent`: Standalone migration verified.
+- [x] **Phase 5: Modernization & Standalone Migration (COMPLETE)**:
+    - [x] Convert all components and directives to **Standalone**.
+    - [x] Migrate legacy providers (ngx-lottie, ng2-charts) to modern provider patterns.
+    - [x] Stabilize Angular v19 build (0 Errors).
+    - [x] Implement Reactive `BehaviorSubject` in `ArduinoService` for device state orchestration.
+- [ ] **Phase 6: Infrastructure TDD & Performance Hardening**:
+    - [ ] Finalize **Vitest** setup and automated test conversion.
+    - [ ] Achieve 100% Cypress Coverage for "Edit Device" and "Theme Persistence".
+    - [ ] Implement `SliderComponent` and `SwitchComponent` Signal migration.
+    - [ ] Performance Audit: Transition to Zoneless Change Detection.
 
 ## 🛠️ Technical Debt & Performance
 *Goal: Modernize the tech stack and improve codebase maintainability.*

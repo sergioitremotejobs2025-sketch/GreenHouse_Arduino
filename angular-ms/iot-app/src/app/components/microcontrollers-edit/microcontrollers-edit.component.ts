@@ -6,8 +6,30 @@ import { ArduinoService } from '@services/arduino.service'
 import { AuthService } from '@services/auth.service'
 import { Microcontroller } from '@models/microcontroller.model';
 
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatCardModule } from '@angular/material/card';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-microcontrollers-edit',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatStepperModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
   styleUrls: ['./microcontrollers-edit.component.less'],
   templateUrl: './microcontrollers-edit.component.html'
 })

@@ -4,14 +4,14 @@
     <mat-icon>sync</mat-icon>
   </button>
   <mat-card-content>
-    <img class="light-image" [src]="'assets/images/light_' + lightStatus + '.png'">
+    <img class="light-image" [src]="'assets/images/light_' + lightStatus() + '.png'">
     <div class="switch-container">
       <mat-slide-toggle
         (change)="slideChange(switch.checked)"
         [checked]="isLightOn()"
         class="make-visible"
         color="primary"
-        [disabled]="disabledBtn"
+        [disabled]="disabledBtn()"
         #switch
       >
         <span class="off-label">OFF</span>

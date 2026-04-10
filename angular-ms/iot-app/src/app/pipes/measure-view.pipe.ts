@@ -1,6 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-@Pipe({ name: 'measureView', pure: false })
+@Pipe({
+  name: 'measureView',
+  pure: false,
+  standalone: true
+})
 export class MeasureViewPipe implements PipeTransform {
   transform(value: string): string {
     if (!value) return ''

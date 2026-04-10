@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton',
+  standalone: true,
+  imports: [],
   template: `
     <div class="skeleton-box pulse" 
          [style.width]="width" 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, signal } from '@angular/core'
 
 import { ArduinoService } from '@services/arduino.service'
 import { SocketService } from '@services/socket.service'
@@ -8,22 +8,38 @@ import { Light } from '@models/light.model'
 
 import { MeasureChart } from '@shared/measure-chart.class'
 
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { PipesModule } from '@modules/pipes.module';
+
 @Component({
   selector: 'app-light-chart',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    PipesModule
+  ],
   styleUrls: ['./light-chart.component.less'],
   templateUrl: './light-chart.component.html'
 })
 export class LightChartComponent extends MeasureChart {
 
-  lightStatus = 'unknown'
-  disabledBtn = true
+  lightStatus = signal<string>('unknown')
+  disabledBtn = signal<boolean>(true)
 
   constructor(
     private arduinoService: ArduinoService,
     protected override socketService: SocketService,
     protected override notificationService: NotificationService
   ) {
-    super('Light', '', socketService, notificationService)
+    super('Light', 'bar', socketService, notificationService)
   }
 
   async getCurrentMeasure(isFirstTime: boolean) {
@@ -32,26 +48,26 @@ export class LightChartComponent extends MeasureChart {
     if (light) {
       this.handleMeasure(light, isFirstTime)
     } else if (!this.micro.isInactive) {
-      this.lightStatus = 'unknown'
-      this.disabledBtn = true
+      this.lightStatus.set('unknown')
+      this.disabledBtn.set(true)
       this.setInactivity(true)
     }
   }
 
   drawData(light: Light) {
-    this.disabledBtn = false
-    this.lightStatus = light.digital_value ? 'on' : 'off'
+    this.disabledBtn.set(false)
+    this.lightStatus.set(light.digital_value ? 'on' : 'off')
   }
 
   async slideChange(state: boolean) {
-    this.disabledBtn = true
+    this.disabledBtn.set(true)
     const light = await this.arduinoService.postLightStatus(this.micro.ip, state ? 'on' : 'off')
-    this.lightStatus = light.digital_value ? 'on' : 'off'
-    this.disabledBtn = false
+    this.lightStatus.set(light.digital_value ? 'on' : 'off')
+    this.disabledBtn.set(false)
   }
 
   isLightOn(): boolean {
-    return this.lightStatus === 'on'
+    return this.lightStatus() === 'on'
   }
 
 }

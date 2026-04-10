@@ -32,8 +32,8 @@ describe('LightChartComponent', () => {
     })
       .compileComponents();
 
-    arduinoService = TestBed.get(ArduinoService) as jasmine.SpyObj<ArduinoService>;
-    socketService = TestBed.get(SocketService) as jasmine.SpyObj<SocketService>;
+    arduinoService = TestBed.inject(ArduinoService) as jasmine.SpyObj<ArduinoService>;
+    socketService = TestBed.inject(SocketService) as jasmine.SpyObj<SocketService>;
   }));
 
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('LightChartComponent', () => {
     fixture.detectChanges();
     tick();
     expect(component).toBeTruthy();
-    expect(component.lightStatus).toBe('on');
+    expect(component.lightStatus()).toBe('on');
     expect(component.isLightOn()).toBeTrue();
     discardPeriodicTasks();
   }));
@@ -68,7 +68,7 @@ describe('LightChartComponent', () => {
     component.slideChange(true);
     tick(); // Wait for slideChange promise
     expect(arduinoService.postLightStatus).toHaveBeenCalledWith('1.2.3.4', 'on');
-    expect(component.lightStatus).toBe('on');
+    expect(component.lightStatus()).toBe('on');
     discardPeriodicTasks();
   }));
 
@@ -81,7 +81,7 @@ describe('LightChartComponent', () => {
     measureUpdateSubject.next(update);
     tick();
 
-    expect(component.lightStatus).toBe('on');
+    expect(component.lightStatus()).toBe('on');
     discardPeriodicTasks();
   }));
 
@@ -92,8 +92,8 @@ describe('LightChartComponent', () => {
     tick();
 
     expect(component.micro.isInactive).toBeTrue();
-    expect(component.lightStatus).toBe('unknown');
-    expect(component.disabledBtn).toBeTrue();
+    expect(component.lightStatus()).toBe('unknown');
+    expect(component.disabledBtn()).toBeTrue();
     discardPeriodicTasks();
   }));
 
@@ -118,7 +118,7 @@ describe('LightChartComponent', () => {
     component.slideChange(false);
     tick();
     expect(arduinoService.postLightStatus).toHaveBeenCalledWith('1.2.3.4', 'off');
-    expect(component.lightStatus).toBe('off');
+    expect(component.lightStatus()).toBe('off');
     discardPeriodicTasks();
   }));
 });

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 
-import { Observable, of } from 'rxjs'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
 import { environment } from 'src/environments/environment'
@@ -16,9 +16,12 @@ import { ApiResponse } from '@models/api-response.model'
 
 @Injectable({
   providedIn: 'root'
+
 })
 export class ArduinoService {
 
+  private microcontrollersSubject = new BehaviorSubject<Microcontroller[]>([])
+  allArduinos = this.microcontrollersSubject.asObservable()
   microcontrollers: Microcontroller[] = []
 
   constructor(
@@ -34,6 +37,7 @@ export class ArduinoService {
           tap(response => {
             this.microcontrollers = response
             this.microcontrollers.forEach(micro => micro.isInactive = false)
+            this.microcontrollersSubject.next(this.microcontrollers)
           })
         )
     }

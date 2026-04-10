@@ -7,9 +7,7 @@ import { TranslatePipe } from '@pipes/translate.pipe'
 
 @NgModule({
   imports: [
-    CommonModule
-  ],
-  declarations: [
+    CommonModule,
     MeasureViewPipe,
     MeasureIconPipe,
     TranslatePipe

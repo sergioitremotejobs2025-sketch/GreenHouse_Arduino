@@ -12,8 +12,28 @@ interface HealthStat {
   status: 'online' | 'warning' | 'offline';
 }
 
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { PipesModule } from '@modules/pipes.module';
+
 @Component({
   selector: 'app-device-health',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    PipesModule
+  ],
   templateUrl: './device-health.component.html',
   styleUrls: ['./device-health.component.less']
 })

@@ -6,8 +6,46 @@ import { AuthService } from '@services/auth.service'
 
 import { Microcontroller } from '@models/microcontroller.model'
 
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterModule } from '@angular/router';
+import { DashboardMicrocontrollerComponent } from '@components/dashboard-microcontroller/dashboard-microcontroller.component';
+import { HumidityChartComponent } from '@components/humidity-chart/humidity-chart.component';
+import { HumidityStatsComponent } from '@components/humidity-stats/humidity-stats.component';
+import { LightChartComponent } from '@components/light-chart/light-chart.component';
+import { LightStatsComponent } from '@components/light-stats/light-stats.component';
+import { TemperatureChartComponent } from '@components/temperature-chart/temperature-chart.component';
+import { TemperatureStatsComponent } from '@components/temperature-stats/temperature-stats.component';
+import { PicturesChartComponent } from '@components/pictures-chart/pictures-chart.component';
+import { AiPredictorComponent } from '@components/ai-predictor/ai-predictor.component';
+import { ThreeDHoverDirective } from '../../shared/three-d-hover.directive';
+import { SkeletonComponent } from '@components/skeleton/skeleton.component';
+import { LottieAnimationComponent } from '../../shared/lottie-animation/lottie-animation.component';
+import { PipesModule } from '@modules/pipes.module';
+
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    RouterModule,
+    DashboardMicrocontrollerComponent,
+    HumidityChartComponent,
+    HumidityStatsComponent,
+    LightChartComponent,
+    LightStatsComponent,
+    TemperatureChartComponent,
+    TemperatureStatsComponent,
+    PicturesChartComponent,
+    AiPredictorComponent,
+    ThreeDHoverDirective,
+    SkeletonComponent,
+    LottieAnimationComponent,
+    PipesModule
+  ],
   styleUrls: ['./dashboard.component.less'],
   templateUrl: './dashboard.component.html'
 })

@@ -2,8 +2,26 @@ import { MediaMatcher } from '@angular/cdk/layout'
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, HostListener } from '@angular/core'
 import { CommandPaletteService } from '../../services/command-palette.service';
 
+import { CommonModule } from '@angular/common';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+import { NavbarComponent } from '@components/navbar/navbar.component';
+import { LoginComponent } from '@components/login/login.component';
+
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    RouterModule,
+    NavbarComponent,
+    LoginComponent
+  ],
   styleUrls: [ './app.component.less' ],
   templateUrl: './app.component.html'
 })

@@ -3,8 +3,8 @@ import { LanguageService } from '../services/language.service';
 
 @Pipe({
   name: 'translate',
-  pure: false // Set to false to respond to language changes dynamically if needed, 
-              // although better to use an observable if many changes occur.
+  pure: false,
+  standalone: true
 })
 export class TranslatePipe implements PipeTransform {
 

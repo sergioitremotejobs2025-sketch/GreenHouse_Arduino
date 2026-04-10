@@ -2,8 +2,26 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AiService } from 'src/app/services/ai.service';
 import { NotificationService } from 'src/app/services/notification.service';
 
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+
 @Component({
     selector: 'app-ai-predictor',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        FormsModule
+    ],
     templateUrl: './ai-predictor.component.html',
     styleUrls: ['./ai-predictor.component.less']
 })
