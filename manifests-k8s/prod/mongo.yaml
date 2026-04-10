@@ -77,9 +77,6 @@ spec:
             port: 27017
           initialDelaySeconds: 15
           periodSeconds: 10
-        volumeMounts:
-        - mountPath: /data/db
-          name: mongo-persistent-storage
       terminationGracePeriodSeconds: 10
       securityContext:
         fsGroup: 999

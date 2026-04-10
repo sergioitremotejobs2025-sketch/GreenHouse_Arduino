@@ -38,8 +38,6 @@ spec:
               key: INTERNAL_API_KEY
         - name: MODEL_DIR
           value: "/app/data/models"
-        - name: PORT
-          value: "8080" # Knative expects 8080 by default
         resources:
           limits:
             cpu: "500m"
@@ -52,7 +50,6 @@ spec:
           capabilities:
             drop:
             - ALL
-          privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 1000
@@ -61,17 +58,6 @@ spec:
           mountPath: /app/data/models
         - name: tmp-volume
           mountPath: /tmp
-      nodeSelector:
-        cloud.google.com/gke-spot: "true"
-      tolerations:
-      - key: "cloud.google.com/gke-spot"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
-      securityContext:
-        fsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       volumes:
       - name: ai-models-volume
         persistentVolumeClaim:

@@ -4,8 +4,9 @@ import re
 
 REGISTRY = "europe-west1-docker.pkg.dev/iot-microservices-gcp/iot-repo"
 PROD_DIR = "manifests-k8s/prod"
+SERVERLESS_DIR = "manifests-k8s/serverless"
 
-yaml_files = glob.glob(os.path.join(PROD_DIR, "*.yaml"))
+yaml_files = glob.glob(os.path.join(PROD_DIR, "*.yaml")) + glob.glob(os.path.join(SERVERLESS_DIR, "*.yaml"))
 
 images_to_update = {
     "ai-ms:latest": f"{REGISTRY}/ai-ms:latest",

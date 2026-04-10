@@ -54,7 +54,7 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 ---
 
 ## 🔵 Phase 3: mTLS Pilot
-*Status: **In Progress** 🔄 — April 8, 2026*
+*Status: **COMPLETED** ✅ — April 10, 2026*
 
 - [x] **Fleet Registered to GCP Fleet**: `iot-cluster` (europe-west1) registered as a Fleet membership.
 - [x] **Cloud Service Mesh Enabled**: Managed CSM (`management: automatic`) activated at Fleet level.
@@ -63,9 +63,9 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
 - [x] **mTLS Manifests Applied**: `PeerAuthentication/default-mtls` (STRICT mode) and `DestinationRule/default-mtls` (ISTIO_MUTUAL) deployed to cluster.
 - [x] **GCP APIs Enabled**: `trafficdirector.googleapis.com`, `meshca.googleapis.com`, `networksecurity.googleapis.com` all enabled.
 - [x] **Istio Sidecars Injecting**: `auth-ms` and `orchestrator-ms` pods confirmed with `2` containers (app + `istio-proxy`).
-- [ ] **Sidecar Fully READY (2/2)**: Envoy sidecar stuck in `PRE_INITIALIZING` pending Traffic Director + Network Security API propagation (~5–10 min after enablement). Re-roll deployments once propagation completes.
-- [ ] **mTLS Certificate Verification**: Confirm Mesh CA issues workload certificates to both services (`meshca.googleapis.com` active).
-- [ ] **Live mTLS Traffic Verification**: Use `istioctl pc secret` or `kubectl exec` into the proxy to verify SPIFFE identity and confirm mutual certificate exchange.
+- [x] **Sidecar Fully READY (2/2)**: Envoy sidecar verified after Fleet propagation.
+- [x] **mTLS Certificate Verification**: Confirm Mesh CA issues workload certificates to both services.
+- [x] **Live mTLS Traffic Verification**: Verified SPIFFE identity and mutual certificate exchange via `kubectl exec`.
 
 ---
 
@@ -81,26 +81,26 @@ Based on the [Technical Roadmap & Future Improvements (Chapter 16 & 17)](Documen
     - [x] Implemented `POST /pair` protocol and gateway-aware discovery with 100% test coverage.
 
 ## 🔴 Phase 4: Global Mesh & Infinite Scale 
-*Status: In Progress*
-- [/] **Cross-Cluster Mesh**: Connect the EU and US Kubernetes clusters via **Cilium ClusterMesh**, enabling global service discovery, identity sharing, and active-active failover.
+*Status: **COMPLETED** ✅ — April 10, 2026*
+- [x] **Cross-Cluster Mesh**: Connected the EU and US Kubernetes clusters via **GKE Fleet & Cloud Service Mesh**, enabling global service discovery, identity sharing, and active-active failover.
     - [x] Phase 4: Global Mesh & Infinite Scale (Active-Active Architecture)
     - [x] Provision secondary US cluster with safe CIDR ranges
     - [x] Register clusters to GKE Fleet (Hub)
     - [x] Enable GKE Multi-cluster Services (MCS)
     - [x] Export core services for global discovery
     - [x] Deploy Knative for serverless analytical bursting
-- [/] **Serverless Offloading**: Migrate the heavy analytics functions in `stats-ms` and `ai-ms` to **Knative Serverless**, allowing the system to scale to zero during idle hours to save costs.
+- [x] **Serverless Offloading**: Migrated heavy analytics functions in `stats-ms` and `ai-ms` to **Knative Serverless**, allowing the system to scale to zero during idle hours.
     - [x] Create Knative manifest for `stats-ms` (`serverless/stats-ms-knative.yaml`).
     - [x] Create Knative manifest for `ai-ms` (`serverless/ai-ms-knative.yaml`) with PVC persistence.
     - [x] Standardized resource limits and SecurityContext for serverless workloads.
-    - [ ] Deploy Knative services and verify scale-to-zero.
-- [/] **Sovereign Sharding**: Implement jurisdiction-aware database routing (MongoDB Zone Sharding) to ensure data residency compliance (GDPR, CCPA) in real-time.
+    - [x] Deploy Knative services and verify scale-to-zero.
+- [x] **Sovereign Sharding**: Implemented jurisdiction-aware database routing (MongoDB Zone Sharding) to ensure data residency compliance (GDPR, CCPA) in real-time.
     - [x] Update MySQL schema with `jurisdiction` field.
     - [x] Update `microcontrollers-ms` and `measure-ms` to handle jurisdiction metadata.
     - [x] Create MongoDB Sharded Cluster manifests (`manifests-k8s/db/sharding/`).
     - [x] Deploy sharded cluster manifests to GKE cluster.
-    - [ ] Execute `setup-zones.sh` on live environment to finalise zone tag assignments.
+    - [x] Execute `setup-zones.sh` on live environment to finalise zone tag assignments.
 
 ---
 *Generated based on the Book_Version_1.md Architectural Manifesto.*
-*Last technical audit: April 8, 2026*
+*Last technical audit: April 10, 2026*

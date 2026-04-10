@@ -3,18 +3,13 @@
 # Script to configure MongoDB Zone Sharding for Sovereign Sharding
 
 # Wait for mongos to be ready
-until mongo --eval "db.adminCommand('ping')" --quiet; do
-  echo "Waiting for mongos..."
-  sleep 5
-done
+echo "Waiting for mongos pod to be ready..."
+kubectl wait --for=condition=ready pod -l app=mongos --timeout=300s
 
-echo "🚀 Configuring Sharded Cluster..."
+echo "🚀 Configuring Sharded Cluster via kubectl exec..."
 
-# Initialize the config server replica set (this should be done on the config server, but we can try via mongos if authenticated)
-# Actually, it's better to do it once the pods are up. 
-# For this task, I'll provide the commands that need to be run.
-
-cat <<EOF | mongo
+# Define the mongo commands
+MONGO_COMMANDS=$(cat <<EOF
 // 1. Add Shards to the cluster
 sh.addShard("shard-eurs/mongo-shard-eu-0.mongo-shard-eu.default.svc.cluster.local:27017")
 sh.addShard("shard-usrs/mongo-shard-us-0.mongo-shard-us.default.svc.cluster.local:27017")
@@ -27,7 +22,6 @@ sh.addShardTag("shard-eurs", "EU")
 sh.addShardTag("shard-usrs", "US")
 
 // 4. Shard the collections based on jurisdiction
-// We shard by jurisdiction (hashed or ranged) and timestamp for better distribution
 sh.shardCollection("iot.humidities", { "jurisdiction": 1, "timestamp": 1 })
 sh.shardCollection("iot.temperatures", { "jurisdiction": 1, "timestamp": 1 })
 sh.shardCollection("iot.lights", { "jurisdiction": 1, "timestamp": 1 })
@@ -45,6 +39,10 @@ sh.addTagRange("iot.lights", { "jurisdiction": "US", "timestamp": MinKey }, { "j
 
 sh.addTagRange("iot.pictures", { "jurisdiction": "EU", "timestamp": MinKey }, { "jurisdiction": "EU", "timestamp": MaxKey }, "EU")
 sh.addTagRange("iot.pictures", { "jurisdiction": "US", "timestamp": MinKey }, { "jurisdiction": "US", "timestamp": MaxKey }, "US")
+EOF
+)
+
+# Execute the commands in the mongos pod
+kubectl exec deployment/mongos -- mongo --quiet --eval "$MONGO_COMMANDS"
 
 echo "✅ Sovereign Sharding configured!"
-EOF
