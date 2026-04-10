@@ -42,7 +42,7 @@ describe('DeviceHealthComponent', () => {
     ];
     // component logic will add latency/uptime mock for now
     component.calculateHealth(micros as any);
-    expect(component.healthData.length).toBe(1);
-    expect(component.healthData[0].latency).toBeDefined();
+    expect(component.healthData().length).toBe(1);
+    expect(component.healthData()[0].latency).toBeDefined();
   });
 });

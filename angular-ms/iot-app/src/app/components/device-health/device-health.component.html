@@ -7,13 +7,13 @@
     </button>
   </div>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="loading-state">
       <mat-spinner diameter="50"></mat-spinner>
     </div>
   } @else {
     <div class="health-grid">
-      @for (item of healthData; track item.ip + item.measure) {
+      @for (item of healthData(); track item.ip + item.measure) {
         <div class="health-card glass" [class.warning]="item.status === 'warning'" [class.offline]="item.status === 'offline'">
           <div class="card-status-indicator" [class]="item.status"></div>
           

@@ -41,7 +41,7 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
     - [x] Phase 3: Transition to Signals and Zoneless (LanguageService refactored and Control Flow migrated).
 - [ ] 🧪 **Testing Infrastructure**: Transition from legacy `Karma/Jasmine` to `Vitest` for ultra-fast TDD cycles and native Vite integration - **In Progress (Infrastructure Setup)**.
 - [x] 🧪 **Unit Tests Overhaul**: Align TDD suite with Angular v18/v19 Signals and Control Flow.
-- [x] **State Management**: Evaluate `NgRx` or `Signals` (post-upgrade) to handle global microcontroller state more efficiently.
+- [x] **State Management**: Fully transitioned core Dashboard and Device Health components to **Angular Signals** for reactive telemetry.
 - [x] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.
 - [x] **Chart Optimization**: Optimize `ng2-google-charts` or consider migrating to `Chart.js` for smoother real-time streaming animations.
 - [x] **Strict Typing**: Audit `src/app/models` and ensure `any` is eliminated from service response handlers.

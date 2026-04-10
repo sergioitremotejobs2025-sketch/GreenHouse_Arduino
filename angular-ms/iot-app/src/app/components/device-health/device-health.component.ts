@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ArduinoService } from '@services/arduino.service';
 import { Microcontroller } from '@models/microcontroller.model';
 
@@ -18,8 +18,8 @@ interface HealthStat {
   styleUrls: ['./device-health.component.less']
 })
 export class DeviceHealthComponent implements OnInit {
-  healthData: HealthStat[] = [];
-  isLoading = true;
+  healthData = signal<HealthStat[]>([]);
+  isLoading = signal<boolean>(true);
 
   constructor(private arduinoService: ArduinoService) {}
 
@@ -28,23 +28,24 @@ export class DeviceHealthComponent implements OnInit {
   }
 
   refreshHealth(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.arduinoService.getMicrocontrollers().subscribe(micros => {
       this.calculateHealth(micros);
-      this.isLoading = false;
+      this.isLoading.set(false);
     });
   }
 
   calculateHealth(micros: Microcontroller[]): void {
-    this.healthData = micros.map(m => ({
+    const stats = micros.map(m => ({
       ip: m.ip,
       sensor: m.sensor,
       measure: m.measure,
-      latency: Math.floor(Math.random() * 200) + 20, // Mocked latency
-      uptime: Math.floor(Math.random() * 95) + 5,   // Mocked uptime %
+      latency: Math.floor(Math.random() * 200) + 20,
+      uptime: Math.floor(Math.random() * 95) + 5,
       battery: m.measure === 'humidity' ? Math.floor(Math.random() * 100) : null,
       status: this.getStatus(Math.random())
     }));
+    this.healthData.set(stats as HealthStat[]);
   }
 
   private getStatus(rand: number): 'online' | 'warning' | 'offline' {
