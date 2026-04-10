@@ -59,6 +59,8 @@ spec:
           mountPath: /tmp
         - name: rabbitmq-data
           mountPath: /var/lib/rabbitmq
+        - name: etc-rabbitmq-volume
+          mountPath: /etc/rabbitmq
         resources:
           limits:
             cpu: 500m
@@ -85,4 +87,6 @@ spec:
       - name: tmp-volume
         emptyDir: {}
       - name: rabbitmq-data
+        emptyDir: {}
+      - name: etc-rabbitmq-volume
         emptyDir: {}

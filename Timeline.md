@@ -18,7 +18,7 @@ gantt
     section Phase 2: Observability & Security
     Metrics & Log Unification (SRE) :done, p2_1, 2026-03-24, 4d
     CI/CD Maturity (K6 Perf Tests)  :done, p2_2, 2026-03-25, 2d
-    mTLS Service Mesh (Istio)        :active, p2_3, 2026-03-26, 14d
+    mTLS Service Mesh (Istio)        :done, p2_3, 2026-03-26, 14d
 
     section Phase 3: Edge & Fog
     Wasm Pruners & Fog Brain MS    :done, p3_1, 2026-03-20, 14d
@@ -26,8 +26,8 @@ gantt
 
     section Phase 4: Global Scale
     Multi-Region MCS (EU/US)       :done, p4_1, 2026-03-27, 3d
-    Serverless Analytics (Knative) :active, p4_2, 2026-03-28, 21d
-    Sovereign Data Sharding        :active, p4_3, 2026-04-08, 28d
+    Serverless Analytics (Knative) :done, p4_2, 2026-04-01, 10d
+    Sovereign Data Sharding        :done, p4_3, 2026-04-08, 2d
 ```
 
 ---
@@ -43,15 +43,15 @@ Establishing the baseline for 100% test coverage and cloud registry reliability.
 | **GKE Autopilot Migration** | ✅ Done | 2026-03-15 |
 | **Workflow Matrix Stabilization** | ✅ Done | 2026-03-22 |
 
-### 🟢 Phase 2: Observability & Hardening (In Progress)
+### 🟢 Phase 2: Observability & Hardening (Completed)
 Transitioning into professional SRE operations and zero-trust identity.
 
 | Task | Effort | Status | Description |
 | :--- | :--- | :--- | :--- |
 | **Advanced Observability (SRE)**| **4 Days** | ✅ Done | Deployed Grafana, Loki (Logs), and Prometheus (Metrics) to GKE. |
 | **Perf/Load Testing (K6)** | **2 Days** | ✅ Done | Integrated K6 automated performance regressions into CI pipeline. |
-| **mTLS Service Mesh Pilot** | **2 Weeks**| 🟡 Active | Manifests aligned for `auth-ms` and `orchestrator-ms` (Port 3000 named). Ready for deployment. |
-| **Security Audit & Hardening** | **1 Week** | 🟡 In Progress / Deploying | 2026-04-08: Fleet-wide hardening implemented (Non-root, Read-only FS). `gke-cis-audit` tool created. |
+| **mTLS Service Mesh Pilot** | **2 Weeks**| ✅ Done | Deployed Cloud Service Mesh across EU/US Fleet. STRICT mTLS enforced. |
+| **Security Audit & Hardening** | **1 Week** | ✅ Done | 2026-04-10: Fleet-wide hardening (Non-root, Read-only FS). Passed `gke-cis-audit`. |
 
 ### ✅ Phase 3: Edge & Fog Intelligence (Completed)
 Successfully decentralized compute and implemented local survival logic.
@@ -62,14 +62,18 @@ Successfully decentralized compute and implemented local survival logic.
 | **Fog Node Integration** | **2 Weeks** | ✅ Done | Implemented `fog-brain-ms` with SQLite local persistence. |
 | **Device Registry V2** | **1 Week**  | ✅ Done | Upgraded pairing protocols and discovery logic. |
 
-### 🔴 Phase 4: Global Mesh & Infinite Scale (Active)
+### 🔴 Phase 4: Global Mesh & Infinite Scale (Completed)
 Achieving global active-active federation and serverless cost-efficiency.
 
 | Task | Estimated | Status | Description |
 | :--- | :--- | :--- | :--- |
 | **Multi-Region MCS (EU/US)** | **3 Days** | ✅ Done | Federated EU-west1 and US-central1 clusters via GKE Fleet. Enabled MCS for global discovery. |
-| **Serverless Burst (Knative)** | **3 Weeks** | ✅ Prep Done | Scale-to-zero manifests created for `stats-ms` and `ai-ms`. Hardened resources for serverless bursting. |
-| **Sovereign Sharding** | **4 Weeks** | 🟡 Active | **Phase 1 Complete**: CRUD models, MySQL Schema, and Sharded MongoDB manifests updated for Jurisdiction-aware routing. |
+| **Serverless Burst (Knative)** | **3 Weeks** | ✅ Done | Scale-to-zero active for `stats-ms` and `ai-ms`. Verified via analytical load injection. |
+| **Sovereign Sharding** | **4 Weeks** | ✅ Done | Implemented Jurisdiction-aware routing via MongoDB Zone Sharding. Verified GDPR/CCPA compliance. |
+
+## ❄️ Hibernation & Zero-Cost State
+*Status: **ACTIVE** — April 10, 2026*
+All GCP infrastructure (GKE, Disks, IPs, Registry) has been deprovisioned to reach a **verified $0.00 base cost**. The environment can be restored using `./recreate_all_gcp.sh`.
 
 ---
-*Updated Technical Audit: April 8, 2026*
+*Updated Technical Audit: April 10, 2026*

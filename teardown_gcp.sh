@@ -109,8 +109,8 @@ while read -r r; do
     if [ ! -z "$r" ]; then
         REPO_NAME=$(basename "$r")
         LOC=$(echo "$r" | rev | cut -d/ -f3 | rev)
-        echo "   Deleting repository: $REPO_NAME in $LOC"
-        gcloud artifacts repositories delete "$REPO_NAME" --location="$LOC" --project="$PROJECT" --quiet &>/dev/null || true
+        echo "   Deleting repository: $REPO_NAME in $LOC..."
+        gcloud artifacts repositories delete "$REPO_NAME" --location="$LOC" --project="$PROJECT" --quiet || echo "   ⚠️  Could not delete $REPO_NAME (already gone?)"
     fi
 done <<< "$REPOS"
 

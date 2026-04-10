@@ -13,7 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create a non-root user and set permissions
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser && \
+RUN groupadd -g 1000 appgroup && \
+    useradd -u 1000 -g 1000 -r -s /bin/false appuser && \
     chown -R appuser:appgroup /app
 
 USER appuser
