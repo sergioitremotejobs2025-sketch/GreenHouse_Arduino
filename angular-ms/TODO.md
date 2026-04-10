@@ -30,7 +30,7 @@ This document tracks the planned improvements for the **IoT Microservices Dashbo
     - [x] Add Timeline scrubbing for photo history.
 - [x] **Device Health Dashboard**: A specialized view showing battery levels (if applicable), latency, and uptime for all nodes.
 - [x] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
-- [ ] **Typography Audit**: Transition to a more premium variable font (e.g., *Outfit* or *Inter*) and optimize hierarchy - **In Progress**.
+- [x] **Typography Audit**: Transition to a more premium variable font (e.g., *Outfit* or *Inter*) and optimize hierarchy.
 
 ## 🛠️ Technical Debt & Performance
 *Goal: Modernize the tech stack and improve codebase maintainability.*

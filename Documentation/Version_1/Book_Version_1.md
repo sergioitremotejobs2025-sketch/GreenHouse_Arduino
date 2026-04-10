@@ -2695,6 +2695,7 @@ The IoT surveillance suite was upgraded to provide a professional-grade investig
 *   **Timeline Scrubbing**: An interactive, discrete scrubbing interface that allows users to navigate through the last 20 surveillance captures instantly, bridging the gap between historical audit logs and real-time monitoring.
 *   **Node Health Dashboard**: A specialized monitoring view that tracks real-time **Latency**, **Uptime**, and **Battery levels** across the entire fleet of microcontrollers.
 *   **Global Premium Scrollbars**: Implemented minimalist, themed scrollbars that align with the glassmorphism language, ensuring a high-fidelity experience across all device form factors.
+*   **Typography Overhaul**: Transitioned the entire ecosystem to premium variable fonts—**Outfit** for geometric, high-impact headings and **Inter** for ultra-readable technical telemetry—providing a professional, state-of-the-art aesthetic.
 
 ### 28.4 Phase 5 Key Metrics
 
