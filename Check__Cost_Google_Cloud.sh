@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Configuration
+export PATH=$PATH:/usr/local/bin
 PROJECT_ID="iot-microservices-gcp"
 DATE=$(date +"%d%m%Y")
 OUTPUT_FILE="COST_${DATE}.md"
