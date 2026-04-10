@@ -4,6 +4,13 @@
     <mat-icon>sync</mat-icon>
   </button>
   <mat-card-content *ngIf="isChartReady">
-    <google-chart [data]="chart"></google-chart>
+    <div class="chart-container">
+      <canvas baseChart 
+              [data]="chartData" 
+              [options]="chartOptions" 
+              [type]="chartType"
+              [legend]="true">
+      </canvas>
+    </div>
   </mat-card-content>
 </mat-card>

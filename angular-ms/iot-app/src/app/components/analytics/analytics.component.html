@@ -33,7 +33,11 @@
             </div>
             
             <div class="chart-wrapper" *ngIf="selectedDevices.length > 0">
-                <google-chart [data]="chartData"></google-chart>
+                <canvas baseChart 
+                        [data]="chartData" 
+                        [options]="chartOptions" 
+                        [type]="'line'">
+                </canvas>
             </div>
         </div>
     </div>

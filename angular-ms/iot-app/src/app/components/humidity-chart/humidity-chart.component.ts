@@ -27,7 +27,15 @@ export class HumidityChartComponent extends MeasureChart {
     protected override socketService: SocketService,
     protected override notificationService: NotificationService
   ) {
-    super('Humedad', 'Gauge', socketService, notificationService)
+    super('Humedad', 'doughnut', socketService, notificationService)
+    this.chartOptions = {
+      ...this.chartOptions,
+      cutout: '80%',
+      plugins: {
+        ...this.chartOptions.plugins,
+        legend: { display: false }
+      }
+    }
   }
 
   async getCurrentMeasure(isFirstTime: boolean) {
@@ -42,12 +50,22 @@ export class HumidityChartComponent extends MeasureChart {
 
   drawData(humidity: Humidity) {
     this.lastHumidity = humidity.real_value
-    if (this.chart.dataTable.length === 2) {
-      this.chart.dataTable.pop()
+    
+    // Doughnut as Gauge: [value, 100 - value]
+    this.chartData = {
+      labels: [this.header[1], 'Restante'],
+      datasets: [{
+        data: [humidity.real_value, Math.max(0, 100 - humidity.real_value)],
+        backgroundColor: [this.getHumidityColor(humidity.real_value), 'rgba(255, 255, 255, 0.05)'],
+        borderWidth: 0
+      }]
     }
+  }
 
-    this.chart.dataTable.push([new Date(humidity.date).toLocaleTimeString(), humidity.real_value])
-    this.chart.component?.draw()
+  private getHumidityColor(value: number): string {
+    if (value < 31.6) return '#ef4444' // Red (Dry)
+    if (value < 73.7) return '#06b6d4' // Cyan (Humid)
+    return '#3b82f6' // Blue (Wet)
   }
 
 }

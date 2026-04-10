@@ -4,7 +4,17 @@
     <mat-icon>sync</mat-icon>
   </button>
   <mat-card-content *ngIf="isChartReady">
-    <google-chart [data]="chart"></google-chart>
+    <div class="chart-container doughnut-container">
+      <canvas baseChart 
+              [data]="chartData" 
+              [options]="chartOptions" 
+              [type]="chartType">
+      </canvas>
+      <div class="chart-overlay">
+        <span class="percentage">{{ lastHumidity }}%</span>
+        <span class="label">Humedad</span>
+      </div>
+    </div>
   </mat-card-content>
   <mat-icon class="absolute arrow">keyboard_arrow_right</mat-icon>
   <mat-table [dataSource]="dataSource" class="absolute mat-elevation-z8">

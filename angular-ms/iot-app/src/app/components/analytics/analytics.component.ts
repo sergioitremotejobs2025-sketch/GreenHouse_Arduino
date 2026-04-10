@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ArduinoService } from '../../services/arduino.service';
 import { Microcontroller } from '../../models/microcontroller.model';
-import { GoogleChartInterface } from 'ng2-google-charts';
+import { ChartConfiguration, ChartData } from 'chart.js';
 
 @Component({
   selector: 'app-analytics',
@@ -13,17 +13,20 @@ export class AnalyticsComponent implements OnInit {
   selectedDevices: Microcontroller[] = [];
   isLoading = false;
   
-  public chartData: GoogleChartInterface = {
-    chartType: 'LineChart',
-    dataTable: [['Time', 'Value']],
-    options: {
-      title: 'Tendencias Comparativas',
-      curveType: 'function',
-      legend: { position: 'bottom' },
-      backgroundColor: 'transparent',
-      chartArea: { width: '85%', height: '70%' },
-      hAxis: { title: 'Tiempo' },
-      vAxis: { title: 'Valor Medida' }
+  public chartData: ChartData<'line'> = {
+    labels: [],
+    datasets: []
+  };
+
+  public chartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { color: 'rgba(255, 255, 255, 0.7)' } },
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: 'rgba(255, 255, 255, 0.5)' } },
+      y: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: 'rgba(255, 255, 255, 0.5)' } }
     }
   };
 
@@ -53,17 +56,29 @@ export class AnalyticsComponent implements OnInit {
 
   refreshChart(): void {
     if (this.selectedDevices.length === 0) {
-      this.chartData.dataTable = [['Time', 'Value']];
+      this.chartData = { labels: [], datasets: [] };
       return;
     }
 
-    // Logic to fetch history for all selected devices and merge them
-    // For now, initializing headers
-    const headers = ['Time', ...this.selectedDevices.map(d => `${d.name} (${d.measure})`)];
-    this.chartData.dataTable = [headers];
+    const datasets = this.selectedDevices.map((d, i) => ({
+      data: [],
+      label: `${d.ip} (${d.measure})`,
+      borderColor: this.getColor(i),
+      backgroundColor: this.getAlphaColor(i),
+      fill: true,
+      tension: 0.4
+    }));
 
-    // Note: In a real scenario, we'd wait for all getPreviousMeasures to finish
-    // Simple mock points for visualization if data is missing, 
-    // but the goal is to show we are ready for multi-line.
+    this.chartData = { labels: [], datasets };
+  }
+
+  private getColor(index: number): string {
+    const colors = ['#06b6d4', '#f43f5e', '#10b981', '#f59e0b', '#6366f1'];
+    return colors[index % colors.length];
+  }
+
+  private getAlphaColor(index: number): string {
+    const colors = ['rgba(6, 182, 212, 0.1)', 'rgba(244, 63, 94, 0.1)', 'rgba(16, 185, 129, 0.1)'];
+    return colors[index % colors.length];
   }
 }

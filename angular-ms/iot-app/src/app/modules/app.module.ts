@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { LottieModule } from 'ngx-lottie';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import player from 'lottie-web';
 
 export function playerFactory() {
@@ -77,7 +78,8 @@ registerLocaleData(localeEs, 'es')
           // Register the ServiceWorker as soon as the application is stable
           // or after 30 seconds (whichever comes first).
           registrationStrategy: 'registerWhenStable:30000'
-        })
+        }),
+        BaseChartDirective
     ], providers: [
         ArduinoService,
         AuthGuard,
@@ -91,6 +93,7 @@ registerLocaleData(localeEs, 'es')
             provide: HTTP_INTERCEPTORS,
             useClass: TokenInterceptor
         },
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi()),
+        provideCharts(withDefaultRegisterables())
     ] })
 export class AppModule { }
