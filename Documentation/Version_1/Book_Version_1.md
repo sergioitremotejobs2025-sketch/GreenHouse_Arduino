@@ -2701,6 +2701,7 @@ The IoT surveillance suite was upgraded to provide a professional-grade investig
 *   **Chart Performance & Real-time Optimization**: Migrated the entire telemetry visualization engine from legacy `ng2-google-charts` to **Chart.js**. Achieved GPU-accelerated rendering and ultra-low latency updates, enabling buttery-smooth transitions for real-time sensor data.
 *   **Responsive Grid Overhaul**: Successfully refactored the main dashboard layout to use **Native CSS Grid** with dedicated `grid-template-areas`. This provides elite viewport adaptation, enabling a 'Pro' 4-column layout for ultra-wide monitors while maintaining 100% mobile integrity.
 *   **Reactive State with Signals**: Transitioned the core dashboard logic to **Angular Signals**. Successfully implemented `signal`, `computed`, and `update` primitives for the microcontroller registry and telemetry maps, reducing change detection overhead and providing a granular, reactive backbone for the entire frontend.
+*   **Testing Infrastructure Modernization (Vitest)**: Initiated the transition from legacy `Karma/Jasmine` to **Vitest**. By leveraging the native Vite-based application builder of Angular v18, this change aims to deliver ultra-fast TDD feedback loops and improved developer ergonomics for the next generation of microservice features.
 
 ### 28.4 Phase 5 Key Metrics
 
