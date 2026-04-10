@@ -9,9 +9,8 @@ describe('LottieAnimationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LottieAnimationComponent ],
       imports: [ 
-        // We mock or provide a simple config for ngx-lottie
+        LottieAnimationComponent
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })

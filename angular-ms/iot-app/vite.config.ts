@@ -1,6 +1,5 @@
-/// <reference types="vitest" />
 import { defineConfig } from 'vitest/config';
-import angular from '@analogjs/vitest-angular';
+import angular from '@analogjs/vite-plugin-angular';
 
 export default defineConfig(({ mode }) => ({
   plugins: [angular()],

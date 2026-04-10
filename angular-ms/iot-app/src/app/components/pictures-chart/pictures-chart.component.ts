@@ -9,11 +9,11 @@ import { Pictures } from '@models/pictures.model'
 import { MeasureChart } from '@shared/measure-chart.class'
 import { MatDialog } from '@angular/material/dialog'
 import { LightboxComponent } from '@shared/lightbox/lightbox.component'
+import { SliderComponent } from '@shared/slider/slider.component'
 
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSliderModule } from '@angular/material/slider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
 
@@ -24,9 +24,10 @@ import { RouterModule } from '@angular/router';
         CommonModule,
         MatButtonModule,
         MatIconModule,
-        MatSliderModule,
         MatProgressSpinnerModule,
-        RouterModule
+        RouterModule,
+        SliderComponent,
+        LightboxComponent
     ],
     styleUrls: ['./pictures-chart.component.less'],
     templateUrl: './pictures-chart.component.html'

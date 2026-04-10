@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SwitchComponent } from '../../shared/switch/switch.component'
 import { PipesModule } from '@modules/pipes.module';
 
 @Component({
@@ -21,9 +21,9 @@ import { PipesModule } from '@modules/pipes.module';
   imports: [
     CommonModule,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
-    MatSlideToggleModule,
+    MatButtonModule,
+    SwitchComponent,
     PipesModule
   ],
   styleUrls: ['./light-chart.component.less'],

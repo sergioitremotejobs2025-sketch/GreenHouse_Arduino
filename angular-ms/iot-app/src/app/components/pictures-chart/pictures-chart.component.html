@@ -37,9 +37,13 @@
         </div>
         
         <div class="timeline-scrubber glass" *ngIf="history().length > 1">
-          <mat-slider min="0" [max]="history().length - 1" step="1" discrete>
-            <input matSliderThumb (valueChange)="selectFromHistory($any($event))" [value]="history().indexOf(selectedPicture()!)">
-          </mat-slider>
+          <app-slider
+            [min]="0"
+            [max]="history().length - 1"
+            [step]="1"
+            [value]="history().indexOf(selectedPicture()!)"
+            (valueChange)="selectFromHistory($event)">
+          </app-slider>
           <div class="timeline-labels">
             <span>Pasado</span>
             <span>Ahora</span>
