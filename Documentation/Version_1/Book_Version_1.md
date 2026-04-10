@@ -2657,6 +2657,7 @@ To support this complex topology, we introduced a new tier of automation:
 - **`install_knative.sh`**: A specialized setup script that deploys the Knative core and Net-Istio controller on Autopilot-hardened nodes.
 - **Registry Synchronization**: `update_manifest_tags.py` was enhanced to support the serverless manifest structure, ensuring image consistency across the global registry.
 
+
 ### 27.5 Phase 4 Key Metrics
 
 | Metric | Target | Achieved |
@@ -2749,8 +2750,6 @@ This project, the *IoT Microservices Encyclopedia*, is a testament to Sergio's c
 * **Observability & Security:** Deep background in telemetry mapping (Prometheus/Grafana/Loki), implementing distributed tracing, designing Zero-Trust architectures natively in K8s, and enforcing automated security and compliance audits.
 * **Developer Experience:** Relentless pursuit of operational excellence, proven through robust CI/CD automation with GitHub Actions, strict mutation testing practices, and zero-tolerance 100% backend code coverage mandates.
 
----
-
 <a id="chapter-28"></a>
 
 ## 🎨 Chapter 28: Phase 5 — Modernization & The Signal Era
@@ -2769,20 +2768,46 @@ Legacy `NgModules` were identified as a primary bottleneck for tree-shaking and 
 The hallmark of Phase 5 is the transition from opaque change detection to fine-grained **Angular Signals**.
 
 * **Device State**: The `ArduinoService` now leverages `BehaviorSubject` and Signals to orchestrate device heartbeats across the dashboard.
-* **UI Synchronization**: Components like `PicturesChartComponent` and `AiPredictorComponent` utilize reactive streams to update only the specific DOM nodes affected by telemetry fluctuations, ensuring a silky-smooth 60FPS interaction even under high data throughput.
+* **UI Synchronization**: Components like `PicturesChartComponent` and `AiPredictorComponent` utilize reactive streams to update only the specific DOM nodes affected by telemetry fluctuations, ensuring a silky-smooth 60FPS interaction.
 
-### 28.3 Build Stabilization & Production Readiness
+---
 
-Stabilizing an Angular v19 build while maintaining legacy integration (e.g., `ngx-lottie`, `ng2-charts`) required a surgical refactoring of the provider landscape.
+<a id="chapter-29"></a>
 
-* **Modern Provider Patterns**: Replaced legacy module imports with modern functional providers (`provideLottieOptions`, `provideCharts`), aligning the application with the latest high-performance standards.
-* **Critical Build Fixes**: Resolved cascading dependency errors in `DeviceHealthComponent`, `IndexComponent`, and `CommandPaletteComponent` to achieve a clean, zero-error production build.
+## 🎨 Chapter 29: Component Refinement & Testing Hardening
+
+As the project entered **Phase 6**, the focus shifted from high-level architectural migration to granular component refinement and the establishment of a robust testing infrastructure.
+
+### 29.1 Signal-Based Controls
+
+Two key interactive elements—the `SliderComponent` and `SwitchComponent`—were refactored from legacy Material wrappers into specialized, Signal-first standalone components. This ensured that timeline scrubbing and real-time state toggling operated with maximum performance and minimal change detection overhead.
+
+### 29.2 Vitest & TDD Institutionalization
+
+A critical architectural decision was made to transition the entire testing suite from legacy Karma/Jasmine to **Vitest**. The **Red-Green-Refactor** TDD cycle was institutionalized as a mandatory engineering protocol, ensuring 100% confidence in the system's reliability through automated verification of every architectural step.
+
+---
+
+<a id="about-the-author"></a>
+
+## 👨‍💻 About the Author: Sergio Abad
+
+**Sergio Abad** is a Senior Software Engineer and Cloud-Native Architect whose robust 20-year career began by designing and building electronic PCBs and doing foundational web development using PHP. Over two decades, he has relentlessly upgraded his skill set to stay at the vanguard of technology, evolving from custom hardware and monolithic web applications to designing state-of-the-art, fault-tolerant IoT platforms. Driven by a deep-seated passion for distributed systems and clean architecture, Sergio focuses on bridging the gap between low-level hardware communication and high-performance, enterprise-grade cloud ecosystems.
+
+### 🌟 Vision and Expertise
+
+This project, the *IoT Microservices Encyclopedia*, is a testament to Sergio's commitment to the **Test-Driven Development (TDD)** philosophy and his belief in **Decoupled Sensing, Centralized Intelligence**. Beyond core code, his engineering focus lies in constructing elite-tier digital infrastructure:
+
+* **Scalable Cloud Architecture:** Extensive execution in orchestrating multi-region Kubernetes clusters (GKE), integrating Service Meshes (Istio), and building dynamic Serverless pipelines.
+* **Edge & AI Integration:** Specializes in pushing computational heavy-lifting to the physical edge, establishing TensorFlow-Lite inference pipelines for ESP32 devices.
+* **Observability & Security:** Deep background in telemetry mapping (Prometheus/Grafana/Loki), designing Zero-Trust architectures natively in K8s.
+* **Developer Experience:** Proven through robust CI/CD automation with GitHub Actions and zero-tolerance 100% backend code coverage mandates.
 
 ---
 
 ### 🚀 Join the Journey
 
-Sergio is always looking for new challenges and opportunities to push the boundaries of what's possible in the world of software. From discussing the future of **WebAssembly at the Edge** to optimizing ultra-low-latency **global-scale meshes**, he's ready to innovate and consult. He actively mentors junior engineers and advocates for sustainable cloud-native open standards.
+Sergio is always looking for new challenges and opportunities to push the boundaries of what's possible in the world of software. From discussing the future of **WebAssembly at the Edge** to optimizing ultra-low-latency **global-scale meshes**, he's ready to innovate and consult.
 
 📫 **Let's Connect:**
 
@@ -2791,4 +2816,4 @@ Sergio is always looking for new challenges and opportunities to push the bounda
 
 ---
 *End of Volume I: The Engineering Manual.*
-*Revised April 10, 2026 (Post-Phase 5 Angular v19 & Standalone Migration).*
+*Revised April 10, 2026 (Component Modernization & TDD Hardening).*

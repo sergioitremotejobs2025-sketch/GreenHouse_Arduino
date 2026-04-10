@@ -57,15 +57,17 @@
     - [x] `NavbarComponent`: Standalone migration verified.
     - [x] `LoginComponent`: Standalone migration verified.
     - [x] `IndexComponent`: Standalone migration verified.
+    - [ ] Double check tests and TDD Red-Green-Refactor across all standalone components.
 - [x] **Phase 5: Modernization & Standalone Migration (COMPLETE)**:
     - [x] Convert all components and directives to **Standalone**.
     - [x] Migrate legacy providers (ngx-lottie, ng2-charts) to modern provider patterns.
     - [x] Stabilize Angular v19 build (0 Errors).
     - [x] Implement Reactive `BehaviorSubject` in `ArduinoService` for device state orchestration.
+    - [ ] Double check tests and TDD Red-Green-Refactor across all sub-components.
 - [ ] **Phase 6: Infrastructure TDD & Performance Hardening**:
-    - [ ] Finalize **Vitest** setup and automated test conversion.
+    - [ ] Finalize **Vitest** setup and automated test conversion - **In Progress**.
     - [ ] Achieve 100% Cypress Coverage for "Edit Device" and "Theme Persistence".
-    - [ ] Implement `SliderComponent` and `SwitchComponent` Signal migration.
+    - [x] Implement `SliderComponent` and `SwitchComponent` Signal migration.
     - [ ] Performance Audit: Transition to Zoneless Change Detection.
 
 ## 🛠️ Technical Debt & Performance
