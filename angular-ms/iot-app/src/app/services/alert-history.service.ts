@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, WritableSignal, computed } from '@angular/core';
 
 export interface AlertEntry {
     message: string;
@@ -13,26 +13,23 @@ export class AlertHistoryService {
     private readonly STORAGE_KEY = 'alert_history';
     private readonly MAX_ALERTS = 50;
 
-    private history: AlertEntry[] = [];
+    private readonly _history = signal<AlertEntry[]>([]);
+    readonly history = computed(() => this._history());
 
     constructor() {
         this.loadHistory();
     }
 
-    getHistory(): AlertEntry[] {
-        return this.history;
-    }
-
     addAlert(alert: AlertEntry): void {
-        this.history.unshift(alert);
-        if (this.history.length > this.MAX_ALERTS) {
-            this.history.pop();
-        }
+        this._history.update(h => {
+            const newHistory = [alert, ...h];
+            return newHistory.slice(0, this.MAX_ALERTS);
+        });
         this.saveHistory();
     }
 
     clearHistory(): void {
-        this.history = [];
+        this._history.set([]);
         this.saveHistory();
     }
 
@@ -40,14 +37,14 @@ export class AlertHistoryService {
         const saved = localStorage.getItem(this.STORAGE_KEY);
         if (saved) {
             try {
-                this.history = JSON.parse(saved);
+                this._history.set(JSON.parse(saved));
             } catch (e) {
-                this.history = [];
+                this._history.set([]);
             }
         }
     }
 
     private saveHistory(): void {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.history));
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this._history()));
     }
 }

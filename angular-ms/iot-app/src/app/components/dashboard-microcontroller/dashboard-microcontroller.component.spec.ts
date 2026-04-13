@@ -1,19 +1,34 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
 
 import { DashboardMicrocontrollerComponent } from './dashboard-microcontroller.component';
-import { TestModule } from '@modules/test.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('DashboardMicrocontrollerComponent', () => {
   let component: DashboardMicrocontrollerComponent;
   let fixture: ComponentFixture<DashboardMicrocontrollerComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardMicrocontrollerComponent],
-      imports: [TestModule]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [DashboardMicrocontrollerComponent, RouterTestingModule, MatMenuModule, MatIconModule],
+      providers: [provideNoopAnimations()]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardMicrocontrollerComponent);

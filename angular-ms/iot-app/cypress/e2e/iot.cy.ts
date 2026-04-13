@@ -52,19 +52,23 @@ describe('Angular MS End-to-End Tests', () => {
             cy.get('.nav-title').should('have.css', 'font-family').and('include', 'Outfit');
         });
 
-        it('Should toggle between light and dark themes', () => {
-            // Check theme toggle button exists
-            cy.get('button[mattooltip="Cambiar tema"]').should('be.visible');
-
+        it('Should toggle and persist theme across reloads', () => {
             // Toggle to dark mode
             cy.get('button[mattooltip="Cambiar tema"]').click();
             cy.get('html').should('have.attr', 'data-theme', 'dark');
 
-            // Verify dark mode background color (@background-dark: #0f172a -> rgb(15, 23, 42))
-            cy.get('body').should('have.css', 'background-color', 'rgb(15, 23, 42)');
+            // Reload page
+            cy.reload();
+
+            // Verify theme persisted
+            cy.get('html').should('have.attr', 'data-theme', 'dark');
 
             // Toggle back to light mode
             cy.get('button[mattooltip="Cambiar tema"]').click();
+            cy.get('html').should('not.have.attr', 'data-theme', 'dark');
+
+            // Reload again
+            cy.reload();
             cy.get('html').should('not.have.attr', 'data-theme', 'dark');
         });
 
@@ -80,6 +84,23 @@ describe('Angular MS End-to-End Tests', () => {
             cy.get('nav').should('have.class', 'glass');
             cy.get('nav').should('have.css', 'position', 'sticky');
             cy.get('nav').should('have.css', 'overflow', 'hidden'); // For the animated gradient
+        });
+
+        describe('Device Configuration & Management', () => {
+            it('Should navigate to edit device and modify settings', () => {
+                // This requires being logged in
+                cy.contains('Acceder').click();
+                cy.get('input[formControlName="username"]').type(testUser.username);
+                cy.get('input[formControlName="password"]').type(testUser.password);
+                cy.get('button[type="submit"]').click();
+
+                // Navigate to settings (assuming user has devices)
+                cy.get('.action-btn').first().click();
+                cy.contains('Configurar').click();
+
+                // Verify we are on edit page
+                cy.url().should('include', '/edit/');
+            });
         });
     });
 

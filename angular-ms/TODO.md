@@ -11,7 +11,10 @@
 - [x] **Advanced Glassmorphism**: Refine the `.glass` class (Integrated in new components).
     - [ ] Double check tests and TDD Red-Green-Refactor.
 - [x] **Lottie Animations**: Replace static icons with subtle Lottie animations for "Connecting", "Syncing", and "Alert" states.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] RED phase: Verified missing Lottie providers.
+    - [x] GREEN phase: Successfully rendered Lottie in Slider/Switch.
+    - [x] REFACTOR phase: Extracted to standalone components.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Skeleton Loaders**: Implement elegant pulse skeleton loaders for charts and stats cards during initial data fetch.
     - [ ] Double check tests and TDD Red-Green-Refactor.
 - [x] **Micro-Interactions**: Add a 3D hover effect (parallax) to device cards in the dashboard.
@@ -25,7 +28,10 @@
 - [x] **Real-time Alert Notifications**:
     - [x] Integrate a Toast system (e.g., `ngx-toastr` or custom Material Snackbar) for critical IoT alerts.
     - [x] Add a notification "Inbox" in the navbar to track past alerts.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] RED phase: Confirmed Jasmine/Vitest mismatch in spec.
+    - [x] GREEN phase: Migrated to Signals and passed Vitest.
+    - [x] REFACTOR phase: Modernized imports and template calls.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Advanced Analytics Tab**:
     - [x] Create a dedicated "Trends" view using larger, multi-line charts.
     - [x] Comparison mode: Overlap charts from two different microcontrollers to compare environments.
@@ -64,11 +70,17 @@
     - [x] Stabilize Angular v19 build (0 Errors).
     - [x] Implement Reactive `BehaviorSubject` in `ArduinoService` for device state orchestration.
     - [ ] Double check tests and TDD Red-Green-Refactor across all sub-components.
-- [ ] **Phase 6: Infrastructure TDD & Performance Hardening**:
-    - [ ] Finalize **Vitest** setup and automated test conversion - **In Progress**.
+- [x] **Phase 6: Infrastructure TDD & Performance Hardening**:
+    - [x] Finalize **Vitest** setup and automated test conversion.
+    - [x] RED phase: Identified injection errors and Jasmine/Vitest mismatches.
+    - [x] GREEN phase: Migrated `AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent` to Vitest.
+    - [x] REFACTOR phase: Abstracted common mock patterns and enabled isolated standalone testing.
     - [ ] Achieve 100% Cypress Coverage for "Edit Device" and "Theme Persistence".
     - [x] Implement `SliderComponent` and `SwitchComponent` Signal migration.
-    - [ ] Performance Audit: Transition to Zoneless Change Detection.
+    - [x] **Performance Audit: Transition to Zoneless Change Detection**.
+    - [x] RED phase: Verified Zone.js dependency in build.
+    - [x] GREEN phase: Enabled `provideExperimentalZonelessChangeDetection` in AppModule.
+    - [x] REFACTOR phase: Removed `zone.js` from polyfills in angular.json.
 
 ## 🛠️ Technical Debt & Performance
 *Goal: Modernize the tech stack and improve codebase maintainability.*
@@ -98,8 +110,8 @@
 *Goal: Ensure 100% reliability for the critical front-end interface.*
 
 - [ ] **Visual Regression Testing**: Integrate a tool to catch CSS breaks during deployment.
-- [ ] **Cypress Coverage**: Expand E2E flows to include "Edit Device" and "Theme Switcher" persistence.
-- [ ] **Unit Test Refactoring**: Update stale `.spec.ts` files to match recent service enhancements.
+- [x] **Cypress Coverage**: Expanded E2E flows to include "Edit Device" and "Theme Switcher" persistence.
+- [x] **Unit Test Refactoring**: Successfully migrated core components (`AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent`, `SliderComponent`, `SwitchComponent`) to Vitest using Red-Green-Refactor.
 
 ---
 *Created: April 10, 2026*

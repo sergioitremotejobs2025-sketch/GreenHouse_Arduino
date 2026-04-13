@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common'
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import localeEs from '@angular/common/locales/es'
-import { isDevMode, LOCALE_ID, NgModule } from '@angular/core'
+import { isDevMode, LOCALE_ID, NgModule, provideExperimentalZonelessChangeDetection } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -92,6 +92,7 @@ registerLocaleData(localeEs, 'es')
         provideCharts(withDefaultRegisterables()),
         provideLottieOptions({
             player: playerFactory
-        })
+        }),
+        provideExperimentalZonelessChangeDetection()
     ] })
 export class AppModule { }

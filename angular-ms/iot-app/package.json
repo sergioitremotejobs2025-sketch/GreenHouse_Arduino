@@ -1,6 +1,7 @@
 {
   "name": "v15-app",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -54,6 +55,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "karma-spec-reporter": "^0.0.36",
+    "less": "^4.6.4",
     "typescript": "~5.8.3",
     "vitest": "^4.1.4"
   }

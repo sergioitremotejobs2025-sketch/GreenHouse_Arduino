@@ -1,4 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -7,6 +20,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MeasureHistoryComponent } from './measure-history.component';
 import { ArduinoService } from '@services/arduino.service';
 import { TestModule } from '@modules/test.module';
+import { vi } from 'vitest';
 
 describe('MeasureHistoryComponent', () => {
   let component: MeasureHistoryComponent;

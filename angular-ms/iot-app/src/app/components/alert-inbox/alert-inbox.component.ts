@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertHistoryService, AlertEntry } from '../../services/alert-history.service';
 
-import { CommonModule } from '@angular/common';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,9 @@ import { PipesModule } from '@modules/pipes.module';
   selector: 'app-alert-inbox',
   standalone: true,
   imports: [
-    CommonModule,
+    NgIf,
+    NgFor,
+    DatePipe,
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
@@ -30,13 +32,11 @@ import { PipesModule } from '@modules/pipes.module';
 })
 export class AlertInboxComponent implements OnInit {
 
+  readonly history = this.alertHistory.history;
+
   constructor(private alertHistory: AlertHistoryService) { }
 
   ngOnInit(): void {
-  }
-
-  get history(): AlertEntry[] {
-    return this.alertHistory.getHistory();
   }
 
   clearHistory(): void {

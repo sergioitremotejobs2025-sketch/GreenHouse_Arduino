@@ -1,55 +1,89 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
+
 import { DashboardComponent } from './dashboard.component';
-import { TestModule } from '@modules/test.module';
-import { of, throwError } from 'rxjs';
+import { of, throwError, BehaviorSubject } from 'rxjs';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { ArduinoService } from '@services/arduino.service';
 import { AuthService } from '@services/auth.service';
+import { SocketService } from '@services/socket.service';
+import { NotificationService } from '@services/notification.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { vi } from 'vitest';
+
+vi.mock('lottie-web', () => ({
+  default: {
+    loadAnimation: vi.fn(),
+    setQuality: vi.fn()
+  }
+}));
+
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
-  let arduinoService: jasmine.SpyObj<ArduinoService>;
-  let authService: jasmine.SpyObj<AuthService>;
+  let arduinoService: any;
+  let authService: any;
   let urlSubject: BehaviorSubject<UrlSegment[]>;
 
-  beforeEach(async(() => {
-    const arduinoSpy = jasmine.createSpyObj('ArduinoService', ['getMicrocontrollers', 'getPreviousMeasures']);
-    const authSpy = jasmine.createSpyObj('AuthService', ['removeTokens']);
+  beforeEach(async () => {
+    arduinoService = {
+      getMicrocontrollers: vi.fn(),
+      getPreviousMeasures: vi.fn().mockReturnValue(of([])),
+      getCurrentMeasure: vi.fn().mockReturnValue(Promise.resolve({}))
+    };
+    authService = {
+      removeTokens: vi.fn()
+    };
+    const socketServiceMock = {
+      on: vi.fn()
+    };
+    const notificationServiceMock = {
+      success: vi.fn(),
+      error: vi.fn()
+    };
     urlSubject = new BehaviorSubject<UrlSegment[]>([]);
 
-    TestBed.configureTestingModule({
-    declarations: [DashboardComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [TestModule,
-        RouterTestingModule],
-    providers: [
-        { provide: ArduinoService, useValue: arduinoSpy },
-        { provide: AuthService, useValue: authSpy },
+    await TestBed.configureTestingModule({
+      imports: [DashboardComponent, RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        { provide: ArduinoService, useValue: arduinoService },
+        { provide: AuthService, useValue: authService },
+        { provide: SocketService, useValue: socketServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
         { provide: ActivatedRoute, useValue: { url: urlSubject.asObservable() } },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-})
-      .compileComponents();
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideNoopAnimations(),
+        provideLottieOptions({ player: () => player })
+      ]
+    }).compileComponents();
 
-    arduinoService = TestBed.inject(ArduinoService) as jasmine.SpyObj<ArduinoService>;
-    authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
   });
 
   it('should create', () => {
-    arduinoService.getMicrocontrollers.and.returnValue(of([]));
-    arduinoService.getPreviousMeasures.and.returnValue(of([]));
+    arduinoService.getMicrocontrollers.mockReturnValue(of([]));
+    arduinoService.getPreviousMeasures.mockReturnValue(of([]));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -59,8 +93,8 @@ describe('DashboardComponent', () => {
       { ip: '1.1.1.1', measure: 'humidity', sensor: 'DHT11', username: 'alice' },
       { ip: '2.2.2.2', measure: 'temperature', sensor: 'DHT11', username: 'alice' }
     ];
-    arduinoService.getMicrocontrollers.and.returnValue(of(mockMicros as any));
-    arduinoService.getPreviousMeasures.and.returnValue(of([]));
+    arduinoService.getMicrocontrollers.mockReturnValue(of(mockMicros as any));
+    arduinoService.getPreviousMeasures.mockReturnValue(of([]));
 
     fixture.detectChanges();
     expect(component.microcontrollers().length).toBe(2);
@@ -77,8 +111,8 @@ describe('DashboardComponent', () => {
   });
 
   it('should call removeTokens on error', () => {
-    arduinoService.getMicrocontrollers.and.returnValue(throwError('Error'));
-    arduinoService.getPreviousMeasures.and.returnValue(of([]));
+    arduinoService.getMicrocontrollers.mockReturnValue(throwError(() => 'Error'));
+    arduinoService.getPreviousMeasures.mockReturnValue(of([]));
     fixture.detectChanges();
     expect(authService.removeTokens).toHaveBeenCalled();
   });
@@ -97,8 +131,8 @@ describe('DashboardComponent', () => {
       { ip: '1.2.3.5', measure: 'temperature', sensor: 'DHT', username: 'u' },
       { ip: '1.2.3.6', measure: 'humidity', sensor: 'DHT', username: 'u' }
     ];
-    arduinoService.getMicrocontrollers.and.returnValue(of(mockMicros as any));
-    arduinoService.getPreviousMeasures.and.returnValue(of([{ real_value: 10 }] as any));
+    arduinoService.getMicrocontrollers.mockReturnValue(of(mockMicros as any));
+    arduinoService.getPreviousMeasures.mockReturnValue(of([{ real_value: 10 }] as any));
 
     fixture.detectChanges();
 
@@ -108,7 +142,6 @@ describe('DashboardComponent', () => {
 
   it('should handle updateRecentValues and sliding window', () => {
     const micro = { ip: 'i', measure: 'm' };
-    const key = 'i_m';
 
     // Initial update
     component.updateRecentValues(micro as any, { real_value: 5 });

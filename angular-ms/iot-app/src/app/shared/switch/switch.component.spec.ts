@@ -1,4 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
+
 import { SwitchComponent } from './switch.component'
 import { MatSlideToggle, MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { By } from '@angular/platform-browser'
