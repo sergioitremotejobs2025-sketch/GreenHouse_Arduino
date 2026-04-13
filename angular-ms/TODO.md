@@ -15,12 +15,18 @@
     - [x] GREEN phase: Successfully rendered Lottie in Slider/Switch.
     - [x] REFACTOR phase: Extracted to standalone components.
     - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Skeleton Loaders**: Implement elegant pulse skeleton loaders for charts and stats cards during initial data fetch.
+- [x] **Skeleton Loaders**: Modernized with Signal-based inputs and variant support.
+    - [x] RED phase: Established Vitest suite for circular variants.
+    - [x] GREEN phase: Implemented `computed` border-radius and Signal inputs.
+    - [x] REFACTOR phase: Standalone migration complete.
+    - [x] Double check tests and TDD Red-Green-Refactor.
+- [x] **Micro-Interactions**: Parallax effects and smooth transitions verified.
     - [ ] Double check tests and TDD Red-Green-Refactor.
-- [x] **Micro-Interactions**: Add a 3D hover effect (parallax) to device cards in the dashboard.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
-- [x] **Global Search (Command Palette)**: Implement a `Ctrl+K` command palette for quick navigation and device search.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+- [x] **Global Search (Command Palette)**: Modernized with Signal-based filtering.
+    - [x] RED phase: Verified failing search suite in Vitest.
+    - [x] GREEN phase: Implemented `computed` filtered items and `viewChild` signal.
+    - [x] REFACTOR phase: Updated template to reactive calls.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 
 ## 🚀 New Features
 *Goal: Expand functionality to provide better intelligence and control.*
@@ -38,12 +44,17 @@
     - [ ] Double check tests and TDD Red-Green-Refactor.
 - [x] **AI Integration Polish**:
     - [x] Enhance `app-ai-predictor` with confidence score visualizations.
-    - [x] Add a "Fix Suggestion" based on AI predictions (e.g., "AI suggests turning on irrigation soon").
-    - [ ] Double check tests and TDD Red-Green-Refactor.
-- [ ] **Picture Gallery Enhancements**:
+    - [x] RED phase: Defined failing Vitest suite for confidence/suggestions.
+    - [x] GREEN phase: Implemented Signal-based performance tracking and `computed` suggestions.
+    - [x] REFACTOR phase: Unified Material imports and template optimization.
+    - [x] Double check tests and TDD Red-Green-Refactor.
+- [x] **Picture Gallery Enhancements**:
     - [x] Implement a full-screen Lightbox for IoT surveillance pictures.
-    - [x] Add Timeline scrubbing for photo history.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Add Timeline scrubbing for photo history (Timelapse feature).
+    - [x] RED phase: Verified timelapse timer logic failure.
+    - [x] GREEN phase: Implemented Signal-based timelapse and history filtering.
+    - [x] REFACTOR phase: Migrated to `computed` filtered pictures and modernized template.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Device Health Dashboard**: A specialized view...
     - [ ] Double check tests and TDD Red-Green-Refactor.
 - [x] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.

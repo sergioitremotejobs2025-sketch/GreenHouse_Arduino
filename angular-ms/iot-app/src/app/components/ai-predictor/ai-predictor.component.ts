@@ -1,114 +1,118 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AiService } from 'src/app/services/ai.service';
-import { NotificationService } from 'src/app/services/notification.service';
-
+import { Component, OnInit, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
+import { MatModule } from 'src/app/modules/mat.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
+import { AiService, PerformanceResult } from 'src/app/services/ai.service';
+import { NotificationService } from 'src/app/services/notification.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
-    selector: 'app-ai-predictor',
-    standalone: true,
-    imports: [
-        CommonModule,
-        MatCardModule,
-        MatButtonModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        MatSelectModule,
-        FormsModule
-    ],
-    templateUrl: './ai-predictor.component.html',
-    styleUrls: ['./ai-predictor.component.less']
+  selector: 'app-ai-predictor',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatModule,
+    MatTooltipModule,
+    FormsModule,
+    MatProgressBarModule
+  ],
+  templateUrl: './ai-predictor.component.html',
+  styleUrls: ['./ai-predictor.component.less']
 })
 export class AiPredictorComponent implements OnInit {
-    @Input() ip!: string;
-    @Input() measure!: string;
-    @Input() recentValues: number[] = [];
+  ip = input.required<string>();
+  measure = input.required<string>();
+  recentValues = input<number[]>([]);
 
-    prediction: number | null = null;
-    loading = false;
-    training = false;
-    trainingLimit = 1000;
-    performance: { mae: number, sample_count: number } | null = null;
+  performance = signal<PerformanceResult | null>(null);
+  prediction = signal<number | null>(null);
+  training = signal(false);
+  loading = signal(false);
 
-    limits = [
-        { label: 'Últimas 100', value: 100 },
-        { label: 'Últimas 500', value: 500 },
-        { label: 'Todo el historial', value: 2000 }
-    ];
+  limits = [
+    { label: 'Última hora', value: 100 },
+    { label: 'Últimas 6 horas', value: 600 },
+    { label: 'Último día', value: 2400 }
+  ];
+  trainingLimit = signal(600);
 
-    constructor(
-        private aiService: AiService,
-        private notificationService: NotificationService
-    ) { }
+  confidenceScore = computed(() => {
+    const perf = this.performance();
+    if (!perf) return 0;
+    // Simple confidence mapping: 100 - (MAE * 100) / avgValue (mocked logic)
+    // For this app, let's assume MAE < 0.2 is 95%+, MAE > 1 is < 70%
+    const score = 100 - (perf.mae * 10);
+    return Math.max(0, Math.min(100, score));
+  });
 
-    ngOnInit(): void {
-        this.fetchPerformance();
+  suggestion = computed(() => {
+    const pred = this.prediction();
+    const m = this.measure();
+    if (pred === null) return null;
+
+    if (m === 'temperature') {
+      if (pred > 30) return 'La temperatura subirá. Considera activar ventilación.';
+      if (pred < 15) return 'Se espera frío. Asegura el cierre de invernadero.';
+    }
+    if (m === 'humidity') {
+      if (pred < 40) return 'La humedad bajará. Programando riego preventivo.';
+    }
+    return 'Condiciones estables previstas.';
+  });
+
+  constructor(
+    private aiService: AiService,
+    private notificationService: NotificationService
+  ) { }
+
+  async ngOnInit() {
+    await this.fetchPerformance();
+  }
+
+  async fetchPerformance() {
+    try {
+      const data = await firstValueFrom(this.aiService.evaluate(this.ip(), this.measure()));
+      this.performance.set(data);
+    } catch (err) {
+      this.performance.set(null);
+    }
+  }
+
+  async train() {
+    if (this.recentValues().length < 10) {
+      this.notificationService.notify('Necesitas al menos 10 lecturas para entrenar', 'warning');
+      return;
     }
 
-    fetchPerformance() {
-        this.aiService.evaluate(this.ip, this.measure).subscribe({
-            next: (res) => this.performance = res,
-            error: () => this.performance = null
-        });
+    this.training.set(true);
+    try {
+      await firstValueFrom(this.aiService.trainModel(this.ip(), this.measure(), 1000));
+      this.notificationService.notify('Modelo entrenado con éxito');
+      await this.fetchPerformance();
+    } catch (err) {
+      this.notificationService.notify('Error al entrenar el modelo', 'error');
+    } finally {
+      this.training.set(false);
+    }
+  }
+
+  async predict() {
+    if (this.recentValues().length < 10) {
+      this.notificationService.notify('Necesitas al menos 10 lecturas recientes', 'warning');
+      return;
     }
 
-    train() {
-        this.training = true;
-        this.aiService.trainModel(this.ip, this.measure, this.trainingLimit).subscribe({
-            next: () => {
-                this.notificationService.notify('Modelo entrenado con éxito');
-                this.training = false;
-                this.fetchPerformance();
-            },
-            error: () => {
-                this.notificationService.notify('Error al entrenar el modelo', 'error');
-                this.training = false;
-            }
-        });
+    this.loading.set(true);
+    try {
+      const data = await firstValueFrom(this.aiService.predict(this.ip(), this.measure(), this.recentValues()));
+      this.prediction.set(data.prediction);
+    } catch (err) {
+      this.notificationService.notify('Modelo no encontrado. ¡Entrénalo primero!', 'error');
+      this.prediction.set(null);
+    } finally {
+      this.loading.set(false);
     }
-
-    predict() {
-        if (this.recentValues.length < 10) {
-            this.notificationService.notify('Necesitas al menos 10 lecturas recientes', 'warning');
-            return;
-        }
-
-        this.loading = true;
-        this.aiService.predict(this.ip, this.measure, this.recentValues.slice(-10)).subscribe({
-            next: (res) => {
-                this.prediction = res.prediction;
-                this.loading = false;
-            },
-            error: () => {
-                this.notificationService.notify('Modelo no encontrado. ¡Entrénalo primero!', 'error');
-                this.loading = false;
-            }
-        });
-    }
-
-    getConfidenceScore(): number {
-        if (!this.performance) return 0;
-        // Simple inverse relationship: MAE < 0.1 => ~95%, MAE > 5 => ~20%
-        const score = 100 - (this.performance.mae * 10);
-        return Math.max(0, Math.min(100, score));
-    }
-
-    getSuggestion(): string {
-        if (!this.prediction) return '';
-        
-        if (this.measure === 'temperature') {
-            if (this.prediction > 28) return '🔥 Sugerencia: Aumenta la ventilación.';
-            if (this.prediction < 15) return '❄️ Sugerencia: Enciende la calefacción.';
-        } else if (this.measure === 'humidity') {
-            if (this.prediction < 40) return '💧 Sugerencia: Activa el riego pronto.';
-            if (this.prediction > 80) return '☁️ Sugerencia: Reduce la humedad ambiental.';
-        }
-        return '✅ Todo parece estar bajo control.';
-    }
+  }
 }

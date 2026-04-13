@@ -3,8 +3,8 @@
         <mat-icon class="search-icon">search</mat-icon>
         <input #searchInput 
                type="text" 
-               [(ngModel)]="query" 
-               (ngModelChange)="filterItems()" 
+               [ngModel]="query()" 
+               (ngModelChange)="updateQuery($event)" 
                placeholder="Busca dispositivos, comandos o secciones..."
                autocomplete="off">
         <span class="esc-hint">ESC</span>
@@ -13,15 +13,15 @@
     <mat-divider></mat-divider>
 
     <div class="results-list">
-        <div class="section-label" *ngIf="filteredItems.length > 0">Sugerencias</div>
+        <div class="section-label" *ngIf="filteredItems().length > 0">Sugerencias</div>
         
-        <div class="empty-state" *ngIf="filteredItems.length === 0">
+        <div class="empty-state" *ngIf="filteredItems().length === 0">
             <mat-icon>search_off</mat-icon>
-            <p>No se encontraron resultados para "{{ query }}"</p>
+            <p>No se encontraron resultados para "{{ query() }}"</p>
         </div>
 
         <div class="result-item" 
-             *ngFor="let item of filteredItems" 
+             *ngFor="let item of filteredItems()" 
              (click)="selectItem(item)"
              [class.device-type]="item.type === 'device'">
             <mat-icon class="item-icon">{{ item.icon }}</mat-icon>

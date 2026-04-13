@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton',
@@ -6,9 +6,9 @@ import { Component, Input } from '@angular/core';
   imports: [],
   template: `
     <div class="skeleton-box pulse" 
-         [style.width]="width" 
-         [style.height]="height" 
-         [style.border-radius]="borderRadius">
+         [style.width]="width()" 
+         [style.height]="height()" 
+         [style.border-radius]="computedBorderRadius()">
     </div>
   `,
   styles: [`
@@ -33,7 +33,12 @@ import { Component, Input } from '@angular/core';
   `]
 })
 export class SkeletonComponent {
-  @Input() width = '100%';
-  @Input() height = '20px';
-  @Input() borderRadius = '4px';
+  width = input('100%');
+  height = input('20px');
+  borderRadius = input('4px');
+  variant = input<'rect' | 'circle'>('rect');
+
+  computedBorderRadius = computed(() => {
+    return this.variant() === 'circle' ? '50%' : this.borderRadius();
+  });
 }

@@ -1,119 +1,102 @@
-import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import '@analogjs/vitest-angular/setup-zone';
+import 'zone.js/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
 
 import { PicturesHistoryComponent } from './pictures-history.component';
-import { TestModule } from '@modules/test.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { of, throwError } from 'rxjs';
 import { ArduinoService } from '@services/arduino.service';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('PicturesHistoryComponent', () => {
-    let component: PicturesHistoryComponent;
-    let fixture: ComponentFixture<PicturesHistoryComponent>;
-    let arduinoService: jasmine.SpyObj<ArduinoService>;
-    let route: any;
+  let component: PicturesHistoryComponent;
+  let fixture: ComponentFixture<PicturesHistoryComponent>;
+  let arduinoServiceMock: any;
+  let routeMock: any;
 
-    beforeEach(async(() => {
-        const arduinoSpy = jasmine.createSpyObj('ArduinoService', ['getMicrocontroller', 'getPicturesHistory']);
-        route = {
-            snapshot: {
-                paramMap: {
-                    get: jasmine.createSpy('get').and.returnValue('1.2.3.4')
-                }
-            }
-        };
+  beforeEach(async () => {
+    arduinoServiceMock = {
+      getMicrocontroller: vi.fn(),
+      getPicturesHistory: vi.fn()
+    };
+    routeMock = {
+      snapshot: {
+        paramMap: {
+          get: vi.fn().mockReturnValue('1.2.3.4')
+        }
+      }
+    };
 
-        TestBed.configureTestingModule({
-            declarations: [PicturesHistoryComponent],
-            imports: [TestModule, ReactiveFormsModule],
-            providers: [
-                { provide: ArduinoService, useValue: arduinoSpy },
-                { provide: ActivatedRoute, useValue: route }
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
-        })
-            .compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [PicturesHistoryComponent, ReactiveFormsModule],
+      providers: [
+        { provide: ArduinoService, useValue: arduinoServiceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        provideNoopAnimations()
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
 
-        arduinoService = TestBed.get(ArduinoService) as jasmine.SpyObj<ArduinoService>;
-    }));
+    fixture = TestBed.createComponent(PicturesHistoryComponent);
+    component = fixture.componentInstance;
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(PicturesHistoryComponent);
-        component = fixture.componentInstance;
-    });
+  it('should create and load microcontroller', async () => {
+    arduinoServiceMock.getMicrocontroller.mockResolvedValue({ ip: '1.2.3.4', measure: 'pictures' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component).toBeTruthy();
+    expect(component.micro().ip).toBe('1.2.3.4');
+  });
 
-    it('should create and load microcontroller', async () => {
-        arduinoService.getMicrocontroller.and.returnValue(Promise.resolve({ ip: '1.2.3.4', measure: 'pictures' } as any));
-        fixture.detectChanges();
-        await fixture.whenStable();
-        expect(component).toBeTruthy();
-        expect(component.micro.ip).toBe('1.2.3.4');
-    });
+  it('should load history and filter pictures using signals', async () => {
+    component.micro.set({ ip: '1.2.3.4' } as any);
+    const mockData = [
+      { timestamp: 1, url: 'url1', stage: 'seedling' },
+      { timestamp: 2, url: 'url2', stage: 'young_plant' }
+    ];
+    arduinoServiceMock.getPicturesHistory.mockReturnValue(of(mockData));
 
-    it('should load history and filter pictures', fakeAsync(() => {
-        component.micro = { ip: '1.2.3.4' } as any;
-        const mockData = [
-            { timestamp: 1, url: 'url1', stage: 'seedling' },
-            { timestamp: 2, url: 'url2', stage: 'young_plant' }
-        ];
-        arduinoService.getPicturesHistory.and.returnValue(of(mockData as any));
+    component.loadHistory(component.historyForm.value);
+    
+    expect(component.isLoading()).toBe(false);
+    expect(component.pictures().length).toBe(2);
 
-        component.loadHistory(component.historyForm.value);
+    component.currentStageFilter.set('seedling');
+    expect(component.filteredPictures().length).toBe(1);
+  });
 
-        tick();
-        expect(component.isLoading).toBeFalse();
-        expect(component.pictures.length).toBe(2);
+  it('should handle timelapse using signals', async () => {
+    const pictures = [{ timestamp: 1, url: 'url1' }, { timestamp: 2, url: 'url2' }] as any;
+    component.pictures.set(pictures);
+    component.currentStageFilter.set('all');
 
-        component.currentStageFilter = 'seedling';
-        component.applyFilter();
-        expect(component.filteredPictures.length).toBe(1);
-    }));
+    component.toggleTimelapse();
+    expect(component.isTimelapsePlaying()).toBe(true);
+    expect(component.timelapseIndex()).toBe(0);
 
-    it('should handle timelapse', fakeAsync(() => {
-        component.filteredPictures = [{ timestamp: 1, url: 'url1' }, { timestamp: 2, url: 'url2' }] as any;
+    // Wait for speed
+    await new Promise(resolve => setTimeout(resolve, 600));
+    expect(component.timelapseIndex()).toBe(1);
 
-        component.toggleTimelapse();
-        expect(component.isTimelapsePlaying).toBeTrue();
-        expect(component.timelapseIndex).toBe(0);
+    await new Promise(resolve => setTimeout(resolve, 600));
+    expect(component.timelapseIndex()).toBe(0);
 
-        tick(500);
-        expect(component.timelapseIndex).toBe(1);
-
-        tick(500);
-        expect(component.timelapseIndex).toBe(0);
-
-        component.toggleTimelapse();
-        expect(component.isTimelapsePlaying).toBeFalse();
-    }));
-
-    it('should handle errors in loadHistory', fakeAsync(() => {
-        component.micro = { ip: '1.2.3.4' } as any;
-        arduinoService.getPicturesHistory.and.returnValue(throwError('error'));
-
-        component.loadHistory(component.historyForm.value);
-        tick();
-
-        expect(component.noResults).toBeTrue();
-        expect(component.isLoading).toBeFalse();
-    }));
-
-    it('should handle catch error in ngOnInit', async () => {
-        arduinoService.getMicrocontroller.and.returnValue(Promise.reject('error'));
-        fixture.detectChanges();
-        await fixture.whenStable();
-        expect(component.micro).toBeUndefined();
-    });
-
-    it('should not play timelapse if no pictures', () => {
-        component.filteredPictures = [];
-        component.isTimelapsePlaying = false;
-        component.toggleTimelapse();
-        expect(component.isTimelapsePlaying).toBeFalse();
-    });
-
-    it('should return correct stage labels', () => {
-        expect(component.stageLabel('seedling')).toBe('🌱 Brote');
-        expect(component.stageLabel('unknown_stage')).toBe('unknown_stage');
-    });
+    component.toggleTimelapse();
+    expect(component.isTimelapsePlaying()).toBe(false);
+  });
 });

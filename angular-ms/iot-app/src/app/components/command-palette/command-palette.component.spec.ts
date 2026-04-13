@@ -1,4 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
+
 import { CommandPaletteComponent } from './command-palette.component';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -6,33 +19,36 @@ import { ArduinoService } from '../../services/arduino.service';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('CommandPaletteComponent', () => {
   let component: CommandPaletteComponent;
   let fixture: ComponentFixture<CommandPaletteComponent>;
-  let routerSpy: jasmine.SpyObj<Router>;
-  let arduinoServiceSpy: jasmine.SpyObj<ArduinoService>;
-  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<CommandPaletteComponent>>;
+  let routerMock: any;
+  let arduinoServiceMock: any;
+  let dialogRefMock: any;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    arduinoServiceSpy = jasmine.createSpyObj('ArduinoService', ['allArduinos']);
-    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-
-    arduinoServiceSpy.allArduinos = of([]); 
+    routerMock = {
+      navigate: vi.fn()
+    };
+    arduinoServiceMock = {
+      allArduinos: of([])
+    };
+    dialogRefMock = {
+      close: vi.fn()
+    };
 
     await TestBed.configureTestingModule({
-      declarations: [ CommandPaletteComponent ],
-      imports: [ FormsModule, MatAutocompleteModule ],
+      imports: [CommandPaletteComponent, FormsModule, MatAutocompleteModule],
       providers: [
-        { provide: Router, useValue: routerSpy },
-        { provide: ArduinoService, useValue: arduinoServiceSpy },
-        { provide: MatDialogRef, useValue: dialogRefSpy }
+        { provide: Router, useValue: routerMock },
+        { provide: ArduinoService, useValue: arduinoServiceMock },
+        { provide: MatDialogRef, useValue: dialogRefMock }
       ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-    .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CommandPaletteComponent);
     component = fixture.componentInstance;
@@ -43,17 +59,18 @@ describe('CommandPaletteComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should filter items based on search query', () => {
-    component.query = 'config';
-    component.filterItems();
-    // Assuming 'Configuración' is a default item
-    expect(component.filteredItems.some(i => i.name.toLowerCase().includes('config'))).toBeTrue();
+  it('should filter items based on search query using signals', () => {
+    component.query.set('ajustes');
+    fixture.detectChanges();
+    
+    const filtered = component.filteredItems();
+    expect(filtered.some(i => i.name.toLowerCase().includes('ajustes'))).toBe(true);
   });
 
   it('should navigate and close when item is selected', () => {
-    const item = { name: 'Home', link: '/', type: 'nav' };
+    const item = { name: 'Home', link: '/', icon: 'dashboard', type: 'nav' as const };
     component.selectItem(item);
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
+    expect(dialogRefMock.close).toHaveBeenCalled();
   });
 });

@@ -2824,6 +2824,21 @@ Every core pillar of the dashboard was subjected to the strict Red-Green-Refacto
 #### 31.2 The 100% Verification Rule
 This stabilization phase ensured that every architectural change—from Signal migrations to standalone refactors—is backed by a robust, automated suite. The infrastructure is now ready for the next decade of IoT innovation, maintaining a zero-tolerance policy toward unverified code.
 
+### 32.0 The Second Wave of Modernization: Reactive Signals and AI Integration
+
+Building upon the stable Vitest foundation, the project entered a "Second Wave" of modernization, specifically targeting the UI's reactive core and intelligence layers. This phase transitioned auxiliary components to **Signal-based** architectures, significantly reducing change detection overhead and simplifying state management.
+
+#### 32.1 Signal-Driven UI Components
+The following components were modernized using the strict Red-Green-Refactor TDD cycle:
+
+*   **SkeletonComponent**: Migrated to `input()` signals and implemented a new `computed()` logic for variant-based styling (e.g., circular vs. rectangular loaders).
+*   **CommandPalette**: Refactored the global search mechanism to use `signal()` and `computed()` for real-time filtering. This improved search performance and eliminated manual subscription management.
+*   **AIPredictor**: Enhanced the AI integration layer by transitioning performance tracking and prediction results to Signals. Added `computed()` signals to automatically generate confidence scores and actionable suggestions (e.g., "AI suggests ventilation") based on LSTM model outputs.
+*   **PicturesHistory**: Stabilized the surveillance gallery's timelapse feature. By migrating to signal-based state, the timelapse playback became more deterministic and easier to verify within asynchronous Vitest suites.
+
+#### 32.2 Institutionalizing High Performance
+These refinements ensure that the **Zoneless** application remains lightning-fast, with granular reactivity that only triggers DOM updates where absolutely necessary. The project now serves as a blueprint for high-performance Angular engineering in the IoT space.
+
 ---
 
 <a id="about-the-author"></a>

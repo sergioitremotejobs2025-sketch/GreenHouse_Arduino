@@ -1,5 +1,6 @@
 import '@analogjs/vitest-angular/setup-snapshots';
 import '@analogjs/vitest-angular/setup-zone';
+import 'zone.js/testing';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,

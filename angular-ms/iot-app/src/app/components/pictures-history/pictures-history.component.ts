@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, signal, computed } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 
@@ -42,20 +42,26 @@ import { DashboardMicrocontrollerComponent } from '@components/dashboard-microco
 })
 export class PicturesHistoryComponent implements OnInit {
 
-    micro: Microcontroller
-    pictures: Pictures[] = []
-    filteredPictures: Pictures[] = []
-    isLoading = false
-    noResults = false
+    micro = signal<Microcontroller | undefined>(undefined);
+    pictures = signal<Pictures[]>([]);
+    isLoading = signal(false);
+    noResults = signal(false);
 
     // Timelapse state
-    isTimelapsePlaying = false
-    timelapseIndex = 0
-    timelapseTimer: any
-    timelapseSpeed = 500
+    isTimelapsePlaying = signal(false);
+    timelapseIndex = signal(0);
+    timelapseTimer: any;
+    timelapseSpeed = 500;
 
-    historyForm: FormGroup
-    currentStageFilter = 'all'
+    historyForm: FormGroup;
+    currentStageFilter = signal('all');
+
+    filteredPictures = computed(() => {
+        const q = this.currentStageFilter();
+        const all = this.pictures();
+        if (q === 'all') return all;
+        return all.filter(p => p.stage === q);
+    });
 
     stages = [
         { value: 'all', label: 'Todos los estados' },
@@ -64,7 +70,7 @@ export class PicturesHistoryComponent implements OnInit {
         { value: 'flowering', label: '🌸 Floración' },
         { value: 'green_fruit', label: '🍅 Fruto verde' },
         { value: 'ripe_fruit', label: '🍅 Fruto maduro' }
-    ]
+    ];
 
     constructor(
         private route: ActivatedRoute,
@@ -84,64 +90,57 @@ export class PicturesHistoryComponent implements OnInit {
         const ip = this.route.snapshot.paramMap.get('ip')
         const measure = 'pictures'
         try {
-            this.micro = await this.arduinoService.getMicrocontroller(ip, measure)
+            const data = await this.arduinoService.getMicrocontroller(ip, measure)
+            this.micro.set(data);
         } catch (error) { }
     }
 
     loadHistory({ init_date, end_date }: { init_date: Date, end_date: Date }) {
-        this.isLoading = true
-        this.noResults = false
-        this.pictures = []
+        this.isLoading.set(true);
+        this.noResults.set(false);
+        this.pictures.set([]);
         this.stopTimelapse()
 
+        const ip = this.micro()?.ip;
+        if (!ip) return;
+
         this.arduinoService.getPicturesHistory(
-            this.micro.ip,
+            ip,
             init_date.toJSON(),
             end_date.toJSON()
         ).subscribe(
             (data: Pictures[]) => {
-                this.pictures = data
-                this.applyFilter()
-                this.noResults = data.length === 0
-                this.isLoading = false
+                this.pictures.set(data);
+                this.noResults.set(data.length === 0);
+                this.isLoading.set(false);
             },
             () => {
-                this.noResults = true
-                this.isLoading = false
+                this.noResults.set(true);
+                this.isLoading.set(false);
             }
         )
     }
 
-    applyFilter() {
-        if (this.currentStageFilter === 'all') {
-            this.filteredPictures = [...this.pictures]
-        } else {
-            this.filteredPictures = this.pictures.filter(p => p.stage === this.currentStageFilter)
-        }
-        this.noResults = this.filteredPictures.length === 0
-    }
-
     toggleTimelapse() {
-        if (this.isTimelapsePlaying) {
+        if (this.isTimelapsePlaying()) {
             this.stopTimelapse()
-        } else if (this.filteredPictures.length > 0) {
-            this.isTimelapsePlaying = true
-            this.timelapseIndex = 0
+        } else if (this.filteredPictures().length > 0) {
+            this.isTimelapsePlaying.set(true);
+            this.timelapseIndex.set(0);
             this.playNextFrame()
         }
     }
 
     playNextFrame() {
         this.timelapseTimer = setTimeout(() => {
-            this.timelapseIndex = (this.timelapseIndex + 1) % this.filteredPictures.length
-            if (this.isTimelapsePlaying) {
-                this.playNextFrame()
-            }
+            if (!this.isTimelapsePlaying()) return;
+            this.timelapseIndex.update(i => (i + 1) % this.filteredPictures().length);
+            this.playNextFrame();
         }, this.timelapseSpeed)
     }
 
     stopTimelapse() {
-        this.isTimelapsePlaying = false
+        this.isTimelapsePlaying.set(false);
         if (this.timelapseTimer) {
             clearTimeout(this.timelapseTimer)
         }

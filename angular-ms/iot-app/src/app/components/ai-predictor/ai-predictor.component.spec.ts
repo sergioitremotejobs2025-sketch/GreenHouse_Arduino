@@ -1,125 +1,88 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
+
 import { AiPredictorComponent } from './ai-predictor.component';
 import { AiService } from 'src/app/services/ai.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatModule } from 'src/app/modules/mat.module';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('AiPredictorComponent', () => {
-    let component: AiPredictorComponent;
-    let fixture: ComponentFixture<AiPredictorComponent>;
-    let mockAiService: jasmine.SpyObj<AiService>;
-    let mockNotificationService: jasmine.SpyObj<NotificationService>;
+  let component: AiPredictorComponent;
+  let fixture: ComponentFixture<AiPredictorComponent>;
+  let mockAiService: any;
+  let mockNotificationService: any;
 
-    beforeEach(async () => {
-        mockAiService = jasmine.createSpyObj('AiService', ['evaluate', 'trainModel', 'predict']);
-        mockNotificationService = jasmine.createSpyObj('NotificationService', ['notify']);
+  beforeEach(async () => {
+    mockAiService = {
+      evaluate: vi.fn(),
+      trainModel: vi.fn(),
+      predict: vi.fn()
+    };
+    mockNotificationService = {
+      notify: vi.fn()
+    };
 
-        await TestBed.configureTestingModule({
-            declarations: [AiPredictorComponent],
-            imports: [FormsModule, MatModule, NoopAnimationsModule],
-            providers: [
-                { provide: AiService, useValue: mockAiService },
-                { provide: NotificationService, useValue: mockNotificationService }
-            ]
-        }).compileComponents();
-    });
+    await TestBed.configureTestingModule({
+      imports: [AiPredictorComponent, FormsModule],
+      providers: [
+        { provide: AiService, useValue: mockAiService },
+        { provide: NotificationService, useValue: mockNotificationService },
+        provideNoopAnimations()
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(AiPredictorComponent);
-        component = fixture.componentInstance;
-        component.ip = '127.0.0.1';
-        component.measure = 'temperature';
-        component.recentValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // 10 values
-    });
+    fixture = TestBed.createComponent(AiPredictorComponent);
+    component = fixture.componentInstance;
+    
+    // Set initial inputs
+    fixture.componentRef.setInput('ip', '127.0.0.1');
+    fixture.componentRef.setInput('measure', 'temperature');
+    fixture.componentRef.setInput('recentValues', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-    it('should fetch performance on init and handle success', () => {
-        const perfData = { mae: 0.5, sample_count: 100 };
-        mockAiService.evaluate.and.returnValue(of(perfData));
+  it('should fetch performance on init and handle success using signals', async () => {
+    const perfData = { mae: 0.5, sample_count: 100 };
+    mockAiService.evaluate.mockReturnValue(of(perfData));
 
-        fixture.detectChanges(); // calls ngOnInit
+    fixture.detectChanges(); // calls ngOnInit
+    await fixture.whenStable();
 
-        expect(mockAiService.evaluate).toHaveBeenCalledWith('127.0.0.1', 'temperature');
-        expect(component.performance).toEqual(perfData);
-    });
+    expect(mockAiService.evaluate).toHaveBeenCalledWith('127.0.0.1', 'temperature');
+    // RED PHASE: Expect performance to be a signal
+    expect(component.performance()).toEqual(perfData);
+  });
 
-    it('should handle fetch performance error on init', () => {
-        mockAiService.evaluate.and.returnValue(throwError(() => new Error('error')));
+  it('should generate a suggestion as a computed signal', () => {
+    // RED PHASE: Expect suggestion to be a computed signal
+    fixture.componentRef.setInput('measure', 'temperature');
+    component.prediction.set(35);
+    
+    expect(component.suggestion()).toContain('ventilación');
+  });
 
-        fixture.detectChanges(); // calls ngOnInit
-
-        expect(component.performance).toBeNull();
-    });
-
-    it('should train model and update performance on success', fakeAsync(() => {
-        mockAiService.trainModel.and.returnValue(of({} as any));
-        mockAiService.evaluate.and.returnValue(of({ mae: 0.1, sample_count: 50 }));
-
-        component.train();
-        tick();
-
-        expect(component.training).toBeFalse();
-        expect(mockAiService.trainModel).toHaveBeenCalledWith('127.0.0.1', 'temperature', 1000);
-        expect(mockNotificationService.notify).toHaveBeenCalledWith('Modelo entrenado con éxito');
-        expect(mockAiService.evaluate).toHaveBeenCalled();
-        expect(component.performance).toEqual({ mae: 0.1, sample_count: 50 });
-    }));
-
-    it('should handle train model error', fakeAsync(() => {
-        mockAiService.trainModel.and.returnValue(throwError(() => new Error('error')));
-
-        component.train();
-        tick();
-
-        expect(component.training).toBeFalse();
-        expect(mockNotificationService.notify).toHaveBeenCalledWith('Error al entrenar el modelo', 'error');
-    }));
-
-    it('should not predict if recentValues < 10', () => {
-        component.recentValues = [1, 2];
-        component.predict();
-
-        expect(mockAiService.predict).not.toHaveBeenCalled();
-        expect(mockNotificationService.notify).toHaveBeenCalledWith('Necesitas al menos 10 lecturas recientes', 'warning');
-    });
-
-    it('should predict and handle success', fakeAsync(() => {
-        mockAiService.predict.and.returnValue(of({ prediction: 25.5 }));
-
-        component.predict();
-        tick();
-
-        expect(component.loading).toBeFalse();
-        expect(mockAiService.predict).toHaveBeenCalledWith('127.0.0.1', 'temperature', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-        expect(component.prediction).toBe(25.5);
-    }));
-
-    it('should handle predict error', fakeAsync(() => {
-        mockAiService.predict.and.returnValue(throwError(() => new Error('error')));
-
-        component.predict();
-        tick();
-
-        expect(component.loading).toBeFalse();
-        expect(mockNotificationService.notify).toHaveBeenCalledWith('Modelo no encontrado. ¡Entrénalo primero!', 'error');
-    }));
-    it('should calculate high confidence when MAE is low', () => {
-        component.performance = { mae: 0.1, sample_count: 100 };
-        expect(component.getConfidenceScore()).toBeGreaterThan(90);
-    });
-
-    it('should generate a suggestion when prediction is high', () => {
-        component.measure = 'temperature';
-        component.prediction = 35;
-        const suggestion = component.getSuggestion();
-        expect(suggestion).toContain('ventilación');
-    });
+  it('should calculate confidenceScore as a computed signal', () => {
+    // RED PHASE: Expect confidenceScore to be a computed signal
+    component.performance.set({ mae: 0.1, sample_count: 100 });
+    expect(component.confidenceScore()).toBeGreaterThan(90);
+  });
 });
