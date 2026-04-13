@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { ArduinoService } from '../../services/arduino.service';
 import { Microcontroller } from '../../models/microcontroller.model';
 import { ChartConfiguration, ChartData } from 'chart.js';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -29,15 +30,11 @@ import { PipesModule } from '@modules/pipes.module';
   styleUrls: ['./analytics.component.less']
 })
 export class AnalyticsComponent implements OnInit {
-  microcontrollers: Microcontroller[] = [];
-  selectedDevices: Microcontroller[] = [];
-  isLoading = false;
   
-  public chartData: ChartData<'line'> = {
-    labels: [],
-    datasets: []
-  };
-
+  arduinos = toSignal(this.arduinoService.getMicrocontrollers(), { initialValue: [] });
+  selectedDevices = signal<Microcontroller[]>([]);
+  isLoading = signal(false);
+  
   public chartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -50,38 +47,14 @@ export class AnalyticsComponent implements OnInit {
     }
   };
 
-  constructor(private arduinoService: ArduinoService) { }
-
-  ngOnInit(): void {
-    this.loadDevices();
-  }
-
-  loadDevices(): void {
-    this.isLoading = true;
-    this.arduinoService.getMicrocontrollers().subscribe(data => {
-      this.microcontrollers = data;
-      this.isLoading = false;
-    });
-  }
-
-  toggleDevice(device: Microcontroller): void {
-    const index = this.selectedDevices.findIndex(d => d.ip === device.ip && d.measure === device.measure);
-    if (index > -1) {
-      this.selectedDevices.splice(index, 1);
-    } else {
-      this.selectedDevices.push(device);
-    }
-    this.refreshChart();
-  }
-
-  refreshChart(): void {
-    if (this.selectedDevices.length === 0) {
-      this.chartData = { labels: [], datasets: [] };
-      return;
+  chartData = computed<ChartData<'line'>>(() => {
+    const selected = this.selectedDevices();
+    if (selected.length === 0) {
+      return { labels: [], datasets: [] };
     }
 
-    const datasets = this.selectedDevices.map((d, i) => ({
-      data: [],
+    const datasets = selected.map((d, i) => ({
+      data: [], // In a real scenario, this would be populated from a service based on selected devices
       label: `${d.ip} (${d.measure})`,
       borderColor: this.getColor(i),
       backgroundColor: this.getAlphaColor(i),
@@ -89,7 +62,24 @@ export class AnalyticsComponent implements OnInit {
       tension: 0.4
     }));
 
-    this.chartData = { labels: [], datasets };
+    return { labels: [], datasets };
+  });
+
+  constructor(private arduinoService: ArduinoService) { }
+
+  ngOnInit(): void {
+    // Initial fetch handled by toSignal
+  }
+
+  toggleDevice(device: Microcontroller): void {
+    const current = this.selectedDevices();
+    const index = current.findIndex(d => d.ip === device.ip && d.measure === device.measure);
+    
+    if (index > -1) {
+      this.selectedDevices.update(list => list.filter((_, i) => i !== index));
+    } else {
+      this.selectedDevices.update(list => [...list, device]);
+    }
   }
 
   private getColor(index: number): string {

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, signal, computed } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ArduinoService } from '@services/arduino.service'
 import { AuthService } from '@services/auth.service'
@@ -36,23 +37,33 @@ import { RouterModule } from '@angular/router';
 export class MicrocontrollersEditComponent implements OnInit {
 
   ipForm: FormGroup
-  isEdit = true
+  isEdit = signal(true);
   lastForm: FormGroup
   measureForm: FormGroup
   sensorForm: FormGroup
   thresholdForm: FormGroup
-  measures: { name: string, view: string }[] = [
+  
+  measures = [
     { name: 'humidity', view: 'Humedad' },
     { name: 'light', view: 'Bombilla inteligente' },
     { name: 'temperature', view: 'Temperatura' },
     { name: 'pictures', view: 'Cámara de planta' }
   ]
-  sensors: { humidity: string[], light: string[], temperature: string[], pictures: string[] } = {
+  
+  sensors: Record<string, string[]> = {
     humidity: ['Grove - Moisture', 'Fake Grove - Moisture'],
     light: ['Smart LED', 'Fake Smart LED'],
     temperature: ['Grove - Temperature', 'Fake Grove - Temperature'],
     pictures: ['Tomato Plant Camera']
   }
+
+  // Reactive available sensors based on form value
+  // Note: We use a signal to track the form change if we want it truly interactive via computed
+  // But for now, we'll keep it simple or use a signal updated by form changes
+  selectedMeasure = signal('humidity');
+  availableSensors = computed(() => {
+    return this.sensors[this.selectedMeasure()] || [];
+  });
 
   constructor(
     private arduinoService: ArduinoService,
@@ -68,29 +79,38 @@ export class MicrocontrollersEditComponent implements OnInit {
       thresholdMin: new FormControl(''),
       thresholdMax: new FormControl('')
     })
+
+    // Bridge form to signal
+    this.measureForm.get('measure')?.valueChanges.subscribe(v => {
+        if (v) this.selectedMeasure.set(v);
+    });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     const ip = this.route.snapshot.paramMap.get('ip')
     const measure = this.route.snapshot.paramMap.get('measure')
 
-    this.isEdit = !!(ip && measure)
+    this.isEdit.set(!!(ip && measure));
 
-    if (this.isEdit) {
-      this.arduinoService.getMicrocontroller(ip, measure)
-        .then(micro => {
-          this.ipForm.setValue({ ip: micro.ip })
+    if (this.isEdit()) {
+      try {
+        const micro = await this.arduinoService.getMicrocontroller(ip!, measure!)
+        this.ipForm.setValue({ ip: micro.ip })
 
-          const measures = this.measures.filter(m => m.name === micro.measure)
-          this.measureForm.setValue({ measure: measures[0].name })
-          this.sensorForm.setValue({ sensor: micro.sensor })
+        const matchingMeasures = this.measures.filter(m => m.name === micro.measure)
+        if (matchingMeasures.length > 0) {
+            this.measureForm.setValue({ measure: matchingMeasures[0].name })
+            this.selectedMeasure.set(matchingMeasures[0].name);
+        }
+        
+        this.sensorForm.setValue({ sensor: micro.sensor })
 
-          if (micro.thresholdMin !== undefined) this.thresholdForm.patchValue({ thresholdMin: micro.thresholdMin })
-          if (micro.thresholdMax !== undefined) this.thresholdForm.patchValue({ thresholdMax: micro.thresholdMax })
+        if (micro.thresholdMin !== undefined) this.thresholdForm.patchValue({ thresholdMin: micro.thresholdMin })
+        if (micro.thresholdMax !== undefined) this.thresholdForm.patchValue({ thresholdMax: micro.thresholdMax })
 
-          this.measureForm.disable()
-          this.sensorForm.disable()
-        })
+        this.measureForm.disable()
+        this.sensorForm.disable()
+      } catch (error) {}
     }
   }
 
@@ -104,7 +124,7 @@ export class MicrocontrollersEditComponent implements OnInit {
       thresholdMax: this.thresholdForm.value.thresholdMax !== '' ? Number(this.thresholdForm.value.thresholdMax) : undefined
     }
 
-    if (this.isEdit) {
+    if (this.isEdit()) {
       microcontroller['old_ip'] = this.route.snapshot.paramMap.get('ip')
       this.arduinoService.putMicrocontroller(microcontroller)
         .subscribe(() => {
@@ -118,12 +138,6 @@ export class MicrocontrollersEditComponent implements OnInit {
           this.router.navigate(['/my-microcontrollers'])
         })
     }
-  }
-
-  getAvailableSensors(measure: string): string[] {
-    const measures = this.measures.filter(m => m.name === measure)
-    if (!measures.length) return []
-    return this.sensors[measures[0].name]
   }
 
   resetSensors() {

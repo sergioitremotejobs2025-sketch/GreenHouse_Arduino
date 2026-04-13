@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { ArduinoService } from '@services/arduino.service';
 import { Microcontroller } from '@models/microcontroller.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface HealthStat {
   ip: string;
@@ -38,8 +39,17 @@ import { PipesModule } from '@modules/pipes.module';
   styleUrls: ['./device-health.component.less']
 })
 export class DeviceHealthComponent implements OnInit {
+  
+  arduinos = toSignal(this.arduinoService.getMicrocontrollers(), { initialValue: [] });
   healthData = signal<HealthStat[]>([]);
-  isLoading = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
+
+  averageUptime = computed(() => {
+    const data = this.healthData();
+    if (data.length === 0) return 0;
+    const sum = data.reduce((acc, curr) => acc + curr.uptime, 0);
+    return Math.round(sum / data.length);
+  });
 
   constructor(private arduinoService: ArduinoService) {}
 
@@ -49,10 +59,17 @@ export class DeviceHealthComponent implements OnInit {
 
   refreshHealth(): void {
     this.isLoading.set(true);
-    this.arduinoService.getMicrocontrollers().subscribe(micros => {
+    // Use the signal value if available, or fetch again
+    const micros = this.arduinos();
+    if (micros.length > 0) {
       this.calculateHealth(micros);
       this.isLoading.set(false);
-    });
+    } else {
+      this.arduinoService.getMicrocontrollers().subscribe(data => {
+        this.calculateHealth(data);
+        this.isLoading.set(false);
+      });
+    }
   }
 
   calculateHealth(micros: Microcontroller[]): void {

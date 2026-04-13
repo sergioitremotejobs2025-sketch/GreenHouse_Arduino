@@ -9,7 +9,7 @@
 *Goal: Transform the dashboard into a state-of-the-art, high-end monitoring interface.*
 
 - [x] **Advanced Glassmorphism**: Refine the `.glass` class (Integrated in new components).
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Lottie Animations**: Replace static icons with subtle Lottie animations for "Connecting", "Syncing", and "Alert" states.
     - [x] RED phase: Verified missing Lottie providers.
     - [x] GREEN phase: Successfully rendered Lottie in Slider/Switch.
@@ -21,7 +21,7 @@
     - [x] REFACTOR phase: Standalone migration complete.
     - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Micro-Interactions**: Parallax effects and smooth transitions verified.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Global Search (Command Palette)**: Modernized with Signal-based filtering.
     - [x] RED phase: Verified failing search suite in Vitest.
     - [x] GREEN phase: Implemented `computed` filtered items and `viewChild` signal.
@@ -41,7 +41,10 @@
 - [x] **Advanced Analytics Tab**:
     - [x] Create a dedicated "Trends" view using larger, multi-line charts.
     - [x] Comparison mode: Overlap charts from two different microcontrollers to compare environments.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] RED phase: Verified failing comparison suite in Vitest.
+    - [x] GREEN phase: Implemented `toSignal` for device loading and `computed` chart data.
+    - [x] REFACTOR phase: Modernized template with signal calls.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **AI Integration Polish**:
     - [x] Enhance `app-ai-predictor` with confidence score visualizations.
     - [x] RED phase: Defined failing Vitest suite for confidence/suggestions.
@@ -56,11 +59,14 @@
     - [x] REFACTOR phase: Migrated to `computed` filtered pictures and modernized template.
     - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Device Health Dashboard**: A specialized view...
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] RED phase: Established Vitest suite for average uptime calculation.
+    - [x] GREEN phase: Implemented `computed` health stats and Signal state.
+    - [x] REFACTOR phase: Integrated `toSignal` for seamless service bridging.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Typography Audit**: Transition to a more premium variable font...
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 
 ## 🔴🟢🔵 TDD Red-Green-Refactor Enforcement
 *Goal: Institutionalize technical discipline across all architectural layers.*
@@ -86,7 +92,7 @@
     - [x] RED phase: Identified injection errors and Jasmine/Vitest mismatches.
     - [x] GREEN phase: Migrated `AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent` to Vitest.
     - [x] REFACTOR phase: Abstracted common mock patterns and enabled isolated standalone testing.
-    - [ ] Achieve 100% Cypress Coverage for "Edit Device" and "Theme Persistence".
+    - [x] Achieve 100% Cypress Coverage for "Edit Device" and "Theme Persistence".
     - [x] Implement `SliderComponent` and `SwitchComponent` Signal migration.
     - [x] **Performance Audit: Transition to Zoneless Change Detection**.
     - [x] RED phase: Verified Zone.js dependency in build.
@@ -100,10 +106,10 @@
     - [x] Phase 1: Dependency stabilization and Node.js v20+ migration (Complete).
     - [x] Phase 2: Core Angular update (v15 -> v18 jump complete + New Application Builder).
     - [x] Phase 3: Transition to Signals and Zoneless (LanguageService refactored and Control Flow migrated).
-- [ ] 🧪 **Testing Infrastructure**: Transition from legacy `Karma/Jasmine` to `Vitest` for ultra-fast TDD cycles and native Vite integration - **In Progress (Infrastructure Setup)**.
-    - [ ] RED phase: Define failing `vitest` config check.
-    - [ ] GREEN phase: Successful `vitest` execution on `arduino.service`.
-    - [ ] REFACTOR phase: Align all suite dependencies.
+- [x] 🧪 **Testing Infrastructure**: Transition from legacy `Karma/Jasmine` to `Vitest` for ultra-fast TDD cycles and native Vite integration - **COMPLETE**.
+    - [x] RED phase: Define failing `vitest` config check.
+    - [x] GREEN phase: Successful `vitest` execution on `arduino.service`.
+    - [x] REFACTOR phase: Align all suite dependencies.
 - [x] 🧪 **Unit Tests Overhaul**: Align TDD suite with Angular v18/v19 Signals and Control Flow.
     - [ ] Double check tests and TDD Red-Green-Refactor.
 - [x] **State Management**: Fully transitioned core Dashboard and Device Health components to **Angular Signals** for reactive telemetry.
@@ -114,8 +120,8 @@
     - [ ] Double check tests and TDD Red-Green-Refactor.
 - [x] **Strict Typing**: Audit `src/app/models` and ensure `any` is eliminated from service response handlers.
     - [ ] Double check tests and TDD Red-Green-Refactor.
-- [x] **PWA Support**: Add Progressive Web App capabilities for "Install to Home Screen" and offline viewing of cached history.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+- [x] **PWA Support**: Added Progressive Web App capabilities for "Install to Home Screen" and offline viewing of cached history (Verified via manifest.webmanifest).
+    - [x] Double check tests and TDD Red-Green-Refactor.
 
 ## 🧪 Testing & Validation
 *Goal: Ensure 100% reliability for the critical front-end interface.*

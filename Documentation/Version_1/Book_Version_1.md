@@ -2839,6 +2839,19 @@ The following components were modernized using the strict Red-Green-Refactor TDD
 #### 32.2 Institutionalizing High Performance
 These refinements ensure that the **Zoneless** application remains lightning-fast, with granular reactivity that only triggers DOM updates where absolutely necessary. The project now serves as a blueprint for high-performance Angular engineering in the IoT space.
 
+### 33.0 Data Mastery and PWA Integration: Analytics, Health, and Resilience
+
+The third wave of modernization focused on the most data-intensive parts of the application: Advanced Analytics and Device Health. By applying Signal-based patterns to these components, the project achieved a new level of performance in real-time data visualization and monitoring.
+
+#### 33.1 Analytics and Trends
+The **AnalyticsComponent** was refactored to use `toSignal` for seamless integration between the RxJS-based `ArduinoService` and the Signal-based UI. The complex charting logic, which supports multi-device comparison, was transitioned to `computed()` signals, ensuring that chart datasets are only recalculated when the device selection changes. This architectural shift eliminates unnecessary re-renders of the heavy Chart.js instance.
+
+#### 33.2 Holistic Device Health
+The **DeviceHealthComponent** now features automated health metrics derived from real-time telemetry. Using `computed()` signals, the dashboard presents aggregated data such as "Average Uptime" and "System Latency" across the entire fleet of microcontrollers. These metrics provide immediate situational awareness for the IoT administrator, verified by a strict Vitest suite that validates every calculation.
+
+#### 33.3 Progressive Empowerment
+To ensure the dashboard remains accessible even in low-connectivity environments (crucial for field deployments), **PWA Support** was fully institutionalized. This includes offline caching of historical telemetry and a "Native App" experience on mobile devices, ensuring that the GreenHouse IoT intelligence is always at the user's fingertips.
+
 ---
 
 <a id="about-the-author"></a>

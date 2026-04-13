@@ -1,30 +1,44 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import '@analogjs/vitest-angular/setup-zone';
+import 'zone.js/testing';
+
+try {
+  TestBed.initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting()
+  );
+} catch (e) {}
+
 import { AnalyticsComponent } from './analytics.component';
 import { ArduinoService } from '../../services/arduino.service';
 import { of } from 'rxjs';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('AnalyticsComponent', () => {
   let component: AnalyticsComponent;
   let fixture: ComponentFixture<AnalyticsComponent>;
-  let arduinoServiceSpy: jasmine.SpyObj<ArduinoService>;
+  let arduinoServiceMock: any;
 
   beforeEach(async () => {
-    arduinoServiceSpy = jasmine.createSpyObj('ArduinoService', ['getMicrocontrollers', 'getPreviousMeasures']);
-    arduinoServiceSpy.getMicrocontrollers.and.returnValue(of([]));
+    arduinoServiceMock = {
+      getMicrocontrollers: vi.fn().mockReturnValue(of([])),
+      getPreviousMeasures: vi.fn()
+    };
 
     await TestBed.configureTestingModule({
-      declarations: [ AnalyticsComponent ],
-      imports: [ MatSelectModule, FormsModule, BrowserAnimationsModule ],
+      imports: [AnalyticsComponent],
       providers: [
-        { provide: ArduinoService, useValue: arduinoServiceSpy }
+        { provide: ArduinoService, useValue: arduinoServiceMock },
+        provideNoopAnimations()
       ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-    .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AnalyticsComponent);
     component = fixture.componentInstance;
@@ -35,15 +49,17 @@ describe('AnalyticsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load microcontrollers on init', () => {
-    expect(arduinoServiceSpy.getMicrocontrollers).toHaveBeenCalled();
+  it('should load microcontrollers on init using signals', () => {
+    expect(arduinoServiceMock.getMicrocontrollers).toHaveBeenCalled();
   });
 
-  it('should toggle selection of a device', () => {
+  it('should toggle selection of a device using signals', () => {
     const dev = { ip: '1.2.3.4', measure: 'temp', name: 'Test' };
     component.toggleDevice(dev as any);
-    expect(component.selectedDevices.length).toBe(1);
+    // RED PHASE: Expect selectedDevices to be a signal
+    expect(component.selectedDevices().length).toBe(1);
+    
     component.toggleDevice(dev as any);
-    expect(component.selectedDevices.length).toBe(0);
+    expect(component.selectedDevices().length).toBe(0);
   });
 });

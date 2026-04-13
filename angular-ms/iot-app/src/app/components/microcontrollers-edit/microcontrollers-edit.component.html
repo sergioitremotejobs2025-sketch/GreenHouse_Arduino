@@ -34,7 +34,7 @@
           <mat-form-field>
             <mat-label>Sensor</mat-label>
             <mat-select formControlName="sensor">
-              <mat-option *ngFor="let sensor of getAvailableSensors(measureForm.value.measure)" [value]="sensor">{{
+              <mat-option *ngFor="let sensor of availableSensors()" [value]="sensor">{{
                 sensor }}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -67,7 +67,7 @@
       <mat-step [stepControl]="lastForm">
         <ng-template matStepLabel>Listo</ng-template>
         <div>
-          <button mat-raised-button type="submit">{{ isEdit ? 'Actualizar' : 'Añadir' }}</button>
+          <button mat-raised-button color="primary" type="submit">{{ isEdit() ? 'Actualizar' : 'Añadir' }}</button>
         </div>
       </mat-step>
     </mat-vertical-stepper>

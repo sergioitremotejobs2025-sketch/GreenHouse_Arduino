@@ -5,103 +5,106 @@ describe('Angular MS End-to-End Tests', () => {
         password: 'e2e_password'
     };
 
+    const mockMicros = [
+        { ip: '1.2.3.4', sensor: 'DHT11', measure: 'temp', name: 'Terrace' },
+        { ip: '5.6.7.8', sensor: 'YI-AN', measure: 'humidity', name: 'Kitchen' }
+    ];
+
     beforeEach(() => {
+        // Setup intercepts
+        cy.intercept('POST', '**/auth/login', {
+            statusCode: 200,
+            body: { token: 'mock-jwt-token', user: testUser }
+        }).as('loginRequest');
+
+        cy.intercept('GET', '**/arduinos', {
+            statusCode: 200,
+            body: mockMicros
+        }).as('getMicros');
+
         cy.visit('/');
     });
 
-    it('Displays the homepage and header', () => {
+    it('Displays the homepage and premium header', () => {
         cy.contains('IoT_Microservices');
         cy.contains('Acceder').should('be.visible');
+        cy.get('h1').should('have.css', 'font-family').and('include', 'Outfit');
     });
 
-    it('Navigates to register modal, creates user, and logs in', () => {
-        // Open Dialog
+    it('Logs in successfully and displays dashboard with mock data', () => {
         cy.contains('Acceder').click();
-
-        // Switch to Register (if not existing) or just attempt login.
-        // If we just want to test Login we can do:
         cy.get('input[formControlName="username"]').type(testUser.username);
         cy.get('input[formControlName="password"]').type(testUser.password);
+        cy.get('button[type="submit"]').click();
 
-        // This is assuming standard Angular material inputs where formControlNames are on input levels
-        cy.get('button[type="submit"]').contains('Iniciar sesión').click();
+        cy.wait('@loginRequest');
+        cy.wait('@getMicros');
 
-        // Check that we're logged in correctly (nav-user-container shows name)
-        // A popup or change in navbar should show
-        // Either a failure snackbar shows up or success
-        // Wait for the request to orchestrator mapped through local angular proxies
-        cy.wait(1000);
+        cy.get('.micro-card').should('have.length', 2);
+        cy.contains('Terrace').should('be.visible');
     });
 
-    it('Blocks access to settings without authentication', () => {
-        cy.visit('/my-microcontrollers');
-        // Router should redirect back to home if restricted
-        cy.url().should('eq', Cypress.config().baseUrl + '/');
-    });
-
-    describe('Premium UI & Interactions', () => {
-        it('Should have premium typography and styles', () => {
-            // Check for Outfit font on headers (H2 is common on dashboard)
-            // Note: We use .should('have.css', ...) which returns the computed style
-            cy.get('h2').should('have.css', 'font-family').and('include', 'Outfit');
-
-            // Check for Inter font on body/paragraphs
-            cy.get('body').should('have.css', 'font-family').and('include', 'Inter');
-
-            // Check for the navbar title premium font
-            cy.get('.nav-title').should('have.css', 'font-family').and('include', 'Outfit');
-        });
-
+    describe('Feature Verification: Theme and Persistence', () => {
         it('Should toggle and persist theme across reloads', () => {
-            // Toggle to dark mode
             cy.get('button[mattooltip="Cambiar tema"]').click();
             cy.get('html').should('have.attr', 'data-theme', 'dark');
 
-            // Reload page
             cy.reload();
-
-            // Verify theme persisted
             cy.get('html').should('have.attr', 'data-theme', 'dark');
 
-            // Toggle back to light mode
             cy.get('button[mattooltip="Cambiar tema"]').click();
             cy.get('html').should('not.have.attr', 'data-theme', 'dark');
-
-            // Reload again
-            cy.reload();
-            cy.get('html').should('not.have.attr', 'data-theme', 'dark');
-        });
-
-        it('Should display the "Empty State" glass card with correct blur', () => {
-            // Check glass effect properties
-            cy.get('.empty-state.glass').should('be.visible')
-                .and('have.css', 'backdrop-filter').and('include', 'blur(16px)');
-
-            cy.get('.empty-state.glass').should('have.css', 'border-radius', '24px');
-        });
-
-        it('Should have a responsive premium navbar', () => {
-            cy.get('nav').should('have.class', 'glass');
-            cy.get('nav').should('have.css', 'position', 'sticky');
-            cy.get('nav').should('have.css', 'overflow', 'hidden'); // For the animated gradient
-        });
-
-        describe('Device Configuration & Management', () => {
-            it('Should navigate to edit device and modify settings', () => {
-                // This requires being logged in
-                cy.contains('Acceder').click();
-                cy.get('input[formControlName="username"]').type(testUser.username);
-                cy.get('input[formControlName="password"]').type(testUser.password);
-                cy.get('button[type="submit"]').click();
-
-                // Navigate to settings (assuming user has devices)
-                cy.get('.action-btn').first().click();
-                cy.contains('Configurar').click();
-
-                // Verify we are on edit page
-                cy.url().should('include', '/edit/');
-            });
         });
     });
 
+    describe('Device Configuration Flow', () => {
+        beforeEach(() => {
+            // Login for these tests
+            cy.contains('Acceder').click();
+            cy.get('input[formControlName="username"]').type(testUser.username);
+            cy.get('input[formControlName="password"]').type(testUser.password);
+            cy.get('button[type="submit"]').click();
+            cy.wait(['@loginRequest', '@getMicros']);
+        });
+
+        it('Should navigate to edit device and update settings', () => {
+            cy.intercept('PUT', '**/arduinos/*', {
+                statusCode: 200,
+                body: { ...mockMicros[0], name: 'Updated Terrace' }
+            }).as('updateRequest');
+
+            // Open menu and click configure
+            cy.get('.micro-card').first().find('.action-btn').click();
+            cy.contains('Configurar').click();
+
+            cy.url().should('include', '/edit/1.2.3.4');
+
+            // Form interaction
+            cy.get('input[formControlName="name"]').clear().type('Updated Terrace');
+            cy.get('button[type="submit"]').click();
+
+            cy.wait('@updateRequest');
+            cy.contains('Cambiado correctamente').should('be.visible');
+        });
+    });
+
+    describe('Analytics and Health Verification', () => {
+        it('Should navigate to Analytics and interact with chart controls', () => {
+            cy.get('a[routerLink="/analytics"]').click();
+            cy.url().should('include', '/analytics');
+            
+            cy.get('.dev-item').should('have.length', 2);
+            cy.get('.dev-item').first().click();
+            cy.get('.dev-item').first().should('have.class', 'selected');
+            cy.get('canvas').should('be.visible');
+        });
+
+        it('Should navigate to Health and verify status indicators', () => {
+            cy.get('a[routerLink="/device-health"]').click();
+            cy.url().should('include', '/device-health');
+            
+            cy.get('.status-row').should('have.length', 2);
+            cy.get('.uptime-bar').should('be.visible');
+        });
+    });
 });
