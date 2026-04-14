@@ -146,9 +146,12 @@ services:
         limits:
           memory: 64M
     depends_on:
-      - rabbitmq
-      - microcontrollers-ms
-      - measure-ms
+      rabbitmq:
+        condition: service_healthy
+      microcontrollers-ms:
+        condition: service_started
+      measure-ms:
+        condition: service_started
 
   stats-ms:
     build:
@@ -171,8 +174,10 @@ services:
         limits:
           memory: 128M
     depends_on:
-      - rabbitmq
-      - mongo
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
 
   orchestrator-ms:
     build:
@@ -200,10 +205,15 @@ services:
         limits:
           memory: 128M
     depends_on:
-      - auth-ms
-      - measure-ms
-      - microcontrollers-ms
-      - rabbitmq
+      auth-ms:
+        condition: service_started
+      measure-ms:
+        condition: service_started
+      microcontrollers-ms:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
 
   angular-ms:
     image: nginx:alpine
