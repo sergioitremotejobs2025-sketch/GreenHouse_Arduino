@@ -9,12 +9,13 @@ set -e
 export PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 COMPOSE_FILE="docker-compose.lite.yml"
 PROJECT_NAME="iot-lite"
+export PATH=$PATH:/usr/local/bin
 
 echo "🌿 IoT Microservices - Lite Execution Mode"
 echo "------------------------------------------"
 echo "Goal: Run Core services with strict memory limits (~1.5GB total footprint)."
-echo "Services included: MySQL, MongoDB, RabbitMQ, Auth, Measure, Microcontrollers, Publisher, Orchestrator, Angular (Frontend)."
-echo "Services excluded: AI (TensorFlow), Stats (to save RAM)."
+echo "Services included: MySQL, MongoDB, RabbitMQ, Auth, Measure, Microcontrollers, Publisher, Stats, Orchestrator, Angular (Frontend)."
+echo "Services excluded: AI (TensorFlow) (to save RAM)."
 echo ""
 
 # Check if Docker is running
