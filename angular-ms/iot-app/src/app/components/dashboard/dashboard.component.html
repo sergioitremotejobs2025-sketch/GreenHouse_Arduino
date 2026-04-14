@@ -46,7 +46,7 @@
 
       <!-- Humidity -->
       @if (micro.measure === 'humidity') {
-        <div class="dashboard-grid">
+        <div class="dashboard-grid" [class.focused-view]="measure()">
           <div class="card chart-card shadow-sm" appThreeDHover>
             @if (humidityStats) {
               <app-humidity-chart (inactivity)="changeActivity($event)"
@@ -66,7 +66,7 @@
 
       <!-- Light -->
       @if (micro.measure === 'light') {
-        <div class="dashboard-grid">
+        <div class="dashboard-grid" [class.focused-view]="measure()">
           <div class="card chart-card shadow-sm" appThreeDHover>
             @if (lightStats) {
               <app-light-chart (inactivity)="changeActivity($event)"
@@ -86,7 +86,7 @@
 
       <!-- Temperature -->
       @if (micro.measure === 'temperature') {
-        <div class="dashboard-grid">
+        <div class="dashboard-grid" [class.focused-view]="measure()">
           <div class="card chart-card shadow-sm" appThreeDHover>
             @if (temperatureStats) {
               <app-temperature-chart (inactivity)="changeActivity($event)"

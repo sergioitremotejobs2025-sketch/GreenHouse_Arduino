@@ -47,6 +47,10 @@ export class HumidityChartComponent extends MeasureChart {
     this.chartOptions = {
       ...this.chartOptions,
       cutout: '80%',
+      scales: {
+        x: { display: false },
+        y: { display: false }
+      },
       plugins: {
         ...this.chartOptions.plugins,
         legend: { display: false }

@@ -1,47 +1,35 @@
-const { B_TERMISTOR } = require('../config/config')
+const B_TERMISTOR = 3975
 
 const digitalToReal = (digital, sensor) => {
+  const digital_value = Number(digital);
+  let real_value = 0;
+
   switch (sensor) {
     case 'Grove - Moisture':
     case 'Fake Grove - Moisture':
-    case 'Fake Humid':
     case 'Local Hum 1':
     case 'Cloud Moisture':
-      return Number((digital * 100 / 950).toFixed(1))
+      real_value = Number((digital_value * 100 / 950).toFixed(1));
+      break;
     case 'Grove - Temperature':
     case 'Fake Grove - Temperature':
-    case 'Fake Temp':
     case 'Local Temp 1':
     case 'Cloud Temperature':
-      return Number((1 / (Math.log(1023 / digital - 1) / B_TERMISTOR + 1 / 298.15) - 273.15).toFixed(1))
+      real_value = Number((1 / (Math.log(1023 / digital_value - 1) / B_TERMISTOR + 1 / 298.15) - 273.15).toFixed(1));
+      break;
+    case 'Fake Humid':
+      real_value = Number(((digital_value * 100) / 1023).toFixed(1));
+      break;
+    case 'Fake Temp':
+      real_value = Number(((digital_value * 40) / 1023).toFixed(1));
+      break;
     default:
-
-      return digital // Fallback if unknown sensor
+      real_value = digital_value;
+      break;
   }
+  return real_value;
 }
 
-const getMessage = (data, micro) => {
-  const date = new Date()
-  const message = {
-    date: date.toUTCString(),
-    digital_value: data[micro.measure],
-    ip: micro.ip,
-    measure: micro.measure,
-    sensor: micro.sensor,
-    timestamp: date.getTime(),
-    username: micro.username
-  }
-
-  switch (micro.measure) {
-    case 'humidity':
-    case 'temperature':
-      message.real_value = digitalToReal(data[micro.measure], micro.sensor)
-      break
-    case 'light':
-      break
-  }
-
-  return message
+module.exports = {
+  digitalToReal
 }
-
-module.exports = { getMessage }

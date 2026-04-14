@@ -15,7 +15,7 @@ export class NotificationService {
         this.snackBar.open(message, 'Cerrar', {
             duration: 5000,
             horizontalPosition: 'end',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: [`snackbar-${type}`]
         });
 

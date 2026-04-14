@@ -1,22 +1,21 @@
 nav {
-  left: 0;
-  position: fixed;
-  top: 64px;
-  height: 100%;
+  position: relative;
   width: 100%;
-  @media screen and (max-width: 500px) {
-    top: 110px;
+  min-height: 100vh;
+  
+  @media screen and (max-width: 640px) {
+    margin-top: 0;
   }
 }
 .example-container,
 mat-sidenav-container {
-  height: 100%;
   width: 100%;
+  min-height: 100vh;
 }
 
 mat-sidenav-content {
   margin-top: 24px;
-  overflow: initial !important; // Prevent clipping
+  overflow: visible !important;
 }
 .fas {
   font-size: 24px;
