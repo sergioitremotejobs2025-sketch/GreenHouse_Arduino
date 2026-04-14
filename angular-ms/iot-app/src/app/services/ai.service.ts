@@ -4,6 +4,11 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '@models/api-response.model';
 
+export interface PerformanceResult {
+    mae: number;
+    sample_count: number;
+}
+
 @Injectable({
     providedIn: 'root'
 })

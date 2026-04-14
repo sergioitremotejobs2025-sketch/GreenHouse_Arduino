@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core'
+import { Component, OnInit, signal, computed } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { forkJoin, of } from 'rxjs';
@@ -7,10 +7,8 @@ import { GoogleChartInterface } from 'ng2-google-charts'
 
 import { ArduinoService } from '@services/arduino.service'
 
-import { HumidityStats } from '@models/humidity-stats.model'
-import { LightStats } from '@models/light-stats.model'
 import { Microcontroller } from '@models/microcontroller.model'
-import { TemperatureStats } from '@models/temperature-stats.model'
+import { MeasureStats } from '@alias/measure-stats.type'
 
 import { MustBeOrderedDates } from '@helpers/must-be-ordered-dates.helper'
 
@@ -20,7 +18,7 @@ interface Stat {
   color: string
   isSelected: boolean
   name: string
-  value: string
+  value: 'min_value' | 'mean_value' | 'max_value'
 }
 
 import { CommonModule } from '@angular/common';
@@ -70,25 +68,25 @@ import { DashboardMicrocontrollerComponent } from '@components/dashboard-microco
 })
 export class MeasureHistoryComponent implements OnInit {
   micro = signal<Microcontroller | undefined>(undefined)
-  data = signal<any[]>([])
+  data = signal<MeasureStats[]>([])
   isLoading = signal<boolean>(true)
 
-  header: string[]
-  options: any = {
+  header: string[] = []
+  options = {
     colors: ['#3f51b5', '#e91e63', '#ffc107'],
     hAxis: {
       gridlines: { units: { days: { format: ['dd MMM'] }, hours: { format: ["HH 'h'"] } } },
       minorGridlines: { units: { hours: { format: ["HH 'h'"] } } },
-      textStyle: { color: 'rgba(255,255,255,0.7)' }
+      textStyle: { color: '#64748b' }
     },
     vAxis: {
-      textStyle: { color: 'rgba(255,255,255,0.7)' },
-      gridlines: { color: 'rgba(255,255,255,0.1)' }
+      textStyle: { color: '#64748b' },
+      gridlines: { color: 'rgba(0, 0, 0, 0.05)' }
     },
     legend: {
       alignment: 'end',
       position: 'top',
-      textStyle: { color: 'rgba(255,255,255,0.9)' }
+      textStyle: { color: '#1e293b' }
     },
     backgroundColor: 'transparent',
     chartArea: { width: '85%', height: '70%', top: 50 },
@@ -112,8 +110,8 @@ export class MeasureHistoryComponent implements OnInit {
     { color: '#4caf50', isSelected: true, name: 'Media', value: 'mean_value' },
     { color: '#f44336', isSelected: false, name: 'Máximo', value: 'max_value' }
   ]
-  currentStats: string[] = ['mean_value']
-  isComparing = false
+  currentStats = signal<string[]>(['mean_value']);
+  isComparing = signal(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -138,6 +136,8 @@ export class MeasureHistoryComponent implements OnInit {
     const ip = this.route.snapshot.paramMap.get('ip')
     const measure = this.route.snapshot.paramMap.get('measure')
 
+    if (!ip || !measure) return;
+
     try {
       const result = await this.arduinoService.getMicrocontroller(ip, measure)
       this.micro.set(result)
@@ -149,9 +149,15 @@ export class MeasureHistoryComponent implements OnInit {
     }
   }
 
+  setCurrentStats(values: string[]) {
+    this.currentStats.set(values)
+    this.selectChanged()
+  }
+
   selectChanged() {
+    const selected = this.currentStats();
     for (const stat of this.stats) {
-      stat.isSelected = this.currentStats.indexOf(stat.value) !== -1
+      stat.isSelected = selected.includes(stat.value)
     }
 
     this.drawChart(this.data())
@@ -159,24 +165,26 @@ export class MeasureHistoryComponent implements OnInit {
 
   isOptionDisabled(micro: Microcontroller, stat: Stat): boolean {
     if (micro.measure === 'light' && stat.name !== 'Mean') return true
-    return this.stats.filter(stat => stat.isSelected).length === 1 && stat.isSelected
+    return this.stats.filter(s => s.isSelected).length === 1 && stat.isSelected
   }
 
-  getPreviousMeasures(formValue: any) {
+  getPreviousMeasures(formValue: { init_date: Date, end_date: Date, compare_init_date: Date, compare_end_date: Date }) {
     const { init_date, end_date, compare_init_date, compare_end_date } = formValue;
+    const micro = this.micro();
+    if (!micro) return;
 
     const obs1 = this.arduinoService.getPreviousMeasures(
-      this.micro().ip,
-      this.micro().measure,
-      this.makePlural(this.micro().measure),
+      micro.ip,
+      micro.measure,
+      this.makePlural(micro.measure),
       init_date.toJSON(),
       end_date.toJSON()
     );
 
-    const obs2 = this.isComparing ? this.arduinoService.getPreviousMeasures(
-      this.micro().ip,
-      this.micro().measure,
-      this.makePlural(this.micro().measure),
+    const obs2 = this.isComparing() ? this.arduinoService.getPreviousMeasures(
+      micro.ip,
+      micro.measure,
+      this.makePlural(micro.measure),
       compare_init_date.toJSON(),
       compare_end_date.toJSON()
     ) : of(null);
@@ -193,30 +201,30 @@ export class MeasureHistoryComponent implements OnInit {
     return word[lastLetterIndex] !== 'y' ? `${word}s` : `${word.substring(0, lastLetterIndex)}ies`
   }
 
-  drawChart(measures: any[], compareMeasures: any[] = null) {
+  drawChart(measures: MeasureStats[], compareMeasures: MeasureStats[] | null = null) {
     if (measures && measures.length) {
       const stats = this.stats.filter(stat => stat.isSelected)
       const names = stats.map(stat => stat.name)
 
-      if (this.isComparing && compareMeasures) {
+      if (this.isComparing() && compareMeasures) {
         this.chart.dataTable = [['Punto', ...names.map(n => n + ' (P1)'), ...names.map(n => n + ' (P2)')]];
         this.options.colors = [...stats.map(s => s.color), ...stats.map(s => this.shadeColor(s.color, -30))];
 
         const count = Math.max(measures.length, compareMeasures.length);
         for (let i = 0; i < count; i++) {
-          const row = [i + 1];
-          stats.forEach(s => row.push(measures[i] ? measures[i][s.value] : null));
-          stats.forEach(s => row.push(compareMeasures[i] ? compareMeasures[i][s.value] : null));
+          const row: (string | number | null)[] = [i + 1];
+          stats.forEach(s => row.push(measures[i] ? (measures[i] as any)[s.value] : null));
+          stats.forEach(s => row.push(compareMeasures[i] ? (compareMeasures[i] as any)[s.value] : null));
           this.chart.dataTable.push(row);
         }
       } else {
         this.chart.dataTable = [[this.header[0], ...names]]
         this.options.colors = stats.map(stat => stat.color)
 
-        measures.forEach((measure: any) => {
+        measures.forEach((measure) => {
           this.chart.dataTable.push([
             new Date(measure.init_date),
-            ...stats.map(stat => measure[stat.value])
+            ...stats.map(stat => (measure as any)[stat.value])
           ])
         })
       }
@@ -233,9 +241,9 @@ export class MeasureHistoryComponent implements OnInit {
     let G = parseInt(color.substring(3, 5), 16);
     let B = parseInt(color.substring(5, 7), 16);
 
-    R = parseInt(((R * (100 + percent)) / 100).toString());
-    G = parseInt(((G * (100 + percent)) / 100).toString());
-    B = parseInt(((B * (100 + percent)) / 100).toString());
+    R = Math.round((R * (100 + percent)) / 100);
+    G = Math.round((G * (100 + percent)) / 100);
+    B = Math.round((B * (100 + percent)) / 100);
 
     R = R < 255 ? R : 255;
     G = G < 255 ? G : 255;

@@ -42,8 +42,6 @@ export class TemperatureChartComponent extends MeasureChart {
             ...this.chartOptions.scales,
             y: {
                 ...this.chartOptions.scales.y,
-                min: 0,
-                max: 50
             }
         }
     }
@@ -68,8 +66,16 @@ export class TemperatureChartComponent extends MeasureChart {
     this.chartData.labels.push(new Date(temperature.date).toLocaleTimeString());
     this.chartData.datasets[0].data.push(temperature.real_value);
     
-    // In Chart.js with ng2-charts, binding handles the update, but we can nudge it if needed
-    // In this case, labels/datasets are bound
+    // Force Change Detection for ng2-charts by creating a new object reference
+    this.chartData = {
+      labels: [...this.chartData.labels],
+      datasets: [
+        {
+          ...this.chartData.datasets[0],
+          data: [...this.chartData.datasets[0].data]
+        }
+      ]
+    };
   }
 
 }

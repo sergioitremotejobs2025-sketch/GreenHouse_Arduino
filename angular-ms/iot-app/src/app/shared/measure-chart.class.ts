@@ -43,7 +43,9 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
           fill: true,
           tension: 0.4,
           borderColor: '#06b6d4',
-          backgroundColor: 'rgba(6, 182, 212, 0.1)'
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          pointRadius: 4,
+          pointBackgroundColor: '#06b6d4'
         }
       ]
     }
@@ -54,17 +56,17 @@ export abstract class MeasureChart implements OnDestroy, OnInit {
         scales: {
             x: {
                 grid: { display: false },
-                ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                ticks: { color: '#64748b' }
             },
             y: {
-                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                ticks: { color: '#64748b' }
             }
         },
         plugins: {
             legend: {
                 display: true,
-                labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                labels: { color: '#64748b' }
             }
         }
     }

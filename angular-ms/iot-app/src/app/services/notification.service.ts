@@ -28,7 +28,7 @@ export class NotificationService {
     }
 
     getHistory(): AlertEntry[] {
-        return this.alertHistory.getHistory();
+        return this.alertHistory.history();
     }
 
     notifyAlert(measure: string, value: number, unit: string, threshold: number, isAbove: boolean): void {

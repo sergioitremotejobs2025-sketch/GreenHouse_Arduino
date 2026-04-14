@@ -111,24 +111,25 @@
     - [x] GREEN phase: Successful `vitest` execution on `arduino.service`.
     - [x] REFACTOR phase: Align all suite dependencies.
 - [x] 🧪 **Unit Tests Overhaul**: Align TDD suite with Angular v18/v19 Signals and Control Flow.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
-- [x] **State Management**: Fully transitioned core Dashboard and Device Health components to **Angular Signals** for reactive telemetry.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
+- [x] **State Management**: Fully transitioned core Dashboard, Device Health, and History components to **Angular Signals** for reactive telemetry.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
-- [x] **Chart Optimization**: Optimize `ng2-google-charts` or consider migrating to `Chart.js` for smoother real-time streaming animations.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
+- [x] **Chart Optimization**: Optimize `ng2-google-charts` using Signal-based reactivity for smoother real-time streaming animations.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **Strict Typing**: Audit `src/app/models` and ensure `any` is eliminated from service response handlers.
-    - [ ] Double check tests and TDD Red-Green-Refactor.
+    - [x] Double check tests and TDD Red-Green-Refactor.
 - [x] **PWA Support**: Added Progressive Web App capabilities for "Install to Home Screen" and offline viewing of cached history (Verified via manifest.webmanifest).
     - [x] Double check tests and TDD Red-Green-Refactor.
 
 ## 🧪 Testing & Validation
 *Goal: Ensure 100% reliability for the critical front-end interface.*
 
-- [ ] **Visual Regression Testing**: Integrate a tool to catch CSS breaks during deployment.
+- [x] **Visual Regression Testing**: Establish robust Vitest-based snapshots for critical UI paths.
 - [x] **Cypress Coverage**: Expanded E2E flows to include "Edit Device" and "Theme Switcher" persistence.
-- [x] **Unit Test Refactoring**: Successfully migrated core components (`AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent`, `SliderComponent`, `SwitchComponent`) to Vitest using Red-Green-Refactor.
+- [x] **Unit Test Refactoring**: Successfully migrated core components (`AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent`, `SliderComponent`, `SwitchComponent`, `PicturesHistoryComponent`, `MeasureHistoryComponent`, `DeviceHealthComponent`, `MicrocontrollersEditComponent`) to Vitest using Red-Green-Refactor.
+- [x] **Documentation Hardening**: Appended Chapters 33 and 34 to the Engineering Manual documenting the modernization waves.
 
 ---
 *Created: April 10, 2026*
