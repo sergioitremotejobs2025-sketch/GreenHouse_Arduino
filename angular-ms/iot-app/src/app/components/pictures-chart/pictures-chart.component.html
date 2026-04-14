@@ -17,8 +17,8 @@
   }
 
   @if (selectedPicture()) {
-    <div class="picture-layout">
-      <div class="main-display card shadow-sm">
+    <div class="picture-card-wrapper glass shadow-sm">
+      <div class="main-display">
         <div class="display-header">
           <div class="stage-badge" [attr.data-stage]="selectedPicture()!.stage">{{ selectedPicture()!.stage | titlecase }}</div>
           <span class="elapsed-time text-muted">
@@ -62,11 +62,11 @@
       </div>
 
       @if (history().length > 0) {
-        <div class="history-sidebar glass">
-          <h4 class="sidebar-title">Actividad reciente</h4>
+        <div class="history-footer">
+          <h4 class="footer-title">Actividad reciente</h4>
           <div class="history-scroll custom-scrollbar">
             @for (item of history(); track item.timestamp) {
-              <div class="history-item" (click)="openLightbox(item)" style="cursor: pointer;">
+              <div class="history-item" (click)="selectedPicture.set(item)" [class.active-item]="item.timestamp === selectedPicture()?.timestamp" style="cursor: pointer;">
                 <div class="thumb-frame">
                   <img [src]="item.image_url" class="thumb-img">
                 </div>
@@ -81,4 +81,5 @@
       }
     </div>
   }
+
 </div>
