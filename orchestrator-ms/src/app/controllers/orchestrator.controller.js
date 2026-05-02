@@ -6,6 +6,7 @@ const ServicesController = require('./services.controller')
 
 const jwt = new JwtModule()
 const servicesController = new ServicesController()
+const MicrocontrollersModule = require('../../modules/microcontrollers.module');
 
 const doAuth = async (req, res, path) => {
   const body = req.body
@@ -32,6 +33,18 @@ module.exports = class OrchestratorController {
     const response = await servicesController.getToConnectedService(res, MEASURE_MS, path, query, true)
 
     if (response && response.data) {
+      // If temperature, convert digital values to real Celsius values
+      if (path === 'temperature') {
+        const microsModule = new MicrocontrollersModule(path);
+        response.data = response.data.map(item => {
+          if (item.digital_value !== undefined) {
+            item.value = microsModule.digitalToReal(item.digital_value, item.sensor);
+            delete item.digital_value;
+          }
+          return item;
+        });
+      }
+
       const io = req.app.get('io');
       if (io) {
         // Broadcast the measurement update to all clients
@@ -161,6 +174,103 @@ module.exports = class OrchestratorController {
       measure
     }
     await servicesController.postToConnectedService(res, AI_MS, 'evaluate', body)
+  }
+
+
+  async getMeasureHistory(req, res) {
+    console.log('[orchestrator] getMeasureHistory called:', req.query)
+    const { ip, measure, range } = req.query
+    const { username } = req.user
+
+    const rangeMap = {
+      '24h': 24 * 60 * 60 * 1000,
+      '7d': 7 * 24 * 60 * 60 * 1000,
+      '30d': 30 * 24 * 60 * 60 * 1000
+    }
+
+    const duration = rangeMap[range] || rangeMap['24h']
+    const init_timestamp = Date.now() - duration
+
+    const path = measure + 's' // humidity -> humidities, temperature -> temperatures
+    const query = { ip, username, init_timestamp }
+
+    const response = await servicesController.getToConnectedService(res, MEASURE_MS, path, query, true)
+    const microsModule = new MicrocontrollersModule(measure)
+    if (response && response.data) {
+      let history = []
+      response.data.forEach(item => {
+        if (item.real_values && item.real_values.length > 0) {
+          const count = item.real_values.length
+          const start = new Date(item.init_date).getTime()
+          const end = new Date(item.end_date).getTime()
+          const step = count > 1 ? (end - start) / (count - 1) : 0
+          item.real_values.forEach((val, i) => {
+            history.push({
+              date: new Date(start + i * step).toUTCString(),
+              value: val
+            })
+          })
+        } else if (item.real_value !== undefined) {
+          history.push({
+            date: item.date,
+            value: item.real_value
+          })
+        } else if (item.digital_value !== undefined) {
+          // Convert raw digital value to real units if temperature
+          let value = item.digital_value
+          if (measure === 'temperature') {
+            value = microsModule.digitalToReal(item.digital_value, item.sensor)
+          }
+          history.push({
+            date: item.date,
+            value: value
+          })
+        }
+      })
+      history.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      return res.json(history)
+    }
+
+    if (response && response.data) {
+      let history = []
+      response.data.forEach(item => {
+        if (item.real_values && item.real_values.length > 0) {
+          // Aggregated record from stats-ms
+          const count = item.real_values.length
+          const start = new Date(item.init_date).getTime()
+          const end = new Date(item.end_date).getTime()
+          const step = count > 1 ? (end - start) / (count - 1) : 0
+
+          item.real_values.forEach((val, i) => {
+            history.push({
+              date: new Date(start + i * step).toUTCString(),
+              value: val
+            })
+          })
+        } else if (item.real_value !== undefined) {
+          // Raw record from measure-ms
+          history.push({
+            date: item.date,
+            value: item.real_value
+          })
+        } else if (item.digital_value !== undefined) {
+          // Fallback for light or other
+          history.push({
+            date: item.date,
+            value: item.digital_value
+          })
+        }
+      })
+      
+      // Sort by date just in case
+      history.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      
+      return res.json(history)
+    }
+
+    if (!res.headersSent) {
+      return res.sendStatus(404)
+    }
   }
 
 }

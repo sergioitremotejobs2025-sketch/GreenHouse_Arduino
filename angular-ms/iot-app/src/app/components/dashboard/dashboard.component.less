@@ -57,7 +57,8 @@
   grid-template-columns: repeat(2, 1fr);
   grid-template-areas: 
     "chart chart"
-    "stats ai";
+    "stats ai"
+    "history history";
   align-items: stretch;
 
   .card {
@@ -78,6 +79,10 @@
     &.picture-card { 
       grid-area: chart; 
       height: 620px; 
+    }
+    &.history-chart-card {
+      grid-area: history;
+      height: 450px;
     }
   }
 
@@ -100,7 +105,8 @@
     grid-template-areas: 
       "chart"
       "stats"
-      "ai";
+      "ai"
+      "history";
     
     .card.chart-card {
       height: 500px;

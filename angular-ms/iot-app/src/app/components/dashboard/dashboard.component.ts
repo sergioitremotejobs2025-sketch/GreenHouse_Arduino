@@ -23,6 +23,7 @@ import { ThreeDHoverDirective } from '../../shared/three-d-hover.directive';
 import { SkeletonComponent } from '@components/skeleton/skeleton.component';
 import { LottieAnimationComponent } from '../../shared/lottie-animation/lottie-animation.component';
 import { PipesModule } from '@modules/pipes.module';
+import { TimeHistoryChartComponent } from '@components/time-history-chart/time-history-chart.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,7 +45,8 @@ import { PipesModule } from '@modules/pipes.module';
     ThreeDHoverDirective,
     SkeletonComponent,
     LottieAnimationComponent,
-    PipesModule
+    PipesModule,
+    TimeHistoryChartComponent
   ],
   styleUrls: ['./dashboard.component.less'],
   templateUrl: './dashboard.component.html'

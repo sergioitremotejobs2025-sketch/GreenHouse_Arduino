@@ -44,6 +44,8 @@
         <app-dashboard-microcontroller [isHistory]="false" [micro]="micro"></app-dashboard-microcontroller>
       </div>
 
+
+
       <!-- Humidity -->
       @if (micro.measure === 'humidity') {
         <div class="dashboard-grid" [class.focused-view]="measure()">
@@ -60,6 +62,9 @@
           <div class="card ai-card shadow-sm" appThreeDHover>
             <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
               [recentValues]="getRecentValues(micro)"></app-ai-predictor>
+          </div>
+          <div class="card history-chart-card full-width shadow-sm" appThreeDHover>
+            <app-time-history-chart [micro]="micro"></app-time-history-chart>
           </div>
         </div>
       }
@@ -81,6 +86,9 @@
             <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
               [recentValues]="getRecentValues(micro)"></app-ai-predictor>
           </div>
+          <div class="card history-chart-card full-width shadow-sm" appThreeDHover>
+            <app-time-history-chart [micro]="micro"></app-time-history-chart>
+          </div>
         </div>
       }
 
@@ -100,6 +108,9 @@
           <div class="card ai-card shadow-sm" appThreeDHover>
             <app-ai-predictor [ip]="micro.ip" [measure]="micro.measure"
               [recentValues]="getRecentValues(micro)"></app-ai-predictor>
+          </div>
+          <div class="card history-chart-card full-width shadow-sm" appThreeDHover>
+            <app-time-history-chart [micro]="micro"></app-time-history-chart>
           </div>
         </div>
       }

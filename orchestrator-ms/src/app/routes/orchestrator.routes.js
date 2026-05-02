@@ -315,6 +315,22 @@ router.post('/ai/train', jwtMiddleware, orchestratorController.trainAI)
 router.post('/ai/predict', jwtMiddleware, orchestratorController.predictAI)
 /**
  * @swagger
+ * /measures/history:
+ *   get:
+ *     summary: Get sensor history
+ *     tags: [Measures]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/measures/history', jwtMiddleware, orchestratorController.getMeasureHistory)
+
+/**
+ * @swagger
  * /ai/evaluate:
  *   post:
  *     summary: Evaluate AI model for a sensor

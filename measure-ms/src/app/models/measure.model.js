@@ -67,14 +67,16 @@ module.exports = class MeasureModel {
 
     const filter = { ip, username }
 
-    if (init_date || init_timestamp) {
-      if (!init_timestamp) init_timestamp = timeStringToTimestamp(init_date)
-      filter.init_timestamp = { '$gte': init_timestamp }
-    }
-
-    if (end_date || end_timestamp) {
-      if (!end_timestamp) end_timestamp = timeStringToTimestamp(end_date)
-      filter.end_timestamp = { '$lte': end_timestamp }
+    if (init_date || init_timestamp || end_date || end_timestamp) {
+      filter.timestamp = {}
+      if (init_date || init_timestamp) {
+        if (!init_timestamp) init_timestamp = timeStringToTimestamp(init_date)
+        filter.timestamp['$gte'] = parseInt(init_timestamp)
+      }
+      if (end_date || end_timestamp) {
+        if (!end_timestamp) end_timestamp = timeStringToTimestamp(end_date)
+        filter.timestamp['$lte'] = parseInt(end_timestamp)
+      }
     }
 
     const method = 'find' + capitalizeFirstLetter(this.measure)

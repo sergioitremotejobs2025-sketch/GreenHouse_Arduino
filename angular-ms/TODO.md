@@ -1,135 +1,45 @@
-# 📝 TODO: Angular-MS UI & Feature Enhancements
+# TODO: Future Functionalities for Angular Microservice (angular-ms)
 
-> [!IMPORTANT]
-> **TDD FIRST MANDATE**: All development MUST follow the strict **Red-Green-Refactor** cycle. No code is to be committed without a prior failing test and its subsequent passing state.
+## 1. Advanced Data Visualization & Export
+- [x] **Interactive Time-Series Charts**: Implement historical charts (e.g., using Chart.js or ECharts) with adjustable time ranges (Last 24h, 7 Days, 30 Days) for Temperature and Humidity.
+    - [x] Create `MeasureService` mock and write failing tests ensuring `ChartComponent` calls data endpoints with correct time-range parameters.
+    - [x] Write component tests to verify the UI dynamically updates to display loading states, error states, and rendering the mock chart canvas.
+    - [x] Implement `ChartComponent` logic to pass the tests (Green).
+    - [x] Write integration tests simulating user interactions (changing time range dropdowns) and asserting events fire correctly.
+    - [x] Execute `ng test --code-coverage` and refactor `ChartComponent` to ensure 100% statement, branch, function, and line coverage.
+- [x] **Data Export**: Add functionality to export sensor data history as CSV or JSON reports for external analysis.
+    - [x] Write pure utility function unit tests for `ExportCsvUtil` asserting accurate JSON-to-CSV string conversions (including edge cases like null values).
+    - [x] Write unit tests for `DataExportService` by spying on and mocking the DOM `Blob` and `document.createElement('a')` APIs to verify download triggers.
+    - [x] Implement export core logic.
+    - [x] Create UI tests asserting the Export button correctly disables while processing and triggers the service method.
+    - [x] Refactor and verify 100% coverage on all export-related files.
 
----
+## 2. Alerts and Notifications
+- [x] **Threshold Configuration UI**: Allow users to set custom minimum and maximum threshold values for sensors (e.g., alert if Temperature > 30°C).
+    - [x] Write unit tests for `ThresholdConfigComponent` utilizing Angular Reactive Forms, asserting validity states natively (e.g. `min` strictly less than `max`).
+    - [x] Test the submit emission: verify that clicking save patches the correct payload to the mocked `ThresholdService`.
+    - [x] Implement the Reactive Form and template to pass the tests.
+    - [x] Write tests verifying error handling (e.g., displaying custom error messages when 400 Bad Request is returned).
+    - [x] Polish component to meet the 100% code coverage threshold.
+- [x] **Real-time Notifications**: Implement a notification center (toast messages or a side panel) to alert users when a sensor metric triggers a threshold or a device disconnects.
+    - [x] Write isolated unit tests for `NotificationService`, testing state array mutations (pushing notifications, auto-dismiss `setTimeout` clearing).
+    - [x] Test `NotificationPanelComponent` by mocking the `NotificationService` stream and asserting correct list rendering in the DOM.
+    - [x] Implement Service and UI.
+    - [ ] Write integration specifications providing mock WebSocket/SSE events, ensuring they correctly map to the application's global state stream.
+    - [x] Verify 100% test coverage including private methods and subscription cleanup (`ngOnDestroy`).
 
-## 💎 UI/UX & Aesthetics (Premium Feel)
-*Goal: Transform the dashboard into a state-of-the-art, high-end monitoring interface.*
+## 3. Device Management
+- [x] **Device Overview Page**: Create a dedicated view to list all registered microcontrollers, showing their current status (Online/Offline), last seen time, and configuration.
+    - [x] Write tests for `MicrocontrollersService` asserting correct HTTP GET behavior and data mapping using `HttpTestingController`.
+    - [x] Write UI tests for `DeviceOverviewComponent` ensuring accurate `*ngFor` table/list rendering given an array of mock devices.
+    - [x] Write tests for pipeline logic: search input filtering and status sorting.
+    - [x] Implement components to turn specifications green.
+    - [x] Run coverage reports to explicitly guarantee 100% testing on the overview page module.
+- [x] **Register/Edit Devices**: UI forms to allow users to add new microcontrollers or pair simulator instances directly from the frontend.
+    - [x] Define comprehensive unit tests for `DeviceFormComponent` containing custom async validators (e.g., checking uniqueness) and standard synchronous validators (IP/MAC regex).
+    - [x] Implement form group bindings and validators to satisfy the tests.
+    - [x] Test component output by simulating button clicks and confirming `DeviceService.create()` or `.update()` is invoked with precise shapes.
+    - [x] Create tests simulating 409 Conflict constraints ensuring the UI alerts the user of existing hardware mappings.
+    - [x] Attain 100% test coverage across the device editing features.
 
-- [x] **Advanced Glassmorphism**: Refine the `.glass` class (Integrated in new components).
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Lottie Animations**: Replace static icons with subtle Lottie animations for "Connecting", "Syncing", and "Alert" states.
-    - [x] RED phase: Verified missing Lottie providers.
-    - [x] GREEN phase: Successfully rendered Lottie in Slider/Switch.
-    - [x] REFACTOR phase: Extracted to standalone components.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Skeleton Loaders**: Modernized with Signal-based inputs and variant support.
-    - [x] RED phase: Established Vitest suite for circular variants.
-    - [x] GREEN phase: Implemented `computed` border-radius and Signal inputs.
-    - [x] REFACTOR phase: Standalone migration complete.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Micro-Interactions**: Parallax effects and smooth transitions verified.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Global Search (Command Palette)**: Modernized with Signal-based filtering.
-    - [x] RED phase: Verified failing search suite in Vitest.
-    - [x] GREEN phase: Implemented `computed` filtered items and `viewChild` signal.
-    - [x] REFACTOR phase: Updated template to reactive calls.
-    - [x] Double check tests and TDD Red-Green-Refactor.
 
-## 🚀 New Features
-*Goal: Expand functionality to provide better intelligence and control.*
-
-- [x] **Real-time Alert Notifications**:
-    - [x] Integrate a Toast system (e.g., `ngx-toastr` or custom Material Snackbar) for critical IoT alerts.
-    - [x] Add a notification "Inbox" in the navbar to track past alerts.
-    - [x] RED phase: Confirmed Jasmine/Vitest mismatch in spec.
-    - [x] GREEN phase: Migrated to Signals and passed Vitest.
-    - [x] REFACTOR phase: Modernized imports and template calls.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Advanced Analytics Tab**:
-    - [x] Create a dedicated "Trends" view using larger, multi-line charts.
-    - [x] Comparison mode: Overlap charts from two different microcontrollers to compare environments.
-    - [x] RED phase: Verified failing comparison suite in Vitest.
-    - [x] GREEN phase: Implemented `toSignal` for device loading and `computed` chart data.
-    - [x] REFACTOR phase: Modernized template with signal calls.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **AI Integration Polish**:
-    - [x] Enhance `app-ai-predictor` with confidence score visualizations.
-    - [x] RED phase: Defined failing Vitest suite for confidence/suggestions.
-    - [x] GREEN phase: Implemented Signal-based performance tracking and `computed` suggestions.
-    - [x] REFACTOR phase: Unified Material imports and template optimization.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Picture Gallery Enhancements**:
-    - [x] Implement a full-screen Lightbox for IoT surveillance pictures.
-    - [x] Add Timeline scrubbing for photo history (Timelapse feature).
-    - [x] RED phase: Verified timelapse timer logic failure.
-    - [x] GREEN phase: Implemented Signal-based timelapse and history filtering.
-    - [x] REFACTOR phase: Migrated to `computed` filtered pictures and modernized template.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Device Health Dashboard**: A specialized view...
-    - [x] RED phase: Established Vitest suite for average uptime calculation.
-    - [x] GREEN phase: Implemented `computed` health stats and Signal state.
-    - [x] REFACTOR phase: Integrated `toSignal` for seamless service bridging.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Custom Scrollbars**: Design sleek, thin, themed scrollbars for history lists and sidenavs.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Typography Audit**: Transition to a more premium variable font...
-    - [x] Double check tests and TDD Red-Green-Refactor.
-
-## 🔴🟢🔵 TDD Red-Green-Refactor Enforcement
-*Goal: Institutionalize technical discipline across all architectural layers.*
-
-- [x] **Component Modernization (TDD Verified)**:
-    - [x] `DashboardComponent`: Signal migration verified.
-    - [x] `DeviceHealthComponent`: Signal migration verified.
-    - [x] `MeasureHistoryComponent`: Signal migration verified.
-    - [x] `AnalyticsComponent`: Chart.js migration verified.
-    - [x] `PicturesChartComponent`: Signal migration verified.
-    - [x] `NavbarComponent`: Standalone migration verified.
-    - [x] `LoginComponent`: Standalone migration verified.
-    - [x] `IndexComponent`: Standalone migration verified.
-    - [ ] Double check tests and TDD Red-Green-Refactor across all standalone components.
-- [x] **Phase 5: Modernization & Standalone Migration (COMPLETE)**:
-    - [x] Convert all components and directives to **Standalone**.
-    - [x] Migrate legacy providers (ngx-lottie, ng2-charts) to modern provider patterns.
-    - [x] Stabilize Angular v19 build (0 Errors).
-    - [x] Implement Reactive `BehaviorSubject` in `ArduinoService` for device state orchestration.
-    - [ ] Double check tests and TDD Red-Green-Refactor across all sub-components.
-- [x] **Phase 6: Infrastructure TDD & Performance Hardening**:
-    - [x] Finalize **Vitest** setup and automated test conversion.
-    - [x] RED phase: Identified injection errors and Jasmine/Vitest mismatches.
-    - [x] GREEN phase: Migrated `AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent` to Vitest.
-    - [x] REFACTOR phase: Abstracted common mock patterns and enabled isolated standalone testing.
-    - [x] Achieve 100% Cypress Coverage for "Edit Device" and "Theme Persistence".
-    - [x] Implement `SliderComponent` and `SwitchComponent` Signal migration.
-    - [x] **Performance Audit: Transition to Zoneless Change Detection**.
-    - [x] RED phase: Verified Zone.js dependency in build.
-    - [x] GREEN phase: Enabled `provideExperimentalZonelessChangeDetection` in AppModule.
-    - [x] REFACTOR phase: Removed `zone.js` from polyfills in angular.json.
-
-## 🛠️ Technical Debt & Performance
-*Goal: Modernize the tech stack and improve codebase maintainability.*
-
-- [ ] **Angular v18 Upgrade Roadmap**:
-    - [x] Phase 1: Dependency stabilization and Node.js v20+ migration (Complete).
-    - [x] Phase 2: Core Angular update (v15 -> v18 jump complete + New Application Builder).
-    - [x] Phase 3: Transition to Signals and Zoneless (LanguageService refactored and Control Flow migrated).
-- [x] 🧪 **Testing Infrastructure**: Transition from legacy `Karma/Jasmine` to `Vitest` for ultra-fast TDD cycles and native Vite integration - **COMPLETE**.
-    - [x] RED phase: Define failing `vitest` config check.
-    - [x] GREEN phase: Successful `vitest` execution on `arduino.service`.
-    - [x] REFACTOR phase: Align all suite dependencies.
-- [x] 🧪 **Unit Tests Overhaul**: Align TDD suite with Angular v18/v19 Signals and Control Flow.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **State Management**: Fully transitioned core Dashboard, Device Health, and History components to **Angular Signals** for reactive telemetry.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Responsive Grid**: Refactor the `dashboard-grid` using Native CSS Grid for better control over ultra-wide and mobile layouts.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Chart Optimization**: Optimize `ng2-google-charts` using Signal-based reactivity for smoother real-time streaming animations.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **Strict Typing**: Audit `src/app/models` and ensure `any` is eliminated from service response handlers.
-    - [x] Double check tests and TDD Red-Green-Refactor.
-- [x] **PWA Support**: Added Progressive Web App capabilities for "Install to Home Screen" and offline viewing of cached history (Verified via manifest.webmanifest).
-    - [x] Double check tests and TDD Red-Green-Refactor.
-
-## 🧪 Testing & Validation
-*Goal: Ensure 100% reliability for the critical front-end interface.*
-
-- [x] **Visual Regression Testing**: Establish robust Vitest-based snapshots for critical UI paths.
-- [x] **Cypress Coverage**: Expanded E2E flows to include "Edit Device" and "Theme Switcher" persistence.
-- [x] **Unit Test Refactoring**: Successfully migrated core components (`AppComponent`, `DashboardComponent`, `NavbarComponent`, `AlertInboxComponent`, `SliderComponent`, `SwitchComponent`, `PicturesHistoryComponent`, `MeasureHistoryComponent`, `DeviceHealthComponent`, `MicrocontrollersEditComponent`) to Vitest using Red-Green-Refactor.
-- [x] **Documentation Hardening**: Appended Chapters 33 and 34 to the Engineering Manual documenting the modernization waves.
-
----
-*Created: April 10, 2026*
